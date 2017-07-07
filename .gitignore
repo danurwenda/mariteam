@@ -25,3 +25,4 @@ composer.lock
 *.sublime-workspace
 *.sublime-project
 /node_modules/
+/.htaccess
