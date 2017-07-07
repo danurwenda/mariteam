@@ -1,5 +1,5 @@
 {
-  "name": "MariTeam",
+  "name": "mariteam",
   "authors": [
     "dimas yusuf <dimas.yusuf@polkam.go.id>"
   ],
@@ -24,6 +24,7 @@
     "font-awesome": "^4.7.0",
     "datatables-responsive": "^2.1.1",
     "bootstrap-social": "^5.1.1",
-    "metisMenu": "^2.7.0"
+    "metisMenu": "^2.7.0",
+    "bootbox.js": "bootbox#^4.4.0"
   }
 }

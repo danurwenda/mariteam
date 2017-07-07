@@ -18,6 +18,8 @@ class Member_Controller extends CI_Controller {
         } else {
             $this->load->model('users_model');
             $this->logged_user = $this->users_model->get_user($this->session->user_id);
+            // update last_access field
+            $this->users_model->update_last_access($this->logged_user->user_id);
             $this->load->library(
                     'template', [
                 'user' => $this->logged_user

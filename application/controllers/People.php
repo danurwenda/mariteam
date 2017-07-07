@@ -22,15 +22,26 @@ class People extends Module_Controller {
         $this->template->display('people_table', $data);
     }
 
+    function delete() {
+        $this->users_model->delete($this->input->post('user_id'));
+    }
+
     /**
      * Full view untuk update user
      * @param type $user_id
      */
     function edit($user_id) {
         $data['pagetitle'] = 'Edit User';
-        $data['user'] = $this->users_model->get_user($user_id);
-        $data['roles'] = $this->db->get('roles')->result();
-        $this->template->display('people_form', $data);
+        $user = $this->users_model->get_user($user_id);
+        if (!$user) {
+            //user not found
+            //redirect to table
+            redirect('people');
+        } else {
+            $data['user'] = $user;
+            $data['roles'] = $this->db->get('roles')->result();
+            $this->template->display('people_form', $data);
+        }
     }
 
     function update() {
@@ -52,29 +63,37 @@ class People extends Module_Controller {
         ]]);
         $this->form_validation->set_rules('password', 'Password', 'matches[passconf]');
         $this->form_validation->set_rules('passconf', 'Password Confirmation', 'matches[password]');
-        $this->form_validation->set_rules('status', 'Status', []);
-        $this->form_validation->set_rules('role', 'Role', []);
+        $this->form_validation->set_rules('status', 'Status', 'required');
+        $this->form_validation->set_rules('role', 'Role', 'required');
+        $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
         if ($this->form_validation->run() == true) {
             $data['updated'] = true;
-            $this->users_model->update_user(
-                    $user_id, $this->input->post('email'), $this->input->post('password'), $this->input->post('status'), $this->input->post('role')
+            $this->users_model->update(
+                    $user_id, $this->input->post('email'), $this->input->post('password'), $this->input->post('name'), $this->input->post('status'), $this->input->post('role')
             );
         }
         $this->template->display('people_form', $data);
     }
 
-    /**
-     * Check whether the specified email is owned by current user OR a new email
-     * @param type $email
-     */
-    function check_self_or_unique($email, $user_id) {
-        echo 'emil ' . $email;
-        echo 'uid ' . $user_id;
-        if ($this->users_model->get_user($user_id)->email === $email || !$this->users_model->get_login_info($email)) {
-            return true;
+    function create() {
+        $data['pagetitle'] = 'Add User';
+        $data['roles'] = $this->db->get('roles')->result();
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('email', 'Username', ['trim', 'required', 'strip_tags', 'is_unique[users.email]']);
+        $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
+        $this->form_validation->set_rules('password', 'Password', 'required');
+        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
+        $this->form_validation->set_rules('status', 'Status', 'required');
+        $this->form_validation->set_rules('role', 'Role', 'required');
+        if ($this->form_validation->run() == true) {
+            $data['updated'] = true;
+            $this->users_model->create(
+                    $this->input->post('email'), $this->input->post('password'), $this->input->post('name'), $this->input->post('status'), $this->input->post('role')
+            );
+            //return to table view
+            redirect('people');
         } else {
-            $this->form_validation->set_message('check_self_or_unique', 'This %s is already taken');
-            return false;
+            $this->template->display('people_form', $data);
         }
     }
 

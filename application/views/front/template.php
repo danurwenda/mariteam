@@ -30,6 +30,7 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
         <script>var $$ = [];</script>
+        <script>var base_url = '<?php echo base_url();?>';</script>
     </head>
 
     <body>
@@ -295,12 +296,14 @@
 
         <!-- Page-specific, jQuery dependent JS -->
         <script>
-            $$.forEach(function (src) {
-                var script = document.createElement('script');
-                script.src = src;
-                script.async = false;// <-- important
-                document.head.appendChild(script);
-            });
+            $(document).ready(function () {
+                $$.forEach(function (src) {
+                    var script = document.createElement('script');
+                    script.src = src;
+                    script.async = false;// <-- important
+                    document.head.appendChild(script);
+                });
+            })
         </script>
         <!-- Custom Theme JavaScript -->
         <script src="<?php echo base_url(); ?>/dist/js/sb-admin-2.js"></script>

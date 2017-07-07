@@ -39,13 +39,16 @@ class Users_model extends CI_Model {
         return ($q->num_rows() > 0) ? $q->row() : false;
     }
 
-    public function update_user($id, $username, $password = '', $status = null, $role = null) {
+    public function update($id, $username, $password = '',$name='', $status = null, $role = null) {
         $this->db->where('user_id', $id);
         //update username
         $this->db->set('email', $username);
         //and update password if $password is not empty
         if (!empty($password)) {
             $this->db->set('hash', password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]));
+        }
+        if (!empty($name)) {
+            $this->db->set('name', $name);
         }
         if (isset($status)) {
             $this->db->set('status', $status);
@@ -68,4 +71,23 @@ class Users_model extends CI_Model {
         return password_verify($password, $user->hash);
     }
 
+    public function create($email, $plainpassword, $fullname, $status, $role_id){
+        $this->db->insert($this->table,[
+            'email'=>$email,
+            'hash'=>password_hash($plainpassword, PASSWORD_DEFAULT, ['cost' => 10]),
+            'name'=>$fullname,
+            'status'=>$status,
+            'role_id'=>$role_id
+        ]);
+    }
+    
+    public function delete($uid){
+        $this->db->delete($this->table,['user_id'=>$uid]);
+    }
+    
+    public function update_last_access($uid){
+        $this->db->where('user_id',$uid);
+        $this->db->set('last_access',date("Y-m-d H:i:s"));
+        $this->db->update($this->table);
+    }
 }

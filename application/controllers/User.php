@@ -29,7 +29,7 @@ class User extends Member_Controller {
         $this->form_validation->set_rules('passconf', 'Password Confirmation', 'matches[password]');
         if ($this->form_validation->run() == true) {
             $data['updated'] = true;
-            $this->users_model->update_user($this->logged_user->user_id, $this->input->post('email'), $this->input->post('password'));
+            $this->users_model->update($this->logged_user->user_id, $this->input->post('email'), $this->input->post('password'));
         }
         $this->template->display('profile', $data);
     }

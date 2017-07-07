@@ -48,8 +48,10 @@ function formatDateDiff($start, $end = null) {
     // We use the two biggest parts 
     if (count($format) > 1) {
         $format = array_shift($format) . " and " . array_shift($format);
-    } else {
+    } else if(count($format)==1) {
         $format = array_pop($format);
+    }else{
+        return 'Just now';
     }
 
     // Prepend 'since ' or whatever you like 
