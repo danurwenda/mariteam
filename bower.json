@@ -1,0 +1,29 @@
+{
+  "name": "MariTeam",
+  "authors": [
+    "dimas yusuf <dimas.yusuf@polkam.go.id>"
+  ],
+  "description": "A simple project management",
+  "main": "assets/js/main.js assets/css/main.css",
+  "keywords": [
+    "bootstrap"
+  ],
+  "license": "MIT",
+  "homepage": "http://maritim.go.id",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "datatables": "^1.10.15",
+    "datatables-plugins": "^1.10.15",
+    "font-awesome": "^4.7.0",
+    "datatables-responsive": "^2.1.1",
+    "bootstrap-social": "^5.1.1",
+    "metisMenu": "^2.7.0"
+  }
+}

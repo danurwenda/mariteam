@@ -1,0 +1,24 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+/* to Change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+class Dashboard extends Member_Controller {
+
+    function __construct() {
+        parent::__construct();
+        
+    }
+
+    /**
+     * Dashboard home.
+     * Shows statistical information (e.g chart) about projects under logged user's privilege.
+     * May display different information for different role.
+     */
+    function index() {
+        $data['pagetitle']='Dashboard';
+        $this->template->display('dashboard',$data);
+    }
+}
