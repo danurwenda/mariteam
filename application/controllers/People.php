@@ -31,13 +31,13 @@ class People extends Module_Controller {
      * @param type $user_id
      */
     function edit($user_id) {
-        $data['pagetitle'] = 'Edit User';
         $user = $this->users_model->get_user($user_id);
         if (!$user) {
             //user not found
             //redirect to table
             redirect('people');
         } else {
+            $data['pagetitle'] = 'Edit User';
             $data['user'] = $user;
             $data['roles'] = $this->db->get('roles')->result();
             $this->template->display('people_form', $data);

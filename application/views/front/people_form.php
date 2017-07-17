@@ -30,7 +30,7 @@
                     </div>
                     <div class="form-group">
                         <label>Full name</label>
-                        <input name="name" type="text" class="form-control" value="<?php echo set_value('name', isset($user) ? $user->name : ''); ?>">
+                        <input name="name" type="text" class="form-control" value="<?php echo set_value('name', isset($user) ? $user->user_name : ''); ?>">
                         <?php echo form_error('name', '<div class="has-error"><label class="control-label">', '</label></div>'); ?>
                     </div>
                     <div class="form-group">
@@ -69,7 +69,7 @@
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                     <?php if (isset($user)) { ?>
-                        <a class="btn btn-danger" data-user_name="<?php echo $user->name;?>" data-user_id="<?php echo $user->user_id;?>">Remove</a>
+                        <a class="btn btn-danger" data-user_name="<?php echo $user->user_name;?>" data-user_id="<?php echo $user->user_id;?>">Remove</a>
                     <?php } ?>
                     </form>
                 </div>

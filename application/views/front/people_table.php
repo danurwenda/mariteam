@@ -29,14 +29,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($ps as $p) {
-                        $now = date_create(); ?>
+                    <?php foreach ($ps as $p) { ?>
                         <tr data-uid="<?php echo $p->user_id; ?>">
-                            <td><?php echo $p->name; ?></td>
+                            <td><?php echo $p->user_name; ?></td>
                             <td><?php echo $p->status == 0 ? 'Blocked' : 'Active'; ?></td>
                             <td><?php echo $p->rname; ?></td>
-                            <td><?php echo formatDateDiff(date_create($p->created_at)); ?></td>
-                            <td><?php echo $p->last_access==null?'Never':formatDateDiff(date_create($p->last_access)); ?></td>
+                            <td><?php echo $p->created_at; ?></td>
+                            <td><?php echo $p->last_access; ?></td>
                             <td><?php echo anchor('people/edit/' . $p->user_id, 'Edit'); ?></td>
                         </tr>
 <?php } ?>
