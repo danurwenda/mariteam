@@ -22,7 +22,7 @@ class Users_model extends CI_Model {
     }
 
     public function get_all_joined() {
-        $this->db->select('users.user_id, users.name, users.status, roles.name rname, users.created_at, users.last_access');
+        $this->db->select('users.user_id, users.user_name, users.status, roles.name rname, users.created_at, users.last_access');
         $this->db->join('roles', 'roles.role_id=users.role_id');
         return $this->db->get($this->table)->result();
     }
@@ -48,7 +48,7 @@ class Users_model extends CI_Model {
             $this->db->set('hash', password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]));
         }
         if (!empty($name)) {
-            $this->db->set('name', $name);
+            $this->db->set('user_name', $name);
         }
         if (isset($status)) {
             $this->db->set('status', $status);
@@ -75,7 +75,7 @@ class Users_model extends CI_Model {
         $this->db->insert($this->table,[
             'email'=>$email,
             'hash'=>password_hash($plainpassword, PASSWORD_DEFAULT, ['cost' => 10]),
-            'name'=>$fullname,
+            'user_name'=>$fullname,
             'status'=>$status,
             'role_id'=>$role_id
         ]);

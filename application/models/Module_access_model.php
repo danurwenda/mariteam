@@ -30,6 +30,7 @@ class Module_access_model extends CI_Model {
                                     'can_access' => true
                                 ]
                         )
+                        ->order_by('ord', 'asc')
                         ->get($this->table)->result();
     }
 

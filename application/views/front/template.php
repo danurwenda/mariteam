@@ -19,7 +19,12 @@
 
         <!-- Custom CSS -->
         <link href="<?php echo base_url(); ?>/dist/css/sb-admin-2.css" rel="stylesheet">
-
+        <style>
+            body {
+                padding-top: 30px;
+                /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+            }
+        </style>
         <!-- Custom Fonts -->
         <?php echo css_asset('font-awesome/css/font-awesome.min.css'); ?>
 
@@ -30,7 +35,7 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
         <script>var $$ = [];</script>
-        <script>var base_url = '<?php echo base_url();?>';</script>
+        <script>var base_url = '<?php echo base_url(); ?>';</script>
     </head>
 
     <body>
@@ -38,7 +43,7 @@
         <div id="wrapper">
 
             <!-- Navigation -->
-            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
@@ -217,7 +222,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-user">
                             <li>
-                                <i><?php echo $_loggeduser->name; ?></i>
+                                <i><?php echo $_loggeduser->user_name; ?></i>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('user/profile'); ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
@@ -293,6 +298,7 @@
 
         <!-- Metis Menu Plugin JavaScript -->
         <?php echo js_asset('metisMenu/metisMenu.min.js'); ?>
+        <?php echo js_asset('moment/moment.min.js'); ?>
 
         <!-- Page-specific, jQuery dependent JS -->
         <script>
