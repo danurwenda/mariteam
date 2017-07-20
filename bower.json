@@ -29,6 +29,7 @@
     "eonasdan-bootstrap-datetimepicker": "bootstrap3-datetimepicker#^4.17.47",
     "select2-bootstrap-theme": "^0.1.0-beta.10",
     "jquery-knob": "^1.2.13",
-    "jquery-validation": "^1.16.0"
+    "jquery-validation": "^1.16.0",
+    "fine-uploader": "^5.13.0"
   }
 }

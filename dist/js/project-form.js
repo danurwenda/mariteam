@@ -46,7 +46,7 @@ $(document).ready(function () {
 
     var placeholder = "Select a State";
 
-    // ====================== TASK TABLE =============================
+    // ====================== DATA TABLE =============================
     var tasks_table = $('#tasks-datatable').DataTable({
         responsive: true,
         processing: true,
@@ -60,19 +60,118 @@ $(document).ready(function () {
         },
         columns: [
             //task name
-            {},
+            {
+                render: function (d, t, f, m) {
+                    return '<a href data-task="' + f[5] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
+                }
+            },
             //PIC
             {},
             //due date
-            {},
+            {
+                render: function (past, t, f, m) {
+                    if (t === 'sort') {
+                        return past;
+                    } else {
+                        if (past)
+                        {
+                            var cls = '';
+                            if (new Date() > new Date(f[3]) && f[2] !== 'Done') {
+                                cls = 'alert-danger';
+                            }
+                            var dpast = moment(new Date(past))
+                            return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
+                        }
+                        return 'Never';
+                    }
+                }
+            },
             //status
-            {},
+            {render: function (d) {
+                    switch (d) {
+                        case '0':
+                            return 'Ongoing'
+                            break;
+                        case '1':
+                            return 'Done'
+                            break;
+                        default:
+                            return ''
+                        }
+                }
+            },
             //weight
-            {},
-            //edit
+            {}
+        ]
+    });
+    $(document).on("click", ".deldoc", function (e) {
+        var uid = $(this).data('doc_id');
+        bootbox.confirm({
+            message: "Are you sure you want to remove this document?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-default'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        data: {"doc_id": uid},
+                        url: base_url + 'project/delete_doc',
+                        type: 'POST',
+                        success: function (result) {
+                            //reload table
+                            docs_table.ajax.reload()
+                        }
+                    });
+                }
+            }
+        })
+    });
+    var docs_table = $('#docs-datatable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: $('#docs-datatable').data('url'),
+            type: 'POST',
+            data: function (d) {
+                d['project_id'] = $('#project_form input[name=project_id]').val()
+            }
+        },
+        columns: [
+            //file name
             {
                 render: function (d, t, f, m) {
-                    return '<a data-task="' + d + '" class="btn btn-primary btn-raised pull-right" data-toggle="modal" data-target="#task-modal-form"> Edit</a>';
+                    return '<a href="' + base_url + 'uploads/' + f[4] + '/' + d + '"> ' + d + '</a>';
+                }
+            },
+            //size
+            {},
+            //due date
+            {
+                render: function (past, t, f, m) {
+                    if (t === 'sort') {
+                        return past;
+                    } else {
+                        if (past)
+                        {
+                            var dpast = moment(new Date(past))
+                            return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
+                        }
+                        return 'Never';
+                    }
+                }
+            },
+            //doc_id, rendered as delete link
+            {
+                render: function (id) {
+                    return '<span class="deldoc btn btn-danger" data-doc_id=' + id + '> Remove</span>'
                 }
             }
         ]
@@ -234,5 +333,29 @@ $(document).ready(function () {
                 }
             }
         })
+    });
+    //=======================FILE UPLOAD
+    $('#fine-uploader-manual-trigger').fineUploader({
+        template: 'qq-template-manual-trigger',
+        request: {
+            endpoint: base_url + 'project/uploads/' + $('#fine-uploader-manual-trigger').data('project')
+        },
+        thumbnails: {
+            placeholders: {
+                waitingPath: base_url + 'vendor/fine-uploader/waiting-generic.png',
+                notAvailablePath: base_url + 'vendor/fine-uploader/not_available-generic.png'
+            }
+        },
+        autoUpload: false,
+        callbacks: {
+            onAllComplete: function () {
+                docs_table.ajax.reload()
+                $('.qq-upload-list').empty();
+            }
+        }
+    });
+
+    $('#trigger-upload').click(function () {
+        $('#fine-uploader-manual-trigger').fineUploader('uploadStoredFiles');
     });
 })

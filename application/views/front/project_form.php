@@ -2,6 +2,7 @@
 <?php echo css_asset('eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css'); ?>
 <?php echo css_asset('select2/select2.min.css'); ?>
 <?php echo css_asset('select2/themes/select2-bootstrap.min.css'); ?>
+<?php echo css_asset('fine-uploader/fine-uploader-new.min.css'); ?>
 <?php echo css_asset('datatables-responsive/responsive.dataTables.css'); ?>
 <script>
     $$.push(
@@ -14,6 +15,7 @@
             , '<?php echo js_asset_url('jquery-knob/jquery.knob.min.js') ?>'
             , '<?php echo js_asset_url('jquery-validation/jquery.validate.min.js') ?>'
             , '<?php echo js_asset_url('bootbox/bootbox.js') ?>'
+            , '<?php echo js_asset_url('fine-uploader/jquery.fine-uploader.min.js') ?>'
             , '<?php echo base_url('dist/js/project-form.js') ?>');
 </script>
 <div class="col-lg-12">
@@ -29,7 +31,7 @@
                 <?php if (isset($project)) { ?>
                     <li><a href="#task" data-toggle="tab">Task</a>
                     </li>
-                    <li><a href="#calendar" data-toggle="tab">Timeline</a>
+                    <li><a href="#documents" data-toggle="tab">Documents</a>
                     </li>
                 <?php } ?>
             </ul>
@@ -77,7 +79,7 @@
                                     }
 
                                     $js = [
-                                        'id'=>'project_assign_to',
+                                        'id' => 'project_assign_to',
                                         'class' => 'form-control select2'
                                     ];
                                     echo form_dropdown('assigned_to', $options, set_value('assigned_to', isset($project) ? $project->assigned_to : null
@@ -123,8 +125,8 @@
                             <?php } ?>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
                     <?php if (isset($project) && $user_role == 1) { ?>
+                        <button type="submit" class="btn btn-default">Submit</button>
                         <a class="btn btn-danger" data-project_name="<?php echo $project->project_name; ?>" data-project_id="<?php echo $project->project_id; ?>">Remove</a>
                     <?php } ?>
                     </form>
@@ -133,9 +135,11 @@
                     <div class="tab-pane fade" id="task">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="pull-right">
-                                    <span><a class="btn btn-primary btn-raised pull-right" data-toggle="modal" data-target="#task-modal-form"><i class="fa fa-tasks"></i> Create</a></span>
-                                </div>
+                                <?php if ($user_role == 1 || $owner) { ?>
+                                    <div class="pull-right">
+                                        <span><a class="btn btn-primary btn-raised pull-right" data-toggle="modal" data-target="#task-modal-form"><i class="fa fa-tasks"></i> Create</a></span>
+                                    </div>
+                                <?php } ?>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         Task List
@@ -150,7 +154,6 @@
                                                     <th>Due date</th>
                                                     <th>Status</th>
                                                     <th>Weight</th>
-                                                    <th>Edit</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -163,8 +166,44 @@
 
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="calendar">
-
+                    <div class="tab-pane fade" id="documents">
+                        <div class='row'>
+                            <div class='col-lg-12'>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Document List
+                                    </div>
+                                    <!-- /.panel-heading -->
+                                    <div class="panel-body">
+                                        <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('project/docs_dt'); ?>">
+                                            <thead>
+                                                <tr>
+                                                    <th>File name</th>
+                                                    <th>Size</th>
+                                                    <th>Uploaded</th>
+                                                    <th>Remove</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <!-- /.table-responsive -->
+                                    </div>
+                                    <!-- /.panel-body -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-12'>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Upload Document
+                                    </div>
+                                    <!-- /.panel-heading -->
+                                    <div class="panel-body">
+                                        <div id="fine-uploader-manual-trigger" data-project=<?php echo $project->project_id; ?>></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 <?php } ?>
             </div>
@@ -210,6 +249,92 @@
         </div>
     </div>
     <?php if (isset($project)) { ?>
+        <!-- Fine Uploader Thumbnails template w/ customization
+        ====================================================================== -->
+        <script type="text/template" id="qq-template-manual-trigger">
+            <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="Drop files here">
+            <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+            <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+            </div>
+            <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+            <span class="qq-upload-drop-area-text-selector"></span>
+            </div>
+            <div class="buttons">
+            <div class="qq-upload-button-selector qq-upload-button">
+            <div>Select files</div>
+            </div>
+            <button type="button" id="trigger-upload" class="btn btn-primary">
+            <i class="icon-upload icon-white"></i> Upload
+            </button>
+            </div>
+            <span class="qq-drop-processing-selector qq-drop-processing">
+            <span>Processing dropped files...</span>
+            <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+            </span>
+            <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
+            <li>
+            <div class="qq-progress-bar-container-selector">
+            <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+            </div>
+            <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+            <img class="qq-thumbnail-selector" qq-max-size="100" qq-server-scale>
+            <span class="qq-upload-file-selector qq-upload-file"></span>
+            <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
+            <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+            <span class="qq-upload-size-selector qq-upload-size"></span>
+            <button type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel">Cancel</button>
+            <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">Retry</button>
+            <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">Delete</button>
+            <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+            </li>
+            </ul>
+
+            <dialog class="qq-alert-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+            <button type="button" class="qq-cancel-button-selector">Close</button>
+            </div>
+            </dialog>
+
+            <dialog class="qq-confirm-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+            <button type="button" class="qq-cancel-button-selector">No</button>
+            <button type="button" class="qq-ok-button-selector">Yes</button>
+            </div>
+            </dialog>
+
+            <dialog class="qq-prompt-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <input type="text">
+            <div class="qq-dialog-buttons">
+            <button type="button" class="qq-cancel-button-selector">Cancel</button>
+            <button type="button" class="qq-ok-button-selector">Ok</button>
+            </div>
+            </dialog>
+            </div>
+        </script>
+        <style>
+        #trigger-upload {
+            color: white;
+            background-color: #00ABC7;
+            font-size: 14px;
+            padding: 7px 20px;
+            background-image: none;
+        }
+
+        #fine-uploader-manual-trigger .qq-upload-button {
+            margin-right: 15px;
+        }
+
+        #fine-uploader-manual-trigger .buttons {
+            width: 36%;
+        }
+
+        #fine-uploader-manual-trigger .qq-uploader .qq-total-progress-bar-container {
+            width: 60%;
+        }
+    </style>
         <div id="task-modal-form" class="modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -281,20 +406,22 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-sm" data-dismiss="modal">
-                            <i class="ace-icon fa fa-times"></i>
-                            Cancel
-                        </button>
+                        <?php if ($owner) { ?>
+                            <button class="btn btn-sm" data-dismiss="modal">
+                                <i class="ace-icon fa fa-times"></i>
+                                Cancel
+                            </button>
 
-                        <button class="btn btn-sm btn-primary">
-                            <i class="ace-icon fa fa-check"></i>
-                            Submit
-                        </button>
+                            <button class="btn btn-sm btn-primary">
+                                <i class="ace-icon fa fa-check"></i>
+                                Submit
+                            </button>
 
-                        <button class="btn btn-sm btn-danger hide">
-                            <i class="ace-icon fa fa-remove"></i>
-                            Remove
-                        </button>
+                            <button class="btn btn-sm btn-danger hide">
+                                <i class="ace-icon fa fa-remove"></i>
+                                Remove
+                            </button>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

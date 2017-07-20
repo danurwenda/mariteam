@@ -21,14 +21,37 @@ class Projects_model extends CI_Model {
         parent::__construct();
     }
 
+    public function add_document($user, $project, $uuid, $filename, $size) {
+        return $this->db->insert('documents', [
+                    'dir' => $uuid,
+                    'filename' => $filename,
+                    'project_id' => $project,
+                    'created_by' => $user,
+                    'size' => $size
+        ]);
+    }
+
+    public function get_document($doc_id) {
+        $this->db->where('document_id', $doc_id);
+        $q = $this->db->get('documents');
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        } else
+            return null;
+    }
+
     public function get_table_data($logged_user_id = null) {
         if (isset($logged_user_id)) {
-            $this->db->where('assigned_to', $logged_user_id);
+            $this->db->where('projects.assigned_to', $logged_user_id)
+                    ->or_where('tasks.assigned_to', $logged_user_id);
         }
-        $this->db->select('project_id, project_name,project_statuses.name status, due_date, user_name');
+        $this->db->distinct()
+                ->select('projects.project_id, project_name,project_statuses.name status, projects.due_date, user_name');
         $this->db->join('users', 'users.user_id = projects.assigned_to')
+                ->join('tasks', 'tasks.project_id=projects.project_id')
                 ->join('project_statuses', 'project_statuses.status_id=projects.project_status');
         $ret = $this->db->get($this->table)->result();
+
         foreach ($ret as $row) {
             //calculate progress            
             $this->db->select_sum('weight');

@@ -29,10 +29,10 @@ gulp.task('less', function () {
 });
 
 // Compile SASS files
-gulp.task('sass',function(){
+gulp.task('sass', function () {
     //compile scss
     gulp.src(['bower_components/datatables-responsive/css/*.scss'])
-            .pipe(sass().on('error',sass.logError))
+            .pipe(sass().on('error', sass.logError))
             .pipe(gulp.dest('bower_components/datatables-responsive/css'));
 });
 
@@ -79,7 +79,7 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/datatables/media/**/*'])
             .pipe(gulp.dest('vendor/datatables'))
-    
+
     gulp.src(['bower_components/bootbox.js/*.js'])
             .pipe(gulp.dest('vendor/bootbox'))
 
@@ -88,22 +88,30 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/datatables-responsive/css/*.css', 'bower_components/datatables-responsive/js/*'])
             .pipe(gulp.dest('vendor/datatables-responsive'))
-    
-    gulp.src(['bower_components/select2/dist/css/*','bower_components/select2/dist/js/*'])
+
+    gulp.src(['bower_components/select2/dist/css/*', 'bower_components/select2/dist/js/*'])
             .pipe(gulp.dest('vendor/select2'))
-    
+
     gulp.src(['bower_components/select2-bootstrap-theme/dist/*'])
             .pipe(gulp.dest('vendor/select2/themes'))
-    
+
+    gulp.src([
+        'bower_components/fine-uploader/dist/jquery.fine-uploader.min.js',
+        'bower_components/fine-uploader/dist/*.gif',
+        'bower_components/fine-uploader/dist/placeholders/*.png',
+        'bower_components/fine-uploader/dist/fine-uploader-new.min.css'
+    ])
+            .pipe(gulp.dest('vendor/fine-uploader'))
+
     gulp.src(['bower_components/moment/min/*'])
             .pipe(gulp.dest('vendor/moment'))
-    
+
     gulp.src(['bower_components/jquery-validation/dist/*.min.js'])
             .pipe(gulp.dest('vendor/jquery-validation'))
-    
+
     gulp.src(['bower_components/jquery-knob/dist/*'])
             .pipe(gulp.dest('vendor/jquery-knob'))
-    
+
     gulp.src(['bower_components/eonasdan-bootstrap-datetimepicker/build/css/*', 'bower_components/eonasdan-bootstrap-datetimepicker/build/js/*'])
             .pipe(gulp.dest('vendor/eonasdan-bootstrap-datetimepicker'))
 

@@ -12,14 +12,12 @@ $(document).ready(function () {
         } else {
             if (past)
             {
-                if (!past instanceof Date) {
-                    past = new Date(past);
-                }
-                var cls='';
-                if (new Date()>new Date(f[3]) && f[2] !== 'Done') {
+                var cls = '';
+                if (new Date() > new Date(f[3]) && f[2] !== 'Done') {
                     cls = 'alert-danger';
                 }
-                return '<span class="'+cls+'">'+moment(past).fromNow()+'</span>';
+                var dpast = moment(new Date(past))
+                return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
             }
             return 'Never';
         }
@@ -32,7 +30,7 @@ $(document).ready(function () {
                 var cls = '';
                 if (f[2] === 'Done') {
                     cls = 'progress-bar-success';
-                } else if (new Date()>new Date(f[3])) {
+                } else if (new Date() > new Date(f[3])) {
                     cls = 'progress-bar-danger';
                 } else if (f[2] === 'On Hold') {
                     cls = 'progress-bar-warning';

@@ -67,6 +67,24 @@ class Project extends Module_Controller {
         echo json_encode(['success' => $this->db->delete('tasks', ['task_id' => $task_id])]);
     }
 
+    function delete_doc() {
+        $doc_id = $this->input->post('doc_id');
+        //find doc
+        $doc = $this->projects_model->get_document($doc_id);
+        if ($doc) {
+            $this->load->helper('file');
+            //delete from disk
+            $path = './uploads/' . $doc->dir ;
+            echo json_encode(['disk'=> (@unlink($path.'/'.$doc->filename)&& @rmdir($path) ),
+            //delete from db
+            'db'=>$this->db->where('document_id', $doc_id)->delete('documents')]);
+        }
+    }
+
+    function docs_dt() {
+        echo $this->query_docs();
+    }
+
     function tasks_dt() {
         echo $this->query_tasks();
     }
@@ -76,11 +94,20 @@ class Project extends Module_Controller {
             $project_id = $this->input->post('project_id');
             if ($this->logged_user->role_id != 1) {
                 //check whether current user has access to this particular project
-                $this->db->where([
-                    'assigned_to' => $this->logged_user->user_id,
-                    'project_id' => $project_id]);
-                if ($this->db->get('projects')->num_rows() == 0) {
-                    return json_encode([]);
+                $this->db
+                        ->or_group_start()
+                        ->where([
+                            'projects.assigned_to' => $this->logged_user->user_id
+                        ])
+                        ->or_where([
+                            'tasks.assigned_to' => $this->logged_user->user_id
+                        ])
+                        ->group_end()
+                        ->join('tasks', 'tasks.project_id=projects.project_id')
+                        ->where(['projects.project_id' => $project_id]);
+                $q = $this->db->get('projects');
+                if ($q->num_rows() == 0) {
+                    return json_encode(['q' => $this->db->last_query()]);
                 }
             }
             $this->datatables
@@ -89,6 +116,35 @@ class Project extends Module_Controller {
                     ->join('users', 'users.user_id=tasks.assigned_to', 'left')
 //                    ->add_column('DT_RowId', 'row_$1', 'individu_id')
                     ->from('tasks');
+            return $this->datatables->generate();
+        }
+    }
+
+    private function query_docs() {
+        if ($this->input->is_ajax_request()) {
+            $project_id = $this->input->post('project_id');
+            if ($this->logged_user->role_id != 1) {
+                //check whether current user has access to this particular project
+                $this->db
+                        ->or_group_start()
+                        ->where([
+                            'projects.assigned_to' => $this->logged_user->user_id
+                        ])
+                        ->or_where([
+                            'tasks.assigned_to' => $this->logged_user->user_id
+                        ])
+                        ->group_end()
+                        ->join('tasks', 'tasks.project_id=projects.project_id')
+                        ->where(['projects.project_id' => $project_id]);
+                $q = $this->db->get('projects');
+                if ($q->num_rows() == 0) {
+                    return json_encode([]);
+                }
+            }
+            $this->datatables
+                    ->where('project_id', $project_id)
+                    ->select('filename,size,created_at,document_id,dir')
+                    ->from('documents');
             return $this->datatables->generate();
         }
     }
@@ -140,10 +196,12 @@ class Project extends Module_Controller {
     function update() {
         $data['pagetitle'] = 'Edit Project';
         $project_id = $this->input->post('project_id');
-        $data['project'] = $this->projects_model->get_project($project_id);
+        $project = $this->projects_model->get_project($project_id);
+        $data['project'] = $project;
         $data['users'] = $this->db->get('users')->result();
         $data['topics'] = $this->db->get('topics')->result();
         $data['user_role'] = $this->logged_user->role_id;
+        $data['owner'] = $this->logged_user->user_id == $project->assigned_to;
         $data['statuses'] = $this->db->get('project_statuses')->result();
         $this->load->library('form_validation');
         $this->form_validation->set_rules('name', 'Name', 'required');
@@ -177,11 +235,12 @@ class Project extends Module_Controller {
 
     function edit($project_id) {
         $project = $this->projects_model->get_project($project_id);
-        $data['user_role'] = $this->logged_user->role_id;
         if (!$project) {
             //project not found
             redirect('project');
         } else {
+            $data['user_role'] = $this->logged_user->role_id;
+            $data['owner'] = $this->logged_user->user_id == $project->assigned_to;
             $data['pagetitle'] = 'Edit Project';
             $data['project'] = $project;
             $data['users'] = $this->db->get('users')->result();
@@ -207,6 +266,86 @@ class Project extends Module_Controller {
                 ->get('topics')
                 ->result_array();
         echo json_encode($r);
+    }
+
+    function uploads($project_id) {
+        $this->load->library('UploadHandler');
+        $uploader = new UploadHandler();
+
+// Specify the list of valid extensions, ex. array("jpeg", "xml", "bmp")
+        $uploader->allowedExtensions = array(); // all files types allowed by default
+// Specify max file size in bytes.
+        $uploader->sizeLimit = null;
+
+// Specify the input name set in the javascript.
+        $uploader->inputName = "qqfile"; // matches Fine Uploader's default inputName value by default
+// If you want to use the chunking/resume feature, specify the folder to temporarily save parts.
+        $uploader->chunksFolder = "chunks";
+
+        $method = $this->get_request_method();
+
+
+
+        if ($method == "POST") {
+            header("Content-Type: text/plain");
+
+            // Assumes you have a chunking.success.endpoint set to point here with a query parameter of "done".
+            // For example: /myserver/handlers/endpoint.php?done
+            if (isset($_GET["done"])) {
+                $result = $uploader->combineChunks("uploads");
+            }
+            // Handles upload requests
+            else {
+                // Call handleUpload() with the name of the folder, relative to PHP's getcwd()
+                $result = $uploader->handleUpload("uploads");
+
+                // To return a name used for uploaded file you can use the following line.
+                $result["uploadName"] = $uploader->getUploadName();
+            }
+            if ($result['success']) {
+                //insert to db
+                $result['inserted'] = $this->projects_model->add_document(
+                        //current user
+                        $this->logged_user->user_id,
+                        //project
+                        $project_id,
+                        //uuid
+                        $result['uuid'],
+                        //file name
+                        $result['uploadName'],
+                        //size
+                        $uploader->getUploadSize()
+                );
+            }
+
+            echo json_encode($result);
+        }
+// for delete file requests
+        else if ($method == "DELETE") {
+            $result = $uploader->handleDelete("uploads");
+            echo json_encode($result);
+        } else {
+            header("HTTP/1.0 405 Method Not Allowed");
+        }
+    }
+
+// This will retrieve the "intended" request method.  Normally, this is the
+// actual method of the request.  Sometimes, though, the intended request method
+// must be hidden in the parameters of the request.  For example, when attempting to
+// delete a file using a POST request. In that case, "DELETE" will be sent along with
+// the request in a "_method" parameter.
+    function get_request_method() {
+        global $HTTP_RAW_POST_DATA;
+
+        if (isset($HTTP_RAW_POST_DATA)) {
+            parse_str($HTTP_RAW_POST_DATA, $_POST);
+        }
+
+        if (isset($_POST["_method"]) && $_POST["_method"] != null) {
+            return $_POST["_method"];
+        }
+
+        return $_SERVER["REQUEST_METHOD"];
     }
 
 }
