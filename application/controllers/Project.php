@@ -20,11 +20,11 @@ class Project extends Module_Controller {
     function index() {
         $data['pagetitle'] = 'Project';
         $data['admin'] = $this->logged_user->role_id == 1;
-        if ($this->logged_user->role_id == 1) {
+        //if ($this->logged_user->role_id == 1) {
             $data['ps'] = $this->projects_model->get_table_data();
-        } else {
-            $data['ps'] = $this->projects_model->get_table_data($this->logged_user->user_id);
-        }
+        //} else {
+        //    $data['ps'] = $this->projects_model->get_table_data($this->logged_user->user_id);
+        //}
         $this->template->display('project_table', $data);
     }
 
@@ -130,17 +130,17 @@ class Project extends Module_Controller {
     }
 
     function docs_dt() {
-        echo $this->query_docs();
+        echo $this->query_docs(true);
     }
 
     function tasks_dt() {
-        echo $this->query_tasks();
+        echo $this->query_tasks(true);
     }
 
-    private function query_tasks() {
+    private function query_tasks($all) {
         if ($this->input->is_ajax_request()) {
             $project_id = $this->input->post('project_id');
-            if ($this->logged_user->role_id != 1) {
+            if (!$all&&$this->logged_user->role_id != 1) {
                 //check whether current user has access to this particular project
                 $this->db
                         ->or_group_start()
@@ -168,10 +168,10 @@ class Project extends Module_Controller {
         }
     }
 
-    private function query_docs() {
+    private function query_docs($all) {
         if ($this->input->is_ajax_request()) {
             $project_id = $this->input->post('project_id');
-            if ($this->logged_user->role_id != 1) {
+            if (!$all&&$this->logged_user->role_id != 1) {
                 //check whether current user has access to this particular project
                 $this->db
                         ->or_group_start()

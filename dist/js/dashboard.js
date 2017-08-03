@@ -3,6 +3,8 @@ $(document).ready(function () {
         var data = google.visualization.arrayToDataTable(raw);
 
         var options = {
+            colors:["#2f7ed8","#0d233a","#8bbc21","#910000","#1aadce","#492970","#f28f43","#77a1e5","#c42525","#a6c96a"],
+            is3D: true,
             title: 'Project by Status'
         };
 
@@ -20,6 +22,7 @@ $(document).ready(function () {
             sraw.push([stat.name, Number(stat.total)])
         })
         //use it to draw chart
+        console.log(sraw)
         drawChart(sraw);
     })
 })
