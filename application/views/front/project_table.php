@@ -9,9 +9,9 @@
 </script>
 <div class="col-lg-12">
     <div class="pull-right">
-        <?php if($user_role==1){?>
-        <span><a class="btn btn-primary btn-raised pull-right" href="<?php echo site_url('project/create'); ?>"><i class="fa fa-cubes"></i> Create</a></span>
-        <?php }?>
+        <?php if ($admin) { ?>
+            <span><a class="btn btn-primary btn-raised pull-right" href="<?php echo site_url('project/create'); ?>"><i class="fa fa-cubes"></i> Create</a></span>
+        <?php } ?>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -19,7 +19,7 @@
         </div>
         <!-- /.panel-heading -->
         <div class="panel-body">
-            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
                 <thead>
                     <tr>
                         <th>Name</th>

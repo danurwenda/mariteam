@@ -88,6 +88,9 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/datatables-responsive/css/*.css', 'bower_components/datatables-responsive/js/*'])
             .pipe(gulp.dest('vendor/datatables-responsive'))
+    
+    gulp.src(['bower_components/bootstrap-wysiwyg/js/*'])
+            .pipe(gulp.dest('vendor/bootstrap-wysiwyg'))
 
     gulp.src(['bower_components/select2/dist/css/*', 'bower_components/select2/dist/js/*'])
             .pipe(gulp.dest('vendor/select2'))

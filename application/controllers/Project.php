@@ -19,7 +19,7 @@ class Project extends Module_Controller {
      */
     function index() {
         $data['pagetitle'] = 'Project';
-        $data['user_role'] = $this->logged_user->role_id;
+        $data['admin'] = $this->logged_user->role_id == 1;
         if ($this->logged_user->role_id == 1) {
             $data['ps'] = $this->projects_model->get_table_data();
         } else {
@@ -30,6 +30,46 @@ class Project extends Module_Controller {
 
     function get_task($task_id) {
         echo json_encode($this->db->get_where('tasks', ['task_id' => $task_id])->row());
+    }
+    
+    function add_task_comment(){
+        $task_id = $this->input->post('task_id');
+        $content = $this->input->post('content');
+        $this->db->insert('task_comments',[
+            'user_id'=> $this->logged_user->user_id,
+            'content'=> $content,
+            'task_id'=>$task_id
+        ]);
+        $last_id = $this->db->insert_id();
+        $cmt = $this->db->get_where('task_comments',['task_comment_id'=>$last_id])->row();
+        echo json_encode([
+            'self'=>true,
+            'content'=>$content,
+            'time'=>$cmt->time,
+            'user'=> $this->logged_user->user_name
+        ]);
+    }
+
+    function get_task_comment($task_id) {
+        //bedakan antara komen yang dibuat oleh current user dengan 
+        //yang dibuat oleh orang lain
+        //array of object dengan element :
+        //initial, user, time, self, content
+        $comments = [];
+
+        $this->db
+                ->select('users.user_id, content, time, users.user_name')
+                ->join('users', 'users.user_id=task_comments.user_id');
+        $q = $this->db->get_where('task_comments', ['task_id' => $task_id]);
+        foreach ($q->result() as $comment) {            
+            $comments[] = [
+                'user' => $comment->user_name,
+                'self' => ($this->logged_user->user_id === $comment->user_id),
+                'content' => $comment->content,
+                'time' => $comment->time
+            ];
+        }
+        echo json_encode($comments);
     }
 
     function edit_task() {
@@ -58,10 +98,6 @@ class Project extends Module_Controller {
         }
     }
 
-    function update_task() {
-        
-    }
-
     function delete_task() {
         $task_id = $this->input->post('task_id');
         echo json_encode(['success' => $this->db->delete('tasks', ['task_id' => $task_id])]);
@@ -74,10 +110,10 @@ class Project extends Module_Controller {
         if ($doc) {
             $this->load->helper('file');
             //delete from disk
-            $path = './uploads/' . $doc->dir ;
-            echo json_encode(['disk'=> (@unlink($path.'/'.$doc->filename)&& @rmdir($path) ),
-            //delete from db
-            'db'=>$this->db->where('document_id', $doc_id)->delete('documents')]);
+            $path = './uploads/' . $doc->dir;
+            echo json_encode(['disk' => (@unlink($path . '/' . $doc->filename) && @rmdir($path) ),
+                //delete from db
+                'db' => $this->db->where('document_id', $doc_id)->delete('documents')]);
         }
     }
 
@@ -103,7 +139,7 @@ class Project extends Module_Controller {
                             'tasks.assigned_to' => $this->logged_user->user_id
                         ])
                         ->group_end()
-                        ->join('tasks', 'tasks.project_id=projects.project_id')
+                        ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                         ->where(['projects.project_id' => $project_id]);
                 $q = $this->db->get('projects');
                 if ($q->num_rows() == 0) {
@@ -134,7 +170,7 @@ class Project extends Module_Controller {
                             'tasks.assigned_to' => $this->logged_user->user_id
                         ])
                         ->group_end()
-                        ->join('tasks', 'tasks.project_id=projects.project_id')
+                        ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                         ->where(['projects.project_id' => $project_id]);
                 $q = $this->db->get('projects');
                 if ($q->num_rows() == 0) {
@@ -161,8 +197,8 @@ class Project extends Module_Controller {
             //forbidden
             redirect('project');
         }
-        $data['user_role'] = $this->logged_user->role_id;
         $data['pagetitle'] = 'Add Project';
+        $data['admin'] = $this->logged_user->role_id == 1;
         $data['users'] = $this->db->get('users')->result();
         $data['topics'] = $this->db->get('topics')->result();
         $data['statuses'] = $this->db->get('project_statuses')->result();
@@ -200,13 +236,13 @@ class Project extends Module_Controller {
         $data['project'] = $project;
         $data['users'] = $this->db->get('users')->result();
         $data['topics'] = $this->db->get('topics')->result();
-        $data['user_role'] = $this->logged_user->role_id;
+        $data['admin'] = $this->logged_user->role_id == 1;
         $data['owner'] = $this->logged_user->user_id == $project->assigned_to;
         $data['statuses'] = $this->db->get('project_statuses')->result();
         $this->load->library('form_validation');
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('due_date', 'Due Date', 'required');
-        if ($data['user_role'] == 1) {
+        if ($data['admin']) {
             $this->form_validation->set_rules('assigned_to', 'Assigned User', 'required');
         }
         if ($this->form_validation->run() == true) {
@@ -239,7 +275,7 @@ class Project extends Module_Controller {
             //project not found
             redirect('project');
         } else {
-            $data['user_role'] = $this->logged_user->role_id;
+            $data['admin'] = $this->logged_user->role_id == 1;
             $data['owner'] = $this->logged_user->user_id == $project->assigned_to;
             $data['pagetitle'] = 'Edit Project';
             $data['project'] = $project;

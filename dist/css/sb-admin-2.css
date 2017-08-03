@@ -166,6 +166,12 @@ body {
   height: 350px;
   overflow-y: scroll;
 }
+
+.comment-panel .panel-body {
+  height: 150px;
+  overflow-y: scroll;
+}
+
 .login-panel {
   margin-top: 25%;
 }
@@ -402,6 +408,24 @@ table.dataTable thead .sorting:after {
 .timeline-body > p + p {
   margin-top: 5px;
 }
+dt{
+    margin-top: 20px;
+}
+/* https://stackoverflow.com/questions/34310271/css-place-in-circle-first-letter-of-the-name */
+[data-letters]:before {
+  content:attr(data-letters);
+  display:inline-block;
+  font-size:1em;
+  width:3.5em;
+  height:3.5em;
+  line-height:3.5em;
+  text-align:center;
+  border-radius:50%;
+  background:plum;
+  vertical-align:middle;
+  color:white;
+  }
+
 @media (max-width: 767px) {
   ul.timeline:before {
     left: 40px;

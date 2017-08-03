@@ -1,16 +1,18 @@
 $(document).ready(function () {
-    $('#task_date').datetimepicker({
+
+    //=================== FORMATTING
+    $('#task-date').datetimepicker({
         format: "DD-MMMM-YYYY HH:mm",
-        maxDate: new Date($('#task_date').data('max'))
+        maxDate: new Date($('#task-date').data('max'))
     });
+
     $('#project_date').datetimepicker({
         format: "DD-MMMM-YYYY HH:mm"
     });
 
-
-
     $('#project_assign_to').select2({
         theme: "bootstrap"})
+
     $('#topics').select2({
         theme: "bootstrap",
         ajax: {
@@ -38,13 +40,15 @@ $(document).ready(function () {
             return markup;
         }
     });
+
     $('#assign-task').select2({
         dropdownParent: $('#task-modal-form'),
         theme: "bootstrap"
     });
+
     $('.knob').knob()
 
-    var placeholder = "Select a State";
+    $('#project-due-date-remain').html('(' + moment(new Date($('#project-due-date').text())).fromNow() + ')')
 
     // ====================== DATA TABLE =============================
     var tasks_table = $('#tasks-datatable').DataTable({
@@ -55,7 +59,7 @@ $(document).ready(function () {
             url: $('#tasks-datatable').data('url'),
             type: 'POST',
             data: function (d) {
-                d['project_id'] = $('#project_form input[name=project_id]').val()
+                d['project_id'] = $('.main-panel').data('project')
             }
         },
         columns: [
@@ -76,7 +80,7 @@ $(document).ready(function () {
                         if (past)
                         {
                             var cls = '';
-                            if (new Date() > new Date(f[3]) && f[2] !== 'Done') {
+                            if (new Date() > new Date(f[2]) && f[3] !== '1') {
                                 cls = 'alert-danger';
                             }
                             var dpast = moment(new Date(past))
@@ -97,7 +101,7 @@ $(document).ready(function () {
                             break;
                         default:
                             return ''
-                        }
+                    }
                 }
             },
             //weight
@@ -141,7 +145,7 @@ $(document).ready(function () {
             url: $('#docs-datatable').data('url'),
             type: 'POST',
             data: function (d) {
-                d['project_id'] = $('#project_form input[name=project_id]').val()
+                d['project_id'] = $('.main-panel').data('project')
             }
         },
         columns: [
@@ -201,31 +205,102 @@ $(document).ready(function () {
                 });
     });
     // TASK
+    function createCommentEl(cmt) {
+        var cmtel = $('<li/>').addClass('clearfix');
+        //craft initial
+        var initial = '';
+        var usernames = cmt.user.split(' ');
+        if(usernames[0]){
+            initial +=usernames[0].charAt(0)
+        }
+        if(usernames[1]){
+            initial +=usernames[1].charAt(0)
+        }
+        //initial
+        cmtel
+                .append(
+                        $('<span/>')
+                        .addClass('chat-img')
+                        .attr('data-letters', initial))
+                .append(
+                        $('<div/>')
+                        .addClass('chat-body clearfix')
+                        .append(
+                                $('<div/>').addClass('header')
+
+                                .append(
+                                        $('<small/>')
+                                        .addClass('text-muted')
+                                        .append(
+                                                $('<i class="fa fa-clock-o fa-fw"></i>')
+                                                )
+                                        .append(
+                                                $('<span/>')
+                                                .addClass('comment-time')
+                                                .html(moment(cmt.time).fromNow())
+                                                )
+
+                                        )
+                                )
+                        .append($('<p/>').html(cmt.content))
+                        )
+        var user = $('<strong/>').addClass('primary-font').html(cmt.user);
+        if (cmt.self) {
+            cmtel.addClass('right')
+            cmtel.find('div.header').append(user.addClass('pull-right'))
+            cmtel.find('.chat-img').addClass('pull-right')
+        } else {
+            cmtel.addClass('left')
+            cmtel.find('div.header').prepend(user)
+            cmtel.find('.chat-img').addClass('pull-left')
+            cmtel.find('.text-muted').addClass('pull-right')
+        }
+        return cmtel;
+    }
     $('#task-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
                 , task_id = button.data('task')
-                , modal = $(this);
+                , modal = $(this)
+                , form = modal.find('.modal-body').hasClass('modal-form');
         if (task_id) {
             //prepare form to be submitted for editing entry
             //populate form after ajax load
             $.getJSON(base_url + 'project/get_task/' + task_id, function (task) {
-                modal.find('#task_name').val(task.task_name)
-                modal.find('[name=task_id]').val(task.task_id)
-                modal.find('#task_desc').val(task.description)
-                modal.find('#is_done')
-                        .prop('checked', '1' === task.is_done)
-                        .parent()
-                        .parent()
-                        .removeClass('hide')
-                modal.find('#task_assign').val(task.assigned_to)
-                modal.find('#task_date').data("DateTimePicker").date(new Date(task.due_date));
-                modal.find('#task_weight').val(task.weight).trigger('change')
-                //show "Remove" button
-                modal.find('.btn-danger')
-                        .data('task_name', task.task_name)
-                        .data('task_id', task.task_id)
-                        .removeClass('hide')
+                if (form) {
+                    modal.find('#task-name').val(task.task_name)
+                    modal.find('[name=task_id]').val(task.task_id)
+                    modal.find('#task-desc').val(task.description)
+                    modal.find('#is_done')
+                            .prop('checked', '1' === task.is_done)
+                            .parent()
+                            .parent()
+                            .removeClass('hide')
+                    modal.find('#task-assign').val(task.assigned_to)
+                    modal.find('#task-date').data("DateTimePicker").date(new Date(task.due_date));
+                    modal.find('#task-weight').val(task.weight).trigger('change')
+                    //show "Remove" button
+                    modal.find('.btn-danger')
+                            .data('task_name', task.task_name)
+                            .data('task_id', task.task_id)
+                            .removeClass('hide')
+                } else {
+                    //read only
+                    modal.find('#task-name').html(task.task_name)
+                    var due = moment(task.due_date);
+                    modal.find('#task-due-date').html(due.format('D MMM YYYY'))
+                    modal.find('#task-desc').html(task.description)
+                    modal.find('#task-due-date-remain').html(due.fromNow())
+                    modal.find('#task-weight').html(task.weight)
+                    modal.find('#task-status').html(task.is_done)
+                    modal.find('#task-assign').html(task.assigned_to)
+                }
+                modal.find('.comment-panel #btn-chat').data('task_id',task.task_id)
             });
+            $.getJSON(base_url + 'project/get_task_comment/' + task_id, function (cmts) {
+                cmts.forEach(function (cmt, i) {
+                    $('.comment-panel ul.chat').append(createCommentEl(cmt));
+                })
+            })
         } else {
             //create
             modal.find('[name=task_id]').val('')
@@ -238,7 +313,7 @@ $(document).ready(function () {
             modal.find('#is_done').parent().parent().addClass('hide')
             //reset form
             $('#task-modal-form form')[0].reset();
-            $('#task-modal-form form').find('#task_weight').val(3).trigger('change')
+            $('#task-modal-form form').find('#task-weight').val(3).trigger('change')
         }
     });
 
@@ -269,7 +344,29 @@ $(document).ready(function () {
         }
     });
 
-    // ======================== REMOVE ENTITY =============================
+    // ======================== ACTION LISTENER =============================
+    // add comment
+    $('.comment-panel #btn-input').keyup(function () {
+        //enable button only if comment is not empty
+        $('.comment-panel #btn-chat').prop('disabled', ($(this).val().length < 2))
+    })
+    $('.comment-panel #btn-chat').click(function (e) {
+        //post comment using ajax
+        var new_comment = $(this).parent().prev().val();
+        var task_id = $(this).data('task_id');
+        $.ajax({
+            data: {"task_id": task_id, "content": new_comment},
+            url: base_url + 'project/add_task_comment',
+            type: 'POST',
+            dataType:'json',
+            success: function (result) {
+                //append new comment
+                $('.comment-panel ul.chat').append(createCommentEl(result));
+                //clear input
+                $('.comment-panel #btn-input').val('')
+            }
+        });
+    });
     // remove project
     $('#project_form .btn-danger').on("click", function (e) {
         var name = $(this).data('project_name')

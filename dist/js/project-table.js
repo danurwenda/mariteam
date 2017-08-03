@@ -45,7 +45,7 @@ $(document).ready(function () {
             }
         }
     };
-    $('#dataTables-example').DataTable({
+    $('#projects-datatable').DataTable({
         responsive: true,
         columns: [
             // name link

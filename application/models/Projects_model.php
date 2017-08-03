@@ -45,10 +45,11 @@ class Projects_model extends CI_Model {
             $this->db->where('projects.assigned_to', $logged_user_id)
                     ->or_where('tasks.assigned_to', $logged_user_id);
         }
-        $this->db->distinct()
+        $this->db
+                ->distinct()
                 ->select('projects.project_id, project_name,project_statuses.name status, projects.due_date, user_name');
         $this->db->join('users', 'users.user_id = projects.assigned_to')
-                ->join('tasks', 'tasks.project_id=projects.project_id')
+                ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                 ->join('project_statuses', 'project_statuses.status_id=projects.project_status');
         $ret = $this->db->get($this->table)->result();
 
@@ -108,7 +109,9 @@ class Projects_model extends CI_Model {
      */
     public function get_project($id) {
 
-        $this->db->where($this->primary_key, $id)->limit(1);
+        $this->db
+                ->join('users','users.user_id=projects.assigned_to')
+                ->where($this->primary_key, $id)->limit(1);
         $q = $this->db->get($this->table);
         if ($q->num_rows() > 0) {
             $p = $q->row();

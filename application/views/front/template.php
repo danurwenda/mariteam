@@ -21,8 +21,13 @@
         <link href="<?php echo base_url(); ?>/dist/css/sb-admin-2.css" rel="stylesheet">
         <style>
             body {
-                padding-top: 30px;
+                padding-top: 60px;
                 /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+            }
+            @media only screen and (min-width: 768px) {
+                body{
+                    padding-top: 30px;
+                }
             }
         </style>
         <!-- Custom Fonts -->
@@ -51,7 +56,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<?php echo site_url();?>">MariTeam <i class="fa fa-group"></i></a>
+                    <a class="navbar-brand" href="<?php echo site_url(); ?>">MariTeam <i class="fa fa-group"></i></a>
                 </div>
                 <!-- /.navbar-header -->
 
