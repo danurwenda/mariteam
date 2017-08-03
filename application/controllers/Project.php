@@ -29,6 +29,8 @@ class Project extends Module_Controller {
     }
 
     function get_task($task_id) {
+        $this->db->select('user_name,task_name,task_id,description,is_done,assigned_to,weight,due_date')
+                ->join('users','users.user_id=tasks.assigned_to');
         echo json_encode($this->db->get_where('tasks', ['task_id' => $task_id])->row());
     }
     

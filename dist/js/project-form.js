@@ -291,8 +291,8 @@ $(document).ready(function () {
                     modal.find('#task-desc').html(task.description)
                     modal.find('#task-due-date-remain').html(due.fromNow())
                     modal.find('#task-weight').html(task.weight)
-                    modal.find('#task-status').html(task.is_done)
-                    modal.find('#task-assign').html(task.assigned_to)
+                    modal.find('#task-status').html(task.is_done==1?'Done':(new Date() > new Date(task.due_date)?'Ongoing':'Overdue'))
+                    modal.find('#task-assign').html(task.user_name)
                 }
                 modal.find('.comment-panel #btn-chat').data('task_id',task.task_id)
             });
