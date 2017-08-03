@@ -297,6 +297,8 @@ $(document).ready(function () {
                 modal.find('.comment-panel #btn-chat').data('task_id',task.task_id)
             });
             $.getJSON(base_url + 'project/get_task_comment/' + task_id, function (cmts) {
+                //clear list
+                $('.comment-panel ul.chat').empty();
                 cmts.forEach(function (cmt, i) {
                     $('.comment-panel ul.chat').append(createCommentEl(cmt));
                 })
