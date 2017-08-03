@@ -28,27 +28,37 @@ class Project extends Module_Controller {
         $this->template->display('project_table', $data);
     }
 
+    function get_stats() {
+        $this->db->select('name,count(project_id) as total')
+                ->join('project_statuses','project_statuses.status_id=projects.project_status')
+                ->group_by('name')
+                ;
+        $q = $this->db->get('projects');
+
+        echo json_encode($q->result());
+    }
+
     function get_task($task_id) {
         $this->db->select('user_name,task_name,task_id,description,is_done,assigned_to,weight,due_date')
-                ->join('users','users.user_id=tasks.assigned_to');
+                ->join('users', 'users.user_id=tasks.assigned_to');
         echo json_encode($this->db->get_where('tasks', ['task_id' => $task_id])->row());
     }
-    
-    function add_task_comment(){
+
+    function add_task_comment() {
         $task_id = $this->input->post('task_id');
         $content = $this->input->post('content');
-        $this->db->insert('task_comments',[
-            'user_id'=> $this->logged_user->user_id,
-            'content'=> $content,
-            'task_id'=>$task_id
+        $this->db->insert('task_comments', [
+            'user_id' => $this->logged_user->user_id,
+            'content' => $content,
+            'task_id' => $task_id
         ]);
         $last_id = $this->db->insert_id();
-        $cmt = $this->db->get_where('task_comments',['task_comment_id'=>$last_id])->row();
+        $cmt = $this->db->get_where('task_comments', ['task_comment_id' => $last_id])->row();
         echo json_encode([
-            'self'=>true,
-            'content'=>$content,
-            'time'=>$cmt->time,
-            'user'=> $this->logged_user->user_name
+            'self' => true,
+            'content' => $content,
+            'time' => $cmt->time,
+            'user' => $this->logged_user->user_name
         ]);
     }
 
@@ -63,7 +73,7 @@ class Project extends Module_Controller {
                 ->select('users.user_id, content, time, users.user_name')
                 ->join('users', 'users.user_id=task_comments.user_id');
         $q = $this->db->get_where('task_comments', ['task_id' => $task_id]);
-        foreach ($q->result() as $comment) {            
+        foreach ($q->result() as $comment) {
             $comments[] = [
                 'user' => $comment->user_name,
                 'self' => ($this->logged_user->user_id === $comment->user_id),
