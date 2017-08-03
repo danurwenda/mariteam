@@ -5,4 +5,5 @@
 <script type="text/javascript">
     $$.push('<?php echo base_url('dist/js/dashboard.js') ?>');
 </script>
-<div id="piechart" style="width: 900px; height: 500px;"></div>
+    
+<div class='center-block' id="piechart" style="width: 900px; height: 500px;"></div>

@@ -61,7 +61,8 @@
                 <!-- /.navbar-header -->
 
                 <ul class="nav navbar-top-links navbar-right">
-                    <li class="dropdown">
+                    
+<!--                    <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
                         </a>
@@ -79,9 +80,9 @@
                             </li>
                             <li class="divider"></li>
                         </ul>
-                        <!-- /.dropdown-messages -->
+                         /.dropdown-messages 
                     </li>
-                    <!-- /.dropdown -->
+                     /.dropdown 
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-tasks fa-fw"></i> <i class="fa fa-caret-down"></i>
@@ -158,9 +159,9 @@
                                 </a>
                             </li>
                         </ul>
-                        <!-- /.dropdown-tasks -->
+                         /.dropdown-tasks 
                     </li>
-                    <!-- /.dropdown -->
+                     /.dropdown 
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
@@ -218,9 +219,10 @@
                                 </a>
                             </li>
                         </ul>
-                        <!-- /.dropdown-alerts -->
+                         /.dropdown-alerts 
                     </li>
-                    <!-- /.dropdown -->
+                     /.dropdown -->
+                    
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
@@ -232,8 +234,7 @@
                             <li>
                                 <a href="<?php echo site_url('user/profile'); ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
                             </li>
-                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                            </li>
+                            
                             <li class="divider"></li>
                             <li><a href="<?php echo site_url('auth/logout'); ?>"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                             </li>
