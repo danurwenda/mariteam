@@ -22,7 +22,6 @@ $(document).ready(function () {
             sraw.push([stat.name, Number(stat.total)])
         })
         //use it to draw chart
-        console.log(sraw)
         drawChart(sraw);
     })
 })
