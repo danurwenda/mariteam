@@ -31,6 +31,7 @@
     "jquery-knob": "^1.2.13",
     "jquery-validation": "^1.16.0",
     "fine-uploader": "^5.13.0",
-    "bootstrap-wysiwyg": "bootstrap-wysiwyg-steveathon#^2.0.1"
+    "bootstrap-wysiwyg": "bootstrap-wysiwyg-steveathon#^2.0.1",
+    "bootstrap-calendar": "^0.2.5"
   }
 }
