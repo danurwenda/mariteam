@@ -96,9 +96,9 @@ gulp.task('copy', function () {
             .pipe(gulp.dest('vendor/underscore'))
     
     gulp.src([
-        'bower_components/bootstrap-calendar/*/*',
+        'bower_components/fullcalendar/dist/*',
         ])
-            .pipe(gulp.dest('vendor/bootstrap-calendar'))
+            .pipe(gulp.dest('vendor/fullcalendar'))
 
     gulp.src(['bower_components/select2/dist/css/*', 'bower_components/select2/dist/js/*'])
             .pipe(gulp.dest('vendor/select2'))
