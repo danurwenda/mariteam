@@ -47,9 +47,25 @@ $(document).ready(function () {
     };
     $('#projects-datatable').DataTable({
         responsive: true,
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: base_url + 'project/projects_dt',
+            type: 'POST',
+            //data: function (d) {}
+        },
         columns: [
             // name link
-            {},
+            {
+                render: function (n, t, f, m) {
+                    if (t === 'sort') {
+                        return n;
+                    } else {
+                        //render link using id
+                        return '<a href="' + base_url + 'project/edit/' + f[5] + '">' + n + '</a>'
+                    }
+                }
+            },
             // PIC
             {},
             // project status

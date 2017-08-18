@@ -20,19 +20,14 @@ class Project extends Module_Controller {
     function index() {
         $data['pagetitle'] = 'Project';
         $data['admin'] = $this->logged_user->role_id == 1;
-        //if ($this->logged_user->role_id == 1) {
-            $data['ps'] = $this->projects_model->get_table_data();
-        //} else {
-        //    $data['ps'] = $this->projects_model->get_table_data($this->logged_user->user_id);
-        //}
         $this->template->display('project_table', $data);
     }
 
     function get_stats() {
         $this->db->select('name,count(project_id) as total')
-                ->join('project_statuses','project_statuses.status_id=projects.project_status')
+                ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
                 ->group_by('name')
-                ;
+        ;
         $q = $this->db->get('projects');
 
         echo json_encode($q->result());
@@ -129,8 +124,77 @@ class Project extends Module_Controller {
         }
     }
 
+    function projects_dt() {
+        echo json_encode($this->query_projects(true));
+    }
+
+    private function query_projects($all) {
+        if ($this->input->is_ajax_request()) {
+
+            $this->datatables
+                    ->distinct('projects.project_id')
+                    // additional field to search into : project description, task name, task description
+                    ->add_search_column(['projects.description', 'tasks.description', 'task_name'])
+                    ->select('project_name,user_name, project_status,projects.due_date, projects.project_id')
+                    ->join('tasks', 'tasks.project_id=projects.project_id')
+                    ->join('users', 'users.user_id=projects.assigned_to', 'left')
+                    ->from('projects');
+            $json = $this->datatables->generate(); //already in json form
+            $ret = json_decode($json);
+            // it's an array inside an object so we have to use reference
+            foreach ($ret->data as &$row) {
+                $prid = $row[4];
+
+                //calculate progress            
+                $this->db->select_sum('weight');
+                $weight_sum = $this->db->get_where('tasks', ['project_id' => $prid]);
+                $project_weight = $weight_sum->row()->weight;
+                if ($project_weight > 0) {
+                    //calculate the total weight of those tasks done
+                    $this->db->select_sum('weight');
+                    $done_sum = $this->db->get_where('tasks', ['project_id' => $prid, 'is_done' => true]);
+                    $progress = round(10000 * ($done_sum->row()->weight) / $project_weight) / 100;
+                } else {
+                    $progress = -1;
+                }
+                $row[4] = $progress;
+                $row[] = $prid;
+            }
+            return $ret;
+        }
+    }
+
     function docs_dt() {
         echo $this->query_docs(true);
+    }
+
+    private function query_docs($all) {
+        if ($this->input->is_ajax_request()) {
+            $project_id = $this->input->post('project_id');
+            if (!$all && $this->logged_user->role_id != 1) {
+                //check whether current user has access to this particular project
+                $this->db
+                        ->or_group_start()
+                        ->where([
+                            'projects.assigned_to' => $this->logged_user->user_id
+                        ])
+                        ->or_where([
+                            'tasks.assigned_to' => $this->logged_user->user_id
+                        ])
+                        ->group_end()
+                        ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
+                        ->where(['projects.project_id' => $project_id]);
+                $q = $this->db->get('projects');
+                if ($q->num_rows() == 0) {
+                    return json_encode([]);
+                }
+            }
+            $this->datatables
+                    ->where('project_id', $project_id)
+                    ->select('filename,size,created_at,document_id,dir')
+                    ->from('documents');
+            return $this->datatables->generate();
+        }
     }
 
     function tasks_dt() {
@@ -140,7 +204,7 @@ class Project extends Module_Controller {
     private function query_tasks($all) {
         if ($this->input->is_ajax_request()) {
             $project_id = $this->input->post('project_id');
-            if (!$all&&$this->logged_user->role_id != 1) {
+            if (!$all && $this->logged_user->role_id != 1) {
                 //check whether current user has access to this particular project
                 $this->db
                         ->or_group_start()
@@ -164,35 +228,6 @@ class Project extends Module_Controller {
                     ->join('users', 'users.user_id=tasks.assigned_to', 'left')
 //                    ->add_column('DT_RowId', 'row_$1', 'individu_id')
                     ->from('tasks');
-            return $this->datatables->generate();
-        }
-    }
-
-    private function query_docs($all) {
-        if ($this->input->is_ajax_request()) {
-            $project_id = $this->input->post('project_id');
-            if (!$all&&$this->logged_user->role_id != 1) {
-                //check whether current user has access to this particular project
-                $this->db
-                        ->or_group_start()
-                        ->where([
-                            'projects.assigned_to' => $this->logged_user->user_id
-                        ])
-                        ->or_where([
-                            'tasks.assigned_to' => $this->logged_user->user_id
-                        ])
-                        ->group_end()
-                        ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                        ->where(['projects.project_id' => $project_id]);
-                $q = $this->db->get('projects');
-                if ($q->num_rows() == 0) {
-                    return json_encode([]);
-                }
-            }
-            $this->datatables
-                    ->where('project_id', $project_id)
-                    ->select('filename,size,created_at,document_id,dir')
-                    ->from('documents');
             return $this->datatables->generate();
         }
     }

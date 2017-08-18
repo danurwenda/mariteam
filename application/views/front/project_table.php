@@ -29,20 +29,6 @@
                         <th>Progress</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php
-                    $now = date_create();
-                    foreach ($ps as $p) {
-                        ?>
-                        <tr data-uid="<?php echo $p->project_id; ?>">
-                            <td><?php echo anchor('project/edit/' . $p->project_id, $p->project_name); ?></td>
-                            <td><?php echo $p->user_name; ?></td>
-                            <td><?php echo $p->status; ?></td>
-                            <td><?php echo $p->due_date; ?></td>
-                            <td><?php echo $p->progress ?></td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
             </table>
             <!-- /.table-responsive -->
         </div>

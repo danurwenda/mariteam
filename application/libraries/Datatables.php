@@ -38,6 +38,7 @@ class Datatables {
     private $add_columns = array();
     private $edit_columns = array();
     private $unset_columns = array();
+    private $search_columns = array();
 
     /**
      * Copies an instance of CI
@@ -82,6 +83,11 @@ class Datatables {
     public function distinct($column) {
         $this->distinct = $column;
         $this->ci->db->distinct($column);
+        return $this;
+    }
+
+    public function add_search_column($arr) {
+        $this->search_columns = array_merge($this->search_columns, $arr);
         return $this;
     }
 
@@ -282,13 +288,18 @@ class Datatables {
         $search = $this->ci->input->post('search');
         $sSearch = $this->ci->db->escape_like_str(trim($search['value']));
         $columns = array_values(array_diff($this->columns, $this->unset_columns));
-        if ($sSearch != '')
+        if ($sSearch != '') {
+            // custom field to search in
+            for ($i = 0; $i < count($this->search_columns); $i++) {
+                $sWhere .= 'UPPER(' . $this->search_columns[$i] . ") LIKE '%" . strtoupper($sSearch) . "%' OR ";
+            }
             for ($i = 0; $i < count($mColArray); $i++)
                 if ($mColArray[$i]['searchable'] == 'true')
                     if ($this->check_cType())
                         $sWhere .= 'UPPER(' . $this->select[$mColArray[$i]['data']] . ") LIKE '%" . strtoupper($sSearch) . "%' OR ";
                     else
-                        $sWhere .='UPPER(' . $this->select[$this->columns[$i]] . ") LIKE '%" . strtoupper($sSearch) . "%' OR ";
+                        $sWhere .= 'UPPER(' . $this->select[$this->columns[$i]] . ") LIKE '%" . strtoupper($sSearch) . "%' OR ";
+        }
         $sWhere = substr_replace($sWhere, '', -3);
         if ($sWhere != '')
             $this->ci->db->where('(' . $sWhere . ')');
@@ -316,6 +327,7 @@ class Datatables {
     private function produce_output($output, $charset) {
         $aaData = array();
         $rResult = $this->get_display_result();
+
         if ($output == 'json') {
             $iTotal = $this->get_total_results();
             $iFilteredTotal = $this->get_total_results(TRUE);
@@ -379,7 +391,7 @@ class Datatables {
             $this->ci->db->like($val[0], $val[1], $val[2]);
         if (strlen($this->distinct) > 0) {
             $this->ci->db->distinct($this->distinct);
-            $this->ci->db->select($this->columns);
+            $this->ci->db->select($this->select);
         }
         $query = $this->ci->db->get($this->table, NULL, NULL, FALSE);
         return $query->num_rows();
