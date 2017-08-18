@@ -136,7 +136,7 @@ class Project extends Module_Controller {
                     // additional field to search into : project description, task name, task description
                     ->add_search_column(['projects.description', 'tasks.description', 'task_name'])
                     ->select('project_name,user_name, project_status,projects.due_date, projects.project_id')
-                    ->join('tasks', 'tasks.project_id=projects.project_id')
+                    ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                     ->join('users', 'users.user_id=projects.assigned_to', 'left')
                     ->from('projects');
             $json = $this->datatables->generate(); //already in json form
