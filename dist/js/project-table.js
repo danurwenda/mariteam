@@ -35,6 +35,8 @@ $(document).ready(function () {
                 } else if (f[2] === 'On Hold') {
                     cls = 'progress-bar-warning';
                 }
+//                percent =percent*100;// WHY IT GOT ROUNDING ERROR
+                percent = percent * 10000 / 100;
                 return `<div class="progress">
                     <div class="progress-bar progress-bar-striped ` + cls + `" role="progressbar" aria-valuenow="` + percent + `" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: ` + percent + `%">
                         ` + percent + `%

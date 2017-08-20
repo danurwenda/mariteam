@@ -125,7 +125,7 @@ class Project extends Module_Controller {
     }
 
     function projects_dt() {
-        echo json_encode($this->query_projects(true));
+        echo $this->query_projects(true);
     }
 
     private function query_projects($all) {
@@ -135,32 +135,11 @@ class Project extends Module_Controller {
                     ->distinct('projects.project_id')
                     // additional field to search into : project description, task name, task description
                     ->add_search_column(['projects.description', 'tasks.description', 'task_name'])
-                    ->select('project_name,user_name, project_status,projects.due_date, projects.project_id')
+                    ->select('project_name,user_name, project_status,projects.due_date,progress, projects.project_id')
                     ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                     ->join('users', 'users.user_id=projects.assigned_to', 'left')
                     ->from('projects');
-            $json = $this->datatables->generate(); //already in json form
-            $ret = json_decode($json);
-            // it's an array inside an object so we have to use reference
-            foreach ($ret->data as &$row) {
-                $prid = $row[4];
-
-                //calculate progress            
-                $this->db->select_sum('weight');
-                $weight_sum = $this->db->get_where('tasks', ['project_id' => $prid]);
-                $project_weight = $weight_sum->row()->weight;
-                if ($project_weight > 0) {
-                    //calculate the total weight of those tasks done
-                    $this->db->select_sum('weight');
-                    $done_sum = $this->db->get_where('tasks', ['project_id' => $prid, 'is_done' => true]);
-                    $progress = round(10000 * ($done_sum->row()->weight) / $project_weight) / 100;
-                } else {
-                    $progress = -1;
-                }
-                $row[4] = $progress;
-                $row[] = $prid;
-            }
-            return $ret;
+            return $this->datatables->generate(); 
         }
     }
 
