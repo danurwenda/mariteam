@@ -169,7 +169,8 @@ class Project extends Module_Controller {
                 }
             }
             $this->datatables
-                    ->where('project_id', $project_id)
+                    ->where('source_id', $project_id)
+                    ->where('source_table','projects')
                     ->select('filename,size,created_at,document_id,dir')
                     ->from('documents');
             return $this->datatables->generate();
@@ -353,7 +354,7 @@ class Project extends Module_Controller {
 
             // Assumes you have a chunking.success.endpoint set to point here with a query parameter of "done".
             // For example: /myserver/handlers/endpoint.php?done
-            if (isset($_GET["done"])) {
+            if (isset($this->input->get("done"))) {
                 $result = $uploader->combineChunks("uploads");
             }
             // Handles upload requests
@@ -403,11 +404,11 @@ class Project extends Module_Controller {
             parse_str($HTTP_RAW_POST_DATA, $_POST);
         }
 
-        if (isset($_POST["_method"]) && $_POST["_method"] != null) {
-            return $_POST["_method"];
+        if (isset($this->input->post("_method")) ){
+            return $this->input->post("_method");
         }
 
-        return $_SERVER["REQUEST_METHOD"];
+        return $this->input->server("REQUEST_METHOD");
     }
 
 }

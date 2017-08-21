@@ -25,7 +25,8 @@ class Projects_model extends CI_Model {
         return $this->db->insert('documents', [
                     'dir' => $uuid,
                     'filename' => $filename,
-                    'project_id' => $project,
+                    'source_id' => $project,
+                    'source_table'=>'projects',
                     'created_by' => $user,
                     'size' => $size
         ]);
