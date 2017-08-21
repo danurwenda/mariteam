@@ -220,7 +220,7 @@
                                     </div>
                                     <!-- /.panel-heading -->
                                     <div class="panel-body">
-                                        <div id="fine-uploader-manual-trigger" data-project=<?php echo $project->project_id; ?>></div>
+                                        <div id="fine-uploader-manual-trigger-project" data-project=<?php echo $project->project_id; ?>></div>
                                     </div>
                                 </div>
                             </div>
@@ -284,7 +284,7 @@
             <div class="qq-upload-button-selector qq-upload-button">
             <div>Select files</div>
             </div>
-            <button type="button" id="trigger-upload" class="btn btn-primary">
+            <button type="button" class="btn btn-primary trigger-upload">
             <i class="icon-upload icon-white"></i> Upload
             </button>
             </div>
@@ -336,7 +336,7 @@
             </div>
         </script>
         <style>
-            #trigger-upload {
+            .trigger-upload {
                 color: white;
                 background-color: #00ABC7;
                 font-size: 14px;
@@ -355,9 +355,14 @@
             #fine-uploader-manual-trigger .qq-uploader .qq-total-progress-bar-container {
                 width: 60%;
             }
+            .deldocbtn{
+                cursor: pointer;
+                color:red;
+                margin-left:10px;
+            }
         </style>
-        <div id="task-modal-form" class="modal" tabindex="-1">
-            <div class="modal-dialog">
+        <div id="task-modal-form" class="modal " tabindex="-1">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -425,6 +430,30 @@
                                 </div>
                             </div>
                             </form>
+                            <div class='row'>
+                                <div class='col-sm-12 col-md-6'>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            Uploaded Document
+                                        </div>
+                                        <!-- /.panel-heading -->
+                                        <div class="panel-body">
+                                            <ul id="task-docs"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-12 col-md-6'>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            Upload Document
+                                        </div>
+                                        <!-- /.panel-heading -->
+                                        <div class="panel-body">
+                                            <div id="fine-uploader-manual-trigger-task"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="comment-panel panel panel-default">
                                 <div class="panel-heading">
                                     <i class="fa fa-comments fa-fw"></i> Comments
@@ -474,7 +503,7 @@
 
                                     <dt>PIC</dt>
                                     <dd id="task-assign"></dd>
-                                    
+
                                 </dl>
                                 <dl class='col-sm-6'>
                                     <dt>Due date</dt>
@@ -496,6 +525,32 @@
                                     <dt>Description</dt>
                                     <dd id="task-desc"></dd>
                                 </dl>
+                            </div>
+                            <div class='row'>
+                                <div class='col-sm-12 col-md-6'>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            Uploaded Document
+                                        </div>
+                                        <!-- /.panel-heading -->
+                                        <div class="panel-body">
+                                            <ul id="task-docs">
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-sm-12 col-md-6'>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            Upload Document
+                                        </div>
+                                        <!-- /.panel-heading -->
+                                        <div class="panel-body">
+                                            <div id="fine-uploader-manual-trigger-task"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="comment-panel panel panel-default">
                                 <div class="panel-heading">

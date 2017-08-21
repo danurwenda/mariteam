@@ -109,7 +109,7 @@ $(document).ready(function () {
         ]
     });
     $(document).on("click", ".deldoc", function (e) {
-        var uid = $(this).data('doc_id');
+        var el = $(this), uid = $(this).data('doc_id'), source = $(this).data('source');
         bootbox.confirm({
             message: "Are you sure you want to remove this document?",
             buttons: {
@@ -129,8 +129,13 @@ $(document).ready(function () {
                         url: base_url + 'project/delete_doc',
                         type: 'POST',
                         success: function (result) {
-                            //reload table
-                            docs_table.ajax.reload()
+                            if (source == 'projects') {
+                                //reload table
+                                docs_table.ajax.reload()
+                            } else if (source == 'tasks') {
+                                //delete itself
+                                el.parent('li').remove();
+                            }
                         }
                     });
                 }
@@ -175,7 +180,7 @@ $(document).ready(function () {
             //doc_id, rendered as delete link
             {
                 render: function (id) {
-                    return '<span class="deldoc btn btn-danger" data-doc_id=' + id + '> Remove</span>'
+                    return '<span class="deldoc btn btn-danger" data-source="projects" data-doc_id=' + id + '> Remove</span>'
                 }
             }
         ]
@@ -205,16 +210,35 @@ $(document).ready(function () {
                 });
     });
     // TASK
+    function createDocEl(doc) {
+        var docel = $('<li/>')
+        docel.append('<a href="' + base_url + 'uploads/' + doc.dir + '/' + doc.filename + '"> ' + doc.filename + '</a>')
+        var deldoc = $('<span class="deldoc deldocbtn">')
+                .attr('data-doc_id', doc.document_id)
+                .attr('data-source', 'tasks');
+        deldoc.append('<i class="fa fa-times-circle-o"></i>')
+        docel.append(deldoc)
+        return docel;
+    }
+    function reloadTaskDocs(task_id) {
+        $.getJSON(base_url + 'project/get_task_docs/' + task_id, function (docs) {
+            //clear list
+            $('#task-docs').empty();
+            docs.forEach(function (doc, i) {
+                $('#task-docs').append(createDocEl(doc));
+            })
+        })
+    }
     function createCommentEl(cmt) {
         var cmtel = $('<li/>').addClass('clearfix');
         //craft initial
         var initial = '';
         var usernames = cmt.user.split(' ');
-        if(usernames[0]){
-            initial +=usernames[0].charAt(0)
+        if (usernames[0]) {
+            initial += usernames[0].charAt(0)
         }
-        if(usernames[1]){
-            initial +=usernames[1].charAt(0)
+        if (usernames[1]) {
+            initial += usernames[1].charAt(0)
         }
         //initial
         cmtel
@@ -291,11 +315,16 @@ $(document).ready(function () {
                     modal.find('#task-desc').html(task.description)
                     modal.find('#task-due-date-remain').html(due.fromNow())
                     modal.find('#task-weight').html(task.weight)
-                    modal.find('#task-status').html(task.is_done==1?'Done':(new Date() > new Date(task.due_date)?'Ongoing':'Overdue'))
+                    modal.find('#task-status').html(task.is_done == 1 ? 'Done' : (new Date() > new Date(task.due_date) ? 'Ongoing' : 'Overdue'))
                     modal.find('#task-assign').html(task.user_name)
                 }
-                modal.find('.comment-panel #btn-chat').data('task_id',task.task_id)
+                $('#fine-uploader-manual-trigger-task').fineUploader('setEndpoint', base_url + 'project/uploads/tasks/' + task.task_id)
+                modal.find('.comment-panel #btn-chat').data('task_id', task.task_id)
             });
+
+            reloadTaskDocs(task_id);
+
+
             $.getJSON(base_url + 'project/get_task_comment/' + task_id, function (cmts) {
                 //clear list
                 $('.comment-panel ul.chat').empty();
@@ -360,7 +389,7 @@ $(document).ready(function () {
             data: {"task_id": task_id, "content": new_comment},
             url: base_url + 'project/add_task_comment',
             type: 'POST',
-            dataType:'json',
+            dataType: 'json',
             success: function (result) {
                 //append new comment
                 $('.comment-panel ul.chat').append(createCommentEl(result));
@@ -434,10 +463,10 @@ $(document).ready(function () {
         })
     });
     //=======================FILE UPLOAD
-    $('#fine-uploader-manual-trigger').fineUploader({
+    $('#fine-uploader-manual-trigger-project').fineUploader({
         template: 'qq-template-manual-trigger',
         request: {
-            endpoint: base_url + 'project/uploads/' + $('#fine-uploader-manual-trigger').data('project')
+            endpoint: base_url + 'project/uploads/projects/' + $('#fine-uploader-manual-trigger-project').data('project')
         },
         thumbnails: {
             placeholders: {
@@ -449,12 +478,38 @@ $(document).ready(function () {
         callbacks: {
             onAllComplete: function () {
                 docs_table.ajax.reload()
-                $('.qq-upload-list').empty();
+                $('#documents .qq-upload-list').empty();
+            }
+        }
+    });
+    $('#fine-uploader-manual-trigger-task').fineUploader({
+        template: 'qq-template-manual-trigger',
+        request: {
+            endpoint: ''
+        },
+        thumbnails: {
+            placeholders: {
+                waitingPath: base_url + 'vendor/fine-uploader/waiting-generic.png',
+                notAvailablePath: base_url + 'vendor/fine-uploader/not_available-generic.png'
+            }
+        },
+        autoUpload: false,
+        callbacks: {
+            onAllComplete: function () {
+                //TODO : reload list
+                reloadTaskDocs($('.comment-panel #btn-chat').data('task_id'))
+                $('#task-modal-form .qq-upload-list').empty();
             }
         }
     });
 
-    $('#trigger-upload').click(function () {
-        $('#fine-uploader-manual-trigger').fineUploader('uploadStoredFiles');
+
+
+    $('#task-modal-form .trigger-upload').click(function () {
+        $('#fine-uploader-manual-trigger-task').fineUploader('uploadStoredFiles');
+    })
+
+    $('#documents .trigger-upload').click(function () {
+        $('#fine-uploader-manual-trigger-project').fineUploader('uploadStoredFiles');
     });
 })

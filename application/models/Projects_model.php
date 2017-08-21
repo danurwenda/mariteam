@@ -144,16 +144,6 @@ class Projects_model extends CI_Model {
         $this->set_topics($id, $topics);
     }
 
-    public function auth($username, $password) {
-        $this->db->where('email', $username);
-        $q = $this->db->get($this->table);
-        if ($q->num_rows() == 0) {
-            return false;
-        }
-        $user = $q->row();
-        return password_verify($password, $user->hash);
-    }
-
     public function create($creator, $user, $name, $due_date, $description, $topics) {
         $this->db->insert($this->table, [
             'created_by' => $creator,
@@ -179,16 +169,6 @@ class Projects_model extends CI_Model {
                 'project_id' => $pid
             ]);
         }
-    }
-
-    public function delete($uid) {
-        $this->db->delete($this->table, ['user_id' => $uid]);
-    }
-
-    public function update_last_access($uid) {
-        $this->db->where('user_id', $uid);
-        $this->db->set('last_access', date("Y-m-d H:i:s"));
-        $this->db->update($this->table);
     }
 
 }

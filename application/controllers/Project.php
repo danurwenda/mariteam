@@ -10,6 +10,7 @@ class Project extends Module_Controller {
     function __construct() {
         parent::__construct(1);
         $this->load->model('projects_model');
+        $this->load->model('documents_model');
         $this->load->library('Datatables');
     }
 
@@ -55,6 +56,10 @@ class Project extends Module_Controller {
             'time' => $cmt->time,
             'user' => $this->logged_user->user_name
         ]);
+    }
+    
+    function get_task_docs($task_id){
+        echo json_encode( $this->documents_model->get_documents('tasks',$task_id));
     }
 
     function get_task_comment($task_id) {
@@ -113,14 +118,14 @@ class Project extends Module_Controller {
     function delete_doc() {
         $doc_id = $this->input->post('doc_id');
         //find doc
-        $doc = $this->projects_model->get_document($doc_id);
+        $doc = $this->documents_model->get_document($doc_id);
         if ($doc) {
             $this->load->helper('file');
             //delete from disk
             $path = './uploads/' . $doc->dir;
             echo json_encode(['disk' => (@unlink($path . '/' . $doc->filename) && @rmdir($path) ),
                 //delete from db
-                'db' => $this->db->where('document_id', $doc_id)->delete('documents')]);
+                'db' => $this->documents_model->del_document($doc_id)]);
         }
     }
 
@@ -331,7 +336,7 @@ class Project extends Module_Controller {
         echo json_encode($r);
     }
 
-    function uploads($project_id) {
+    function uploads($source, $source_id) {
         $this->load->library('UploadHandler');
         $uploader = new UploadHandler();
 
@@ -367,11 +372,12 @@ class Project extends Module_Controller {
             }
             if ($result['success']) {
                 //insert to db
-                $result['inserted'] = $this->projects_model->add_document(
+                $result['inserted'] = $this->documents_model->add_document(
                         //current user
                         $this->logged_user->user_id,
+                        $source,
                         //project
-                        $project_id,
+                        $source_id,
                         //uuid
                         $result['uuid'],
                         //file name
