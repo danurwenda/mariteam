@@ -14,7 +14,7 @@ $(document).ready(function () {
             if (past)
             {
                 var cls = '';
-                if (new Date() > new Date(f[3]) && f[2] !== 3) {
+                if (new Date() > new Date(f[3]) && f[2] !== "3") {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
@@ -30,11 +30,11 @@ $(document).ready(function () {
         } else {
             if (percent > -1) {
                 var cls = '';
-                if (f[2] === 3) {
+                if (f[2] === "3") {
                     cls = 'progress-bar-success';
                 } else if (new Date() > new Date(f[3])) {
                     cls = 'progress-bar-danger';
-                } else if (f[2] === 2) {
+                } else if (f[2] === "2") {
                     cls = 'progress-bar-warning';
                 }
 //                percent =percent*100;// WHY IT GOT ROUNDING ERROR
