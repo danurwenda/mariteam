@@ -6,6 +6,7 @@
 
 
 $(document).ready(function () {
+    
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
             return past;
@@ -13,7 +14,7 @@ $(document).ready(function () {
             if (past)
             {
                 var cls = '';
-                if (new Date() > new Date(f[3]) && f[2] !== 'Done') {
+                if (new Date() > new Date(f[3]) && f[2] !== 3) {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
@@ -22,17 +23,18 @@ $(document).ready(function () {
             return 'Never';
         }
     };
+    
     renderProgress = function (percent, t, f, m) {
         if (t === 'sort') {
             return percent;
         } else {
             if (percent > -1) {
                 var cls = '';
-                if (f[2] === 'Done') {
+                if (f[2] === 3) {
                     cls = 'progress-bar-success';
                 } else if (new Date() > new Date(f[3])) {
                     cls = 'progress-bar-danger';
-                } else if (f[2] === 'On Hold') {
+                } else if (f[2] === 2) {
                     cls = 'progress-bar-warning';
                 }
 //                percent =percent*100;// WHY IT GOT ROUNDING ERROR
@@ -47,6 +49,7 @@ $(document).ready(function () {
             }
         }
     };
+    
     $('#projects-datatable').DataTable({
         responsive: true,
         processing: true,
