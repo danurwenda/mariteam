@@ -6,7 +6,6 @@
 
 
 $(document).ready(function () {
-
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
             return past;
@@ -14,7 +13,7 @@ $(document).ready(function () {
             if (past)
             {
                 var cls = '';
-                if (new Date() > new Date(f[3]) && f[2] !== "3") {
+                if (new Date() > new Date(f[3]) && f[2] !== 'Done') {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
@@ -23,18 +22,17 @@ $(document).ready(function () {
             return 'Never';
         }
     };
-
     renderProgress = function (percent, t, f, m) {
         if (t === 'sort') {
             return percent;
         } else {
             if (percent > -1) {
                 var cls = '';
-                if (f[2] === "3") {
+                if (f[2] === 'Done') {
                     cls = 'progress-bar-success';
                 } else if (new Date() > new Date(f[3])) {
                     cls = 'progress-bar-danger';
-                } else if (f[2] === "2") {
+                } else if (f[2] === 'On Hold') {
                     cls = 'progress-bar-warning';
                 }
 //                percent =percent*100;// WHY IT GOT ROUNDING ERROR
@@ -49,7 +47,6 @@ $(document).ready(function () {
             }
         }
     };
-
     $('#projects-datatable').DataTable({
         responsive: true,
         processing: true,
@@ -74,27 +71,7 @@ $(document).ready(function () {
             // PIC
             {},
             // project status
-            {
-                responsivePriority: 2,
-                render: function (d) {
-                    switch (d) {
-                        case '1':
-                            return '<span class="label label-success">Active</span>'
-                            break;
-                        case '2':
-                            return '<span class="label label-info">Done</span>'
-                            break;
-                        case '3':
-                            return '<span class="label">Failed</span>'
-                            break;
-                        case '4':
-                            return '<span class="label label-warning">Suspended</span>'
-                            break;
-                        default:
-                            return 'Undefined'
-                    }
-                }
-            },
+            {},
             // due date
             {render: renderPast},
             // progress

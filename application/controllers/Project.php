@@ -16,7 +16,7 @@ class Project extends Module_Controller {
 
     /**
      * Table view. If user logged in as a Contributor, then only projects 
-     * in which they involve are shown.
+     * in which they are involved are shown.
      */
     function index() {
         $data['pagetitle'] = 'Project';
@@ -25,18 +25,12 @@ class Project extends Module_Controller {
     }
 
     function get_stats() {
-        $this->db->select('name,count(project_id) as total')
-                ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
-                ->group_by('name')
-        ;
-        $q = $this->db->get('projects');
-
-        echo json_encode($q->result());
+        echo json_encode($this->projects_model->get_chart_data());
     }
 
     function get_task($task_id) {
-        $this->db->select('user_name,task_name,task_id,description,is_done,assigned_to,weight,due_date')
-                ->join('users', 'users.user_id=tasks.assigned_to');
+        $this->db->select('person_name,task_name,task_id,description,status,assigned_to,weight,end_date,start_date')
+                ->join('persons', 'persons.person_id=tasks.assigned_to');
         echo json_encode($this->db->get_where('tasks', ['task_id' => $task_id])->row());
     }
 
@@ -57,9 +51,35 @@ class Project extends Module_Controller {
             'user' => $this->logged_user->user_name
         ]);
     }
-    
-    function get_task_docs($task_id){
-        echo json_encode( $this->documents_model->get_documents('tasks',$task_id));
+
+    function get_task_docs($task_id) {
+        $task = $this->projects_model->get_task($task_id);
+        $task_owner_person = $this->users_model->get_person($task->assigned_to);
+        // can delete as the owner of the task
+        $can_delete = ($this->logged_user->user_id == $task_owner_person->user_id);
+        if (!$can_delete) {
+            $project = $this->projects_model->get_project($task->project_id);
+            $project_owner_person = $this->users_model->get_person($project->assigned_to);
+            // can delete as the owner of the project
+            $can_delete = ($this->logged_user->user_id == $project_owner_person->user_id);
+        }
+        $docs = $this->documents_model->get_documents('tasks', $task_id);
+        foreach ($docs as $d) {
+            $d->self = $can_delete ||
+// or he created this document
+                    ($d->created_by === $this->logged_user->user_id) ||
+// or an admin
+                    ($this->logged_user->role_id == 1);
+        }
+        echo json_encode($docs);
+    }
+
+    public function save_timeline() {
+        $proj_id = $this->input->post('project_id');
+        $proj = $this->input->post('timeline');
+        // do save..
+        // reload
+        $this->get_timeline();
     }
 
     function get_task_comment($task_id) {
@@ -84,143 +104,138 @@ class Project extends Module_Controller {
         echo json_encode($comments);
     }
 
+    /**
+     * TODO : check permission
+     */
     function edit_task() {
         if ($this->input->is_ajax_request()) {
             $project_id = $this->input->post('project_id');
             $task_name = $this->input->post('task_name');
             $desc = $this->input->post('desc');
             $user = $this->input->post('assigned_to');
-            $date = $this->input->post('due_date');
-            $date = date_format(date_create($date), "Y-m-d H:i:s");
+            $date = date_format(date_create($this->input->post('start_date')), "Y-m-d H:i:s");
+            $end_date = date_format(date_create($this->input->post('end_date')), "Y-m-d H:i:s");
             $weight = $this->input->post('weight');
             $task_id = $this->input->post('task_id');
             if (empty($task_id)) {
                 $change = $this->projects_model->add_task(
-                        $project_id, $task_name, $desc, $date, $this->logged_user->user_id, $user, $weight
+                        $project_id, $task_name, $desc, $date, $end_date, $this->logged_user->user_id, $user, $weight
                 );
+                echo json_encode([
+                    'success' => $change,
+                    'task_id' => $this->db->insert_id()
+                ]);
             } else {
                 //edit
-                $change = $this->projects_model->edit_task($task_id, $project_id, $task_name, $desc, $date, $user, $weight, $this->input->post('is_done')
+                $change = $this->projects_model->edit_task($task_id, $task_name, $desc, $date, $end_date, $user, $weight, $this->input->post('task_status')
                 );
+                echo json_encode(['success' => $change]);
             }
-            echo json_encode(['success' => $change]);
         } else {
             //back to table view
             redirect('project/create');
         }
     }
 
+    /**
+     * TODO : check permission
+     */
+    function delete() {
+        if ($this->logged_user->role_id == 1) {
+            $project_id = $this->input->post('project_id');
+            // find all associated tasks
+            $tasks = $this->db->select('task_id')->get_where('tasks', ['project_id' => $project_id]);
+            foreach ($tasks->result() as $task) {
+                //delete all associated documents
+                $docs = $this->documents_model->get_documents('tasks', $task->task_id);
+                foreach ($docs as $doc) {
+                    $this->documents_model->delete($doc->document_id);
+                }
+            }
+            //delete all project documents
+            foreach ($this->documents_model->get_documents('projects', $project_id) as $doc) {
+                $this->documents_model->delete($doc->document_id);
+            }
+            echo json_encode(['success' => $this->db->delete('projects', ['project_id' => $project_id])]);
+        }
+    }
+
+    /**
+     * TODO : check permission
+     */
     function delete_task() {
         $task_id = $this->input->post('task_id');
+        //delete all associated documents
+        $docs = $this->documents_model->get_documents('tasks', $task_id);
+        foreach ($docs as $doc) {
+            $this->documents_model->delete($doc->document_id);
+        }
         echo json_encode(['success' => $this->db->delete('tasks', ['task_id' => $task_id])]);
     }
 
     function delete_doc() {
-        $doc_id = $this->input->post('doc_id');
+        $document_id = $this->input->post('document_id');
         //find doc
-        $doc = $this->documents_model->get_document($doc_id);
-        if ($doc) {
-            $this->load->helper('file');
-            //delete from disk
-            $path = './uploads/' . $doc->dir;
-            echo json_encode(['disk' => (@unlink($path . '/' . $doc->filename) && @rmdir($path) ),
-                //delete from db
-                'db' => $this->documents_model->del_document($doc_id)]);
+        $doc = $this->documents_model->get_document($document_id);
+        $can_delete = // the owner
+                $doc && $this->logged_user->user_id === $doc->created_by;
+        if (!$can_delete) {
+// or an admin
+            $can_delete = ($this->logged_user->role_id == 1);
+        }
+        // or he is the owner of associated project/tasks
+        if (!$can_delete) {
+            if ($doc->source_table == 'tasks') {
+                $task = $this->projects_model->get_task($doc->source_id);
+                $task_owner_person = $this->users_model->get_person($task->assigned_to);
+                // can delete as the owner of the task
+                $can_delete = ($this->logged_user->user_id == $task_owner_person->user_id);
+            }
+            // last resort
+            if (!can_delete || $doc->source_table == 'projects') {
+                $project = $this->projects_model->get_project(empty($task) ? $doc->source_id : $task->project_id);
+                $project_owner = $this->users_model->get_person($project->assigned_to);
+                $can_delete = ($project_owner->user_id == $this->logged_user->user_id);
+            }
+        }
+        if ($can_delete) {
+            echo json_encode($this->documents_model->delete($document_id));
+        } else {
+            echo json_encode(['error' => 'deleting document failed']);
         }
     }
 
     function projects_dt() {
-        echo $this->query_projects(true);
-    }
-
-    private function query_projects($all) {
         if ($this->input->is_ajax_request()) {
-
-            $this->datatables
-                    ->distinct('projects.project_id')
-                    // additional field to search into : project description, task name, task description
-                    ->add_search_column(['projects.description', 'tasks.description', 'task_name'])
-                    ->select('project_name,user_name, project_status,projects.due_date,progress, projects.project_id')
-                    ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                    ->join('users', 'users.user_id=projects.assigned_to', 'left')
-                    ->from('projects');
-            return $this->datatables->generate();
+            echo $this->projects_model->get_dt();
         }
     }
 
     function docs_dt() {
-        echo $this->query_docs(true);
-    }
-
-    private function query_docs($all) {
         if ($this->input->is_ajax_request()) {
-            $project_id = $this->input->post('project_id');
-            if (!$all && $this->logged_user->role_id != 1) {
-                //check whether current user has access to this particular project
-                $this->db
-                        ->or_group_start()
-                        ->where([
-                            'projects.assigned_to' => $this->logged_user->user_id
-                        ])
-                        ->or_where([
-                            'tasks.assigned_to' => $this->logged_user->user_id
-                        ])
-                        ->group_end()
-                        ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                        ->where(['projects.project_id' => $project_id]);
-                $q = $this->db->get('projects');
-                if ($q->num_rows() == 0) {
-                    return json_encode([]);
-                }
+            $prid = $this->input->post('project_id');
+            $project = $this->projects_model->get_project($prid);
+            $project_owner = $this->users_model->get_person($project->assigned_to);
+            $docs = $this->projects_model->get_docs_dt($prid);
+            $decoded = json_decode($docs);
+            foreach ($decoded->data as &$doc) {
+                // add info about permission to delete
+                // user may delete a file only if he is
+                $doc[] = 
+// the owner of this document
+                        ($doc[5] === $this->logged_user->user_id) ||
+//project owner
+                        ($project_owner->user_id == $this->logged_user->user_id) ||
+// or an admin
+                        ($this->logged_user->role_id == 1);
             }
-            $this->datatables
-                    ->where('source_id', $project_id)
-                    ->where('source_table', 'projects')
-                    ->select('filename,size,created_at,document_id,dir')
-                    ->from('documents');
-            return $this->datatables->generate();
+            echo json_encode($decoded);
         }
     }
 
     function tasks_dt() {
-        echo $this->query_tasks(true);
-    }
-
-    private function query_tasks($all) {
         if ($this->input->is_ajax_request()) {
-            $project_id = $this->input->post('project_id');
-            if (!$all && $this->logged_user->role_id != 1) {
-                //check whether current user has access to this particular project
-                $this->db
-                        ->or_group_start()
-                        ->where([
-                            'projects.assigned_to' => $this->logged_user->user_id
-                        ])
-                        ->or_where([
-                            'tasks.assigned_to' => $this->logged_user->user_id
-                        ])
-                        ->group_end()
-                        ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                        ->where(['projects.project_id' => $project_id]);
-                $q = $this->db->get('projects');
-                if ($q->num_rows() == 0) {
-                    return json_encode(['q' => $this->db->last_query()]);
-                }
-            }
-            $this->datatables
-                    ->where('project_id', $project_id)
-                    ->select('task_name,user_name, due_date, is_done, weight, task_id')
-                    ->join('users', 'users.user_id=tasks.assigned_to', 'left')
-//                    ->add_column('DT_RowId', 'row_$1', 'individu_id')
-                    ->from('tasks');
-            return $this->datatables->generate();
-        }
-    }
-
-    function delete() {
-        if ($this->logged_user->role_id == 1) {
-            $project_id = $this->input->post('project_id');
-            echo json_encode(['success' => $this->db->delete('projects', ['project_id' => $project_id])]);
+            echo $this->projects_model->get_tasks_dt($this->input->post('project_id'));
         }
     }
 
@@ -231,13 +246,13 @@ class Project extends Module_Controller {
         }
         $data['pagetitle'] = 'Add Project';
         $data['admin'] = $this->logged_user->role_id == 1;
-        $data['users'] = $this->db->get('users')->result();
+        $data['users'] = $this->db->get('persons')->result();
         $data['topics'] = $this->db->get('topics')->result();
         $data['statuses'] = $this->db->get('project_statuses')->result();
         $this->load->library('form_validation');
         $this->form_validation->set_rules('assigned_to', 'Assigned User', 'required');
         $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
-        $this->form_validation->set_rules('due_date', 'Due Date', 'required');
+        $this->form_validation->set_rules('end_date', 'Due Date', 'required');
         if ($this->form_validation->run() == true) {
             $data['updated'] = true;
             $this->projects_model->create(
@@ -248,7 +263,7 @@ class Project extends Module_Controller {
                     //name
                     $this->input->post('name'),
                     //due date (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('due_date')), "Y-m-d H:i:s"),
+                    date_format(date_create($this->input->post('end_date')), "Y-m-d H:i:s"),
                     //description
                     $this->input->post('description'),
                     //topic
@@ -273,7 +288,7 @@ class Project extends Module_Controller {
         $data['statuses'] = $this->db->get('project_statuses')->result();
         $this->load->library('form_validation');
         $this->form_validation->set_rules('name', 'Name', 'required');
-        $this->form_validation->set_rules('due_date', 'Due Date', 'required');
+        $this->form_validation->set_rules('end_date', 'Due Date', 'required');
         if ($data['admin']) {
             $this->form_validation->set_rules('assigned_to', 'Assigned User', 'required');
         }
@@ -286,7 +301,7 @@ class Project extends Module_Controller {
                     //name
                     $this->input->post('name'),
                     //due date (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('due_date')), "Y-m-d H:i:s"),
+                    date_format(date_create($this->input->post('end_date')), "Y-m-d H:i:s"),
                     //description
                     $this->input->post('description'),
                     //topic
@@ -308,10 +323,11 @@ class Project extends Module_Controller {
             redirect('project');
         } else {
             $data['admin'] = $this->logged_user->role_id == 1;
-            $data['owner'] = $this->logged_user->user_id == $project->assigned_to;
+            $pic = $this->users_model->get_person($project->assigned_to);
+            $data['owner'] = $pic && $this->logged_user->user_id == $pic->user_id;
             $data['pagetitle'] = 'Edit Project';
             $data['project'] = $project;
-            $data['users'] = $this->db->get('users')->result();
+            $data['users'] = $this->db->get('persons')->result();
             $data['topics'] = $this->db->get('topics')->result();
             $data['statuses'] = $this->db->get('project_statuses')->result();
             $this->template->display('project_form', $data);
@@ -329,14 +345,10 @@ class Project extends Module_Controller {
     }
 
     function get_topics() {
-        $r = $this->db
-                ->where('UPPER(topic_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
-                ->get('topics')
-                ->result_array();
-        echo json_encode($r);
+        echo json_encode($this->projects_model->get_topics());
     }
 
-    function uploads($source, $source_id) {
+    function uploads($source, $source_id = null) {
         $this->load->library('UploadHandler');
         $uploader = new UploadHandler();
 
@@ -370,21 +382,22 @@ class Project extends Module_Controller {
                 // To return a name used for uploaded file you can use the following line.
                 $result["uploadName"] = $uploader->getUploadName();
             }
-            if ($result['success']) {
-                //insert to db
-                $result['inserted'] = $this->documents_model->add_document(
-                        //current user
-                        $this->logged_user->user_id,
-                        $source,
-                        //project
-                        $source_id,
-                        //uuid
-                        $result['uuid'],
-                        //file name
-                        $result['uploadName'],
-                        //size
-                        $uploader->getUploadSize()
-                );
+            if ($result['success'] &&
+                    //insert to db
+                    ($result['inserted'] = $this->documents_model->add_document(
+                    //current user
+                    $this->logged_user->user_id, $source,
+                    //project
+                    $source_id,
+                    //uuid
+                    $result['uuid'],
+                    //file name
+                    $result['uploadName'],
+                    //size
+                    $uploader->getUploadSize()
+                    ))) {
+                $result['self'] = true;
+                $result['document_id'] = $this->db->insert_id();
             }
 
             echo json_encode($result);

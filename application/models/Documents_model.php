@@ -47,8 +47,14 @@ class Documents_model extends CI_Model {
         return $this->db->get($this->table)->result();
     }
 
-    public function del_document($doc_id) {
-        return $this->db->where($this->primary_key, $doc_id)->delete($this->table);
+    public function delete($doc_id) {
+        $doc = $this->get_document($doc_id);
+        $this->load->helper('file');
+        //delete from disk
+        $path = './uploads/' . $doc->dir;
+        return ['disk' => (@unlink($path . '/' . $doc->filename) && @rmdir($path) ),
+            //delete from db
+            'db' => $this->db->delete($this->table, [$this->primary_key => $doc_id])];
     }
 
 }

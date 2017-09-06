@@ -38,6 +38,12 @@ class Users_model extends CI_Model {
         $q = $this->db->get($this->table);
         return ($q->num_rows() > 0) ? $q->row() : false;
     }
+    
+    public function get_person($person_id){
+        $this->db->where('person_id', $person_id)->limit(1);
+        $q = $this->db->get("persons");
+        return ($q->num_rows() > 0) ? $q->row() : false;
+    }
 
     public function update($id, $username, $password = '',$name='', $status = null, $role = null) {
         $this->db->where('user_id', $id);
