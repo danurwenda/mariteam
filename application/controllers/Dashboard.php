@@ -9,7 +9,6 @@ class Dashboard extends Member_Controller {
 
     function __construct() {
         parent::__construct();
-        
     }
 
     /**
@@ -18,7 +17,16 @@ class Dashboard extends Member_Controller {
      * May display different information for different role.
      */
     function index() {
-        $data['pagetitle']='Dashboard';
-        $this->template->display('dashboard',$data);
+        $data['pagetitle'] = 'Dashboard';
+        $this->template->display('dashboard', $data);
     }
+
+    public function search($encoded) {
+        $str = urldecode($encoded);
+        //search in projects, tasks (and events)
+        $data['pagetitle'] = 'Search';
+        $data['result'] = []; // TODO : search in db
+        $this->template->display('search', $data);
+    }
+
 }
