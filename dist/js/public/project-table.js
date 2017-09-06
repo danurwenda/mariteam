@@ -6,6 +6,7 @@
 
 
 $(document).ready(function () {
+    
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
             return past;
@@ -22,6 +23,7 @@ $(document).ready(function () {
             return 'Never';
         }
     };
+    
     renderProgress = function (percent, t, f, m) {
         if (t === 'sort') {
             return percent;
@@ -47,12 +49,13 @@ $(document).ready(function () {
             }
         }
     };
+    
     $('#projects-datatable').DataTable({
         responsive: true,
         processing: true,
         serverSide: true,
         ajax: {
-            url: base_url + 'project/projects_dt',
+            url: base_url + 'publik/projects_dt',
             type: 'POST',
             //data: function (d) {}
         },
@@ -64,7 +67,7 @@ $(document).ready(function () {
                         return n;
                     } else {
                         //render link using id
-                        return '<a href="' + base_url + 'project/edit/' + f[5] + '">' + n + '</a>'
+                        return '<a href="' + base_url + 'publik/project/' + f[5] + '">' + n + '</a>'
                     }
                 }
             },

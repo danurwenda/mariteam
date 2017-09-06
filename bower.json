@@ -32,6 +32,7 @@
     "jquery-validation": "^1.16.0",
     "fine-uploader": "^5.13.0",
     "bootstrap-wysiwyg": "bootstrap-wysiwyg-steveathon#^2.0.1",
-    "fullcalendar": "^3.4.0"
+    "fullcalendar": "^3.4.0",
+    "jquery-ui": "^1.12.1"
   }
 }

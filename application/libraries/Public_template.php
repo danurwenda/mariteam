@@ -11,32 +11,24 @@
  *
  * @author Administrator
  */
-class Template {
+class Public_template {
 
     protected $_ci;
-    private $user;
 
     /**
      * User role is passed to the constructor since this class determines 
      * what is displayed/not displayed based on current role.
      * @param type $params an array containing logged_user role
      */
-    public function __construct($params) {
+    public function __construct() {
         $this->_ci = &get_instance();
-        $this->_ci->load->model('module_access_model', 'mpm');
-        $this->user = $params['user'];
     }
 
     function display($template, $data = null) {
-        //get top menus from mpm
-        //by default, no menus are displayed
-        //only logout menu
-        $menus = $this->_ci->mpm->get_displayed_modules($this->user->role_id);
-
-        $data['menus'] = $menus;
-        $data['_loggeduser'] = $this->user;
-        $data['_content'] = $this->_ci->load->view('front/' . $template, $data, true);
-        $this->_ci->load->view('front/template.php', $data);
+        $data['_content'] = $this->_ci->load->view(
+//                'public/' .
+                $template, $data, true);
+        $this->_ci->load->view('public/template.php', $data);
     }
 
 }

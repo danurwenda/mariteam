@@ -88,19 +88,22 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/datatables-responsive/css/*.css', 'bower_components/datatables-responsive/js/*'])
             .pipe(gulp.dest('vendor/datatables-responsive'))
-    
+
     gulp.src(['bower_components/bootstrap-wysiwyg/js/*'])
             .pipe(gulp.dest('vendor/bootstrap-wysiwyg'))
-    
+
     gulp.src(['bower_components/underscore/*.js'])
             .pipe(gulp.dest('vendor/underscore'))
+
+    gulp.src(['bower_components/jquery-ui/*.js' ,'bower_components/jquery-ui/*/*'])
+            .pipe(gulp.dest('vendor/jquery-ui'))
     
-    gulp.src([
-        'bower_components/fullcalendar/dist/*',
-        ])
+    gulp.src(['bower_components/fullcalendar/dist/*' ])
             .pipe(gulp.dest('vendor/fullcalendar'))
 
-    gulp.src(['bower_components/select2/dist/css/*', 'bower_components/select2/dist/js/*'])
+    gulp.src([
+        'bower_components/select2/dist/css/*', 
+        'bower_components/select2/dist/js/*'])
             .pipe(gulp.dest('vendor/select2'))
 
     gulp.src(['bower_components/select2-bootstrap-theme/dist/*'])

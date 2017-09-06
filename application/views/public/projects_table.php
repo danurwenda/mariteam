@@ -5,14 +5,9 @@
     $$.push('<?php echo js_asset_url('datatables/js/jquery.dataTables.min.js') ?>'
             , '<?php echo js_asset_url('datatables/js/dataTables.bootstrap.min.js') ?>'
             , '<?php echo js_asset_url('datatables-responsive/dataTables.responsive.js') ?>'
-            , '<?php echo base_url('dist/js/project-table.js') ?>');
+            , '<?php echo base_url('dist/js/public/project-table.js') ?>');
 </script>
 <div class="col-lg-12">
-    <div class="pull-right">
-        <?php if ($admin) { ?>
-            <span><a class="btn btn-primary btn-raised pull-right" href="<?php echo site_url('project/create'); ?>"><i class="fa fa-cubes"></i> Create</a></span>
-        <?php } ?>
-    </div>
     <div class="panel panel-default">
         <div class="panel-heading">
             List of Project
