@@ -130,7 +130,7 @@ $(document).ready(function () {
             //file name
             {
                 render: function (d, t, f, m) {
-                    return '<a href="' + base_url + 'uploads/' + f[4] + '/' + d + '"> ' + d + '</a>';
+                    return '<a href="' + base_url + 'download/' + f[4] + '">' + d + '</a>'
                 }
             },
             //size
@@ -158,7 +158,7 @@ $(document).ready(function () {
     // TASK
     function createDocEl(doc) {
         var docel = $('<li/>')
-        docel.append('<a href="' + base_url + 'uploads/' + doc.dir + '/' + doc.filename + '"> ' + doc.filename + '</a>')
+        docel.append('<a href="' + base_url + 'download/' + doc.dir + '"> ' + doc.filename + '</a>')
 
         return docel;
     }

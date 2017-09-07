@@ -289,7 +289,7 @@
                         <div class='row'>
                             <div class='col-lg-12'>
 
-                                <div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden; border:1px solid #e5e5e5; position:relative; margin:0 5px; width:100%; height:400px;">
+                                <div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden; border:1px solid #e5e5e5; position:relative; margin:0 5px; width:100%;">
 
                                 </div>
 
@@ -393,7 +393,6 @@
                 <tr style="height:40px">
                   <th class="gdfColHeader" style="width:35px; border-right: none"></th>
                   <th class="gdfColHeader" style="width:25px;"></th>
-                  <th class="gdfColHeader gdfResizable" style="width:100px;">code/short name</th>
                   <th class="gdfColHeader gdfResizable" style="width:300px;">name</th>
                   <th class="gdfColHeader"  align="center" style="width:17px;" title="Start date is a milestone."><span class="teamworkIcon" style="font-size: 8px;">^</span></th>
                   <th class="gdfColHeader gdfResizable" style="width:80px;">start</th>
@@ -412,7 +411,6 @@
               <tr taskId="(#=obj.id#)" class="taskEditRow (#=obj.isParent()?'isParent':''#) (#=obj.collapsed?'collapsed':''#)" level="(#=level#)">
                 <th class="gdfCell edit" align="right" style="cursor:pointer;"><span class="taskRowIndex">(#=obj.getRow()+1#)</span> <span class="teamworkIcon" style="font-size:12px;" >e</span></th>
                 <td class="gdfCell noClip" align="center"><div class="taskStatus cvcColorSquare" status="(#=obj.status#)"></div></td>
-                <td class="gdfCell"><input type="text" name="code" value="(#=obj.code?obj.code:''#)" placeholder="code/short name"></td>
                 <td class="gdfCell indentCell" style="padding-left:(#=obj.level*10+18#)px;">
                   <div class="exp-controller" align="center"></div>
                   <input type="text" name="name" value="(#=obj.name#)" placeholder="name">

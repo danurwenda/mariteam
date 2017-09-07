@@ -74,6 +74,15 @@ class Project extends Module_Controller {
         echo json_encode($docs);
     }
 
+    public function get_timeline() {
+        $project_id = $this->input->get('project_id');
+        $ret = [
+            'ok' => true,
+            'project' => $this->projects_model->get_tasks_timeline($project_id, true)
+        ];
+        echo json_encode($ret);
+    }
+
     public function save_timeline() {
         $proj_id = $this->input->post('project_id');
         $proj = $this->input->post('timeline');
@@ -221,8 +230,7 @@ class Project extends Module_Controller {
             foreach ($decoded->data as &$doc) {
                 // add info about permission to delete
                 // user may delete a file only if he is
-                $doc[] = 
-// the owner of this document
+                $doc[] = // the owner of this document
                         ($doc[5] === $this->logged_user->user_id) ||
 //project owner
                         ($project_owner->user_id == $this->logged_user->user_id) ||

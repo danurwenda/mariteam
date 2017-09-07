@@ -21,6 +21,17 @@ class Publik extends CI_Controller {
         $this->load->model('projects_model');
     }
 
+    public function download($uuid) {
+        $doc = $this->db->get_where('documents', ['dir' => $uuid]);
+        if ($doc->num_rows() > 0) {
+            $this->load->helper('download');
+            $doc = $doc->row();
+            $data = file_get_contents('uploads/' . $doc->dir . '/' . $doc->filename); // Read the file's contents
+            $name = $doc->filename;
+            force_download($name, $data);
+        }
+    }
+
     /**
      * Home page
      */

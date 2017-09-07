@@ -62,19 +62,20 @@ class Projects_model extends CI_Model {
                 ->from('projects');
         return $this->datatables->generate();
     }
-    
+
     /**
      * TODO
      * @param int $task_id
      */
-    public function delete_task($task_id){
+    public function delete_task($task_id) {
         
     }
+
     /**
      * TODO
      * @param int $project_id
      */
-    public function delete_project($project_id){
+    public function delete_project($project_id) {
         
     }
 
@@ -91,7 +92,7 @@ class Projects_model extends CI_Model {
      * See https://roberto.open-lab.com/2012/08/24/jquery-gantt-editor/
      * @param type $project_id the project id
      */
-    public function get_tasks_timeline($project_id) {
+    public function get_tasks_timeline($project_id, $canWrite = false) {
 
         $this->db
                 ->select('task_id id')
@@ -116,7 +117,7 @@ class Projects_model extends CI_Model {
         }
         //insert the project itself as the first element
         array_splice($ori, 0, 0, $this->project_as_task($project_id));
-        $ret = ['tasks' => $ori, 'canWrite' => false];
+        $ret = ['tasks' => $ori, 'canWrite' => $canWrite];
         return $ret;
     }
 
@@ -211,8 +212,7 @@ class Projects_model extends CI_Model {
     }
 
     public function add_task(
-            $project_id, $task_name, $desc, $due_date,
-            $end_date, $created_by, $assigned_to, $weight) {
+    $project_id, $task_name, $desc, $due_date, $end_date, $created_by, $assigned_to, $weight) {
         return $this->db->insert('tasks', [
                     'task_name' => $task_name,
                     'description' => $desc,
