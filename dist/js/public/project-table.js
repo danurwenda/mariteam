@@ -6,7 +6,7 @@
 
 
 $(document).ready(function () {
-    
+
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
             return past;
@@ -23,19 +23,21 @@ $(document).ready(function () {
             return 'Never';
         }
     };
-    
+
     renderProgress = function (percent, t, f, m) {
         if (t === 'sort') {
             return percent;
         } else {
             if (percent > -1) {
                 var cls = '';
-                if (f[2] === 'Done') {
-                    cls = 'progress-bar-success';
-                } else if (new Date() > new Date(f[3])) {
+                if (f[2] === '2') {
+                    cls = 'progress-bar-info';
+                } else if (f[2] === '3' || new Date() > new Date(f[3])) {
                     cls = 'progress-bar-danger';
-                } else if (f[2] === 'On Hold') {
+                } else if (f[2] === '4') {
                     cls = 'progress-bar-warning';
+                } else {
+                    cls = 'progress-bar-success'
                 }
 //                percent =percent*100;// WHY IT GOT ROUNDING ERROR
                 percent = percent * 10000 / 100;
@@ -49,7 +51,26 @@ $(document).ready(function () {
             }
         }
     };
-    
+
+    renderStatus = function (d) {
+        switch (d) {
+            case '1':
+                return '<span class="label label-success">Active</span>'
+                break;
+            case '2':
+                return '<span class="label label-info">Done</span>'
+                break;
+            case '3':
+                return '<span class="label label-danger">Failed</span>'
+                break;
+            case '4':
+                return '<span class="label label-warning">Suspended</span>'
+                break;
+            default:
+                return 'Undefined'
+        }
+    }
+
     $('#projects-datatable').DataTable({
         responsive: true,
         processing: true,
@@ -74,7 +95,7 @@ $(document).ready(function () {
             // PIC
             {},
             // project status
-            {},
+            {render: renderStatus},
             // due date
             {render: renderPast},
             // progress

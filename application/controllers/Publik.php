@@ -52,10 +52,16 @@ class Publik extends CI_Controller {
      * @param int $project_id project id
      */
     public function project($project_id) {
-        $data['page'] = 'project';
-        $data['topics'] = $this->db->get('topics')->result();
-        $data['project'] = $this->projects_model->get_project($project_id);
-        $this->public_template->display('public/project_form', $data);
+        $project = $this->projects_model->get_project($project_id);
+        if ($project) {
+            $data['page'] = 'project';
+            $data['topics'] = $this->db->get('topics')->result();
+            $data['project'] = $project;
+            $this->public_template->display('public/project_form', $data);
+        } else {
+            // send to project table
+            redirect('publik/projects');
+        }
     }
 
     public function get_topics() {

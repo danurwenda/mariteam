@@ -318,10 +318,7 @@ class Project extends Module_Controller {
 
     function edit($project_id) {
         $project = $this->projects_model->get_project($project_id);
-        if (!$project) {
-            //project not found
-            redirect('project');
-        } else {
+        if ($project) {
             $data['admin'] = $this->logged_user->role_id == 1;
             $pic = $this->users_model->get_person($project->assigned_to);
             $data['owner'] = $pic && $this->logged_user->user_id == $pic->user_id;
@@ -331,6 +328,9 @@ class Project extends Module_Controller {
             $data['topics'] = $this->db->get('topics')->result();
             $data['statuses'] = $this->db->get('project_statuses')->result();
             $this->template->display('project_form', $data);
+        } else {
+            //project not found
+            redirect('project');
         }
     }
 

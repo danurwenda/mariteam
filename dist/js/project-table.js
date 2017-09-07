@@ -30,12 +30,14 @@ $(document).ready(function () {
         } else {
             if (percent > -1) {
                 var cls = '';
-                if (f[2] === "3") {
-                    cls = 'progress-bar-success';
-                } else if (new Date() > new Date(f[3])) {
+                if (f[2] === '2') {
+                    cls = 'progress-bar-info';
+                } else if (f[2] === '3' || new Date() > new Date(f[3])) {
                     cls = 'progress-bar-danger';
-                } else if (f[2] === "2") {
+                } else if (f[2] === '4') {
                     cls = 'progress-bar-warning';
+                } else {
+                    cls = 'progress-bar-success'
                 }
 //                percent =percent*100;// WHY IT GOT ROUNDING ERROR
                 percent = percent * 10000 / 100;
