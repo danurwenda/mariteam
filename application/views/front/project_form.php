@@ -401,7 +401,6 @@
                   <th class="gdfColHeader gdfResizable" style="width:50px;">dur.</th>
                   <th class="gdfColHeader gdfResizable" style="width:20px;">%</th>
                   <th class="gdfColHeader gdfResizable requireCanSeeDep" style="width:50px;">depe.</th>
-                  <th class="gdfColHeader gdfResizable" style="width:1000px; text-align: left; padding-left: 10px;">assignees</th>
                 </tr>
                 </thead>
               </table>
@@ -422,7 +421,6 @@
                 <td class="gdfCell"><input type="text" name="duration" autocomplete="off" value="(#=obj.duration#)"></td>
                 <td class="gdfCell"><input type="text" name="progress" class="validated" entrytype="PERCENTILE" autocomplete="off" value="(#=obj.progress?obj.progress:''#)" (#=obj.progressByWorklog?"readOnly":""#)></td>
                 <td class="gdfCell requireCanSeeDep"><input type="text" name="depends" autocomplete="off" value="(#=obj.depends#)" (#=obj.hasExternalDep?"readonly":""#)></td>
-                <td class="gdfCell taskAssigs">(#=obj.getAssigsString()#)</td>
               </tr>
                 --></div>
 

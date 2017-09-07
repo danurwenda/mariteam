@@ -600,13 +600,7 @@ $(document).ready(function () {
             initGE();
     });
 
-    function loadFromServer(taskId, callback) {
-
-
-        //this is the real implementation
-        //var prof = new Profiler("loadServerSide");
-        //rof.reset();
-
+    function loadFromServer(callback) {
         $.getJSON(base_url + "project/get_timeline", {
             project_id: $('.main-panel').data('project')
         }, function (response) {
@@ -622,8 +616,6 @@ $(document).ready(function () {
                 if (typeof (callback) == "function") {
                     callback(response);
                 }
-            } else {
-                jsonErrorHandling(response);
             }
         });
 

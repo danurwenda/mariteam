@@ -114,6 +114,8 @@ class Projects_model extends CI_Model {
         foreach ($ori as $task) {
             $task->start = $task->start * 1000;
             $task->assigs = [];
+            $task->startIsMilestone = ($task->startIsMilestone==='1');
+            $task->endIsMilestone = ($task->endIsMilestone==='1');
         }
         //insert the project itself as the first element
         array_splice($ori, 0, 0, $this->project_as_task($project_id));
