@@ -51,6 +51,14 @@ class Projects_model extends CI_Model {
         return $q->result();
     }
 
+    private function is_delayed($project_id) {
+        $this->db->where('project_id', $project_id)
+                ->where('end_date <', date('Y-m-d'))
+                ->where('status != 2');
+
+        return $this->db->get('tasks')->num_rows() > 0;
+    }
+
     public function get_dt() {
         $this->datatables
                 ->distinct('projects.project_id')
@@ -60,7 +68,15 @@ class Projects_model extends CI_Model {
                 ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                 ->join('persons', 'persons.person_id=projects.assigned_to', 'left')
                 ->from('projects');
-        return $this->datatables->generate();
+        $json = $this->datatables->generate();
+        $decoded = json_decode($json);
+        foreach ($decoded->data as &$project) {
+            // add info about time table of this project
+            // set delayed == true if this project has one or more overdue task
+            // but the expected end time for this project is actually still in the future
+            $project[] = ( $project[3] > date('Y-m-d')) && $this->is_delayed($project[5]);
+        }
+        echo json_encode($decoded);
     }
 
     /**
@@ -82,7 +98,7 @@ class Projects_model extends CI_Model {
     public function get_tasks_dt($project_id) {
         $this->datatables
                 ->where('project_id', $project_id)
-                ->select('task_name,person_name, end_date, status, weight, task_id')
+                ->select('task_name,person_name, end_date, status, weight, task_id,task_order')
                 ->join('persons', 'persons.person_id=tasks.assigned_to', 'left')
                 ->from('tasks');
         return $this->datatables->generate();
@@ -100,7 +116,7 @@ class Projects_model extends CI_Model {
                 ->join('project_statuses', 'project_statuses.status_id=tasks.status')
                 ->select('project_statuses.name status')
                 ->select('UNIX_TIMESTAMP(start_date)  as start')
-                ->select('(progress * 100) as progress', false)
+                ->select('progress')
                 ->select('description, startIsMilestone, endIsMilestone, duration, depends, level')
                 ->order_by('task_order', 'asc');
         $ori = $this->db->get_where('tasks', [
@@ -112,10 +128,12 @@ class Projects_model extends CI_Model {
             $tasks[$value->id] = $value;
         }
         foreach ($ori as $task) {
+            $task->progress = 100 * $task->progress;
             $task->start = $task->start * 1000;
             $task->assigs = [];
-            $task->startIsMilestone = ($task->startIsMilestone==='1');
-            $task->endIsMilestone = ($task->endIsMilestone==='1');
+            $task->level = $task->level * 1;
+            $task->startIsMilestone = ($task->startIsMilestone === '1');
+            $task->endIsMilestone = ($task->endIsMilestone === '1');
         }
         //insert the project itself as the first element
         array_splice($ori, 0, 0, $this->project_as_task($project_id));
@@ -130,7 +148,7 @@ class Projects_model extends CI_Model {
                 ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
                 ->select('project_statuses.name status')
                 ->select('UNIX_TIMESTAMP(start_date)  as start, UNIX_TIMESTAMP(end_date)  as end')
-                ->select('description');
+                ->select('description,duration');
         $p = $this->db->get_where('projects', [
                     'project_id' => $project_id
                 ])->row();
@@ -139,7 +157,7 @@ class Projects_model extends CI_Model {
         $p->depends = null;
         $p->start = $p->start * 1000;
         $p->end = $p->end * 1000;
-        $p->duration = round(($p->end - $p->start) / 1000 / 3600 / 24);
+        $p->hasChild = true;
         return [$p];
     }
 
@@ -214,7 +232,7 @@ class Projects_model extends CI_Model {
     }
 
     public function add_task(
-    $project_id, $task_name, $desc, $due_date, $end_date, $created_by, $assigned_to, $weight) {
+    $project_id, $task_name, $desc, $due_date, $end_date, $created_by, $assigned_to, $weight, $task_status = 4) {
         return $this->db->insert('tasks', [
                     'task_name' => $task_name,
                     'description' => $desc,
@@ -223,7 +241,8 @@ class Projects_model extends CI_Model {
                     'assigned_to' => $assigned_to,
                     'start_date' => $due_date,
                     'end_date' => $end_date,
-                    'weight' => $weight
+                    'weight' => $weight,
+                    'status' => $task_status
         ]);
     }
 
@@ -275,11 +294,12 @@ class Projects_model extends CI_Model {
         $this->set_topics($id, $topics);
     }
 
-    public function create($creator, $user, $name, $due_date, $description, $topics) {
+    public function create($creator, $user, $name, $start_date, $due_date, $description, $topics) {
         $this->db->insert($this->table, [
             'created_by' => $creator,
             'assigned_to' => $user,
             'project_name' => $name,
+            'start_date' => $start_date,
             'end_date' => $due_date,
             'description' => $description,
             'project_priority' => 1,

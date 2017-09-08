@@ -72,12 +72,12 @@
 
                         <dt>Start date</dt>
                         <dd>
-                            <span id="project-start-date"><?php echo date_format(date_create($project->start_date), "d-F-Y H:i"); ?></span>
+                            <span id="project-start-date"><?php echo date_format(date_create($project->start_date), "d-F-Y"); ?></span>
                         </dd>
 
                         <dt>End date</dt>
                         <dd>
-                            <span id="project-due-date"><?php echo date_format(date_create($project->end_date), "d-F-Y H:i"); ?></span>
+                            <span id="project-due-date"><?php echo date_format(date_create($project->end_date), "d-F-Y"); ?></span>
                             <span id="project-due-date-remain"></span>
                         </dd>
 
@@ -114,6 +114,7 @@
                                                 <th>Due date</th>
                                                 <th>Status</th>
                                                 <th>Weight</th>
+                                                <th>Order</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -205,7 +206,6 @@
               <th class="gdfColHeader gdfResizable" style="width:50px;">dur.</th>
               <th class="gdfColHeader gdfResizable" style="width:20px;">%</th>
               <th class="gdfColHeader gdfResizable requireCanSeeDep" style="width:50px;">depe.</th>
-              <th class="gdfColHeader gdfResizable" style="width:1000px; text-align: left; padding-left: 10px;">assignees</th>
             </tr>
             </thead>
           </table>

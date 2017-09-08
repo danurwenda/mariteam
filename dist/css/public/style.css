@@ -6,8 +6,8 @@
 */
 
 body {
-	line-height: 1.4;
-	font-family: 'Roboto', sans-serif;
+    line-height: 1.4;
+    font-family: 'Roboto', sans-serif;
     color: #67696c;
     font-size: 16px;
     font-weight: 300;
@@ -15,19 +15,19 @@ body {
     overflow-x: hidden;
 }
 ol, ul {
-	list-style: none;
+    list-style: none;
 }
 blockquote, q {
-	quotes: none;
+    quotes: none;
 }
 blockquote:before, blockquote:after,
 q:before, q:after {
-	content: '';
-	content: none;
+    content: '';
+    content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 h1, h2, h3, h4, h5, h6{
     font-family: 'Raleway', sans-serif;
@@ -38,49 +38,49 @@ h1, h2, h3, h4, h5, h6{
     padding: 60px 0px;
 }
 #loader {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  width: 150px;
-  height: 150px;
-  margin: -75px 0 0 -75px;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
 }
 
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Add animation to "page content" */
 .animate-bottom {
-  position: relative;
-  -webkit-animation-name: animatebottom;
-  -webkit-animation-duration: 1s;
-  animation-name: animatebottom;
-  animation-duration: 1s
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
 }
 
 @-webkit-keyframes animatebottom {
-  from { bottom:-100px; opacity:0 } 
-  to { bottom:0px; opacity:1 }
+    from { bottom:-100px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
 }
 
 @keyframes animatebottom { 
-  from{ bottom:-100px; opacity:0 } 
-  to{ bottom:0; opacity:1 }
+    from{ bottom:-100px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
 }
 
 /***********************************
@@ -231,11 +231,11 @@ h2.bnr-sub-title
 }
 
 .overlay-detail a i{
-   text-align: center;
-   position: absolute;
-   bottom: 25px;
-   font-size: 38px;
-   color: #fff;
+    text-align: center;
+    position: absolute;
+    bottom: 25px;
+    font-size: 38px;
+    color: #fff;
 }
 /***********************************
 ************************************
@@ -686,7 +686,7 @@ cta
     background-color: rgb(73, 84, 105);
 }
 .cta .cta-info {
-    
+
     width: 100%;
     float: left;
     padding: 30px 25px 30px 15px;
@@ -708,42 +708,51 @@ cta
 
 /* LOANED STYLE */
 .chat {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 .chat li {
-  margin-bottom: 10px;
-  padding-bottom: 5px;
-  border-bottom: 1px dotted #999999;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #999999;
 }
 .chat li.left .chat-body {
-  margin-left: 60px;
+    margin-left: 60px;
 }
 .chat li.right .chat-body {
-  margin-right: 60px;
+    margin-right: 60px;
 }
 .chat li .chat-body p {
-  margin: 0;
+    margin: 0;
 }
 .comment-panel .panel-body {
-  height: 150px;
-  overflow-y: scroll;
+    height: 150px;
+    overflow-y: scroll;
 }
 /* https://stackoverflow.com/questions/34310271/css-place-in-circle-first-letter-of-the-name */
 [data-letters]:before {
-  content:attr(data-letters);
-  display:inline-block;
-  font-size:1em;
-  width:3.5em;
-  height:3.5em;
-  line-height:3.5em;
-  text-align:center;
-  border-radius:50%;
-  background:plum;
-  vertical-align:middle;
-  color:white;
-  }
+    content:attr(data-letters);
+    display:inline-block;
+    font-size:1em;
+    width:3.5em;
+    height:3.5em;
+    line-height:3.5em;
+    text-align:center;
+    border-radius:50%;
+    background:plum;
+    vertical-align:middle;
+    color:white;
+}
+
+
+/* CUSTOM BOOTSTRAP */
+.progress-bar-late {
+    background-color: 	#7F00FF;
+}
+.label-late {
+    background-color: 	#7F00FF;
+}
 /***********************************
 ************************************
 Responsive media queries
@@ -756,76 +765,76 @@ Responsive media queries
 }
 @media (min-width: 768px) and (max-width: 980px) {
     .service-item, .blog-sec, .wrap-item, .loction-info{
-    margin-bottom: 15px;
-}
-.portfolio-item figure figcaption{
-    padding: 55px 30px;
-}
-.padding-right-zero{
-    padding-right: 15px !important;
-}
+        margin-bottom: 15px;
+    }
+    .portfolio-item figure figcaption{
+        padding: 55px 30px;
+    }
+    .padding-right-zero{
+        padding-right: 15px !important;
+    }
 }
 @media (min-width: 451px) and (max-width: 767px) {
     .service-item, .blog-sec, .wrap-item, .loction-info{
-    margin-bottom: 15px;
-}
+        margin-bottom: 15px;
+    }
 }
 @media (min-width: 20px) and (max-width: 450px) {
-.navbar-default .navbar-brand {
-    padding-left: 16px;
-    margin-top: 0px;
-}
-.banner-info {
-    padding-top: 40px;
-}
-h1.bnr-title {
-    font-size: 16px;
-}
-h2.bnr-sub-title {
-    font-size: 33px;
-}
-body{
-    font-size: 14px;
-}
-.btn-download, .btn-more, .btn-download:hover, .btn-more:hover, .btn-download:focus, .btn-more:focus {
-    font-size: 12px;
-    padding: 7px 18px;
-}
-.wrap-item h3 {
-    font-size: 18px;
-}
-.title, .service-title {
-    font-size: 28px;
-}
-.sub-title {
-    font-size: 15px;
-}
-.service-item, .blog-sec, .wrap-item, .loction-info{
-    margin-bottom: 15px;
-}
-.loction-info{
-    padding: 0px 15px;
-}
-.portfolio-item figure figcaption {
-    padding: 30px 30px;
-}
-.padding-right-zero{
-    padding-right: 15px !important;
-}
-.portfolio-item figure p{
-    font-size: 14px;
-}
-.portfolio-item figure h2{
-    font-size: 18px;
-}
-.testimonial-item ul li blockquote {
-    font-size: 14px;
-    line-height: 22px;
-    margin: 10px 0;
-    padding: 0 40px;
-}
-.navbar-default .navbar-nav > li > a{
-    line-height: 22px;
-    text-align: center;
-}
+    .navbar-default .navbar-brand {
+        padding-left: 16px;
+        margin-top: 0px;
+    }
+    .banner-info {
+        padding-top: 40px;
+    }
+    h1.bnr-title {
+        font-size: 16px;
+    }
+    h2.bnr-sub-title {
+        font-size: 33px;
+    }
+    body{
+        font-size: 14px;
+    }
+    .btn-download, .btn-more, .btn-download:hover, .btn-more:hover, .btn-download:focus, .btn-more:focus {
+        font-size: 12px;
+        padding: 7px 18px;
+    }
+    .wrap-item h3 {
+        font-size: 18px;
+    }
+    .title, .service-title {
+        font-size: 28px;
+    }
+    .sub-title {
+        font-size: 15px;
+    }
+    .service-item, .blog-sec, .wrap-item, .loction-info{
+        margin-bottom: 15px;
+    }
+    .loction-info{
+        padding: 0px 15px;
+    }
+    .portfolio-item figure figcaption {
+        padding: 30px 30px;
+    }
+    .padding-right-zero{
+        padding-right: 15px !important;
+    }
+    .portfolio-item figure p{
+        font-size: 14px;
+    }
+    .portfolio-item figure h2{
+        font-size: 18px;
+    }
+    .testimonial-item ul li blockquote {
+        font-size: 14px;
+        line-height: 22px;
+        margin: 10px 0;
+        padding: 0 40px;
+    }
+    .navbar-default .navbar-nav > li > a{
+        line-height: 22px;
+        text-align: center;
+    }
 }

@@ -16,6 +16,9 @@
 
         <!-- MetisMenu CSS -->
         <?php echo css_asset('metisMenu/metisMenu.min.css'); ?>
+        
+        <!-- Noty -->
+        <?php echo css_asset('noty/noty.css'); ?>
 
         <!-- Custom CSS -->
         <link href="<?php echo base_url(); ?>/dist/css/sb-admin-2.css" rel="stylesheet">
@@ -136,6 +139,9 @@
         <!-- jQuery -->
         <?php echo js_asset('jquery/jquery.min.js'); ?>
 
+        <!-- Noty -->
+        <?php echo js_asset('noty/noty.min.js'); ?>
+        
         <!-- Bootstrap Core JavaScript -->
         <?php echo js_asset('bootstrap/js/bootstrap.min.js'); ?>
 

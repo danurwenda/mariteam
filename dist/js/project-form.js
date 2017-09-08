@@ -2,19 +2,19 @@ $(document).ready(function () {
 
     //=================== FORMATTING
     $('input#task-start-date').datetimepicker({
-        format: "DD-MMMM-YYYY HH:mm",
-        minDate: new Date($('#task-start-date').data('min'))
+        format: "DD-MMMM-YYYY",
+        //minDate: new Date($('#task-start-date').data('min'))
     });
     $('input#task-end-date').datetimepicker({
-        format: "DD-MMMM-YYYY HH:mm",
-        maxDate: new Date($('#task-end-date').data('max'))
+        format: "DD-MMMM-YYYY",
+        //maxDate: new Date($('#task-end-date').data('max'))
     });
 
     $('#project_start_date').datetimepicker({
-        format: "DD-MMMM-YYYY HH:mm"
+        format: "DD-MMMM-YYYY"
     });
     $('#project_end_date').datetimepicker({
-        format: "DD-MMMM-YYYY HH:mm", useCurrent: false
+        format: "DD-MMMM-YYYY", useCurrent: false
     });
 
     $('#project_assign_to').select2({
@@ -407,14 +407,16 @@ $(document).ready(function () {
             })
                     // using the done promise callback
                     .done(function (data) {
-                        //submit outstanding files (if any)
-                        $('#fine-uploader-manual-trigger-task').fineUploader('setEndpoint', base_url + 'project/uploads/tasks/' + data.task_id)
-                        $('#fine-uploader-manual-trigger-task').fineUploader('uploadStoredFiles')
-
                         //refresh table
                         tasks_table.ajax.reload()
+                        //submit outstanding files (if any)
+                        if ($('#fine-uploader-manual-trigger-task').fineUploader('getUploads').length > 0) {
+                            $('#fine-uploader-manual-trigger-task').fineUploader('setEndpoint', base_url + 'project/uploads/tasks/' + data.task_id)
+                            $('#fine-uploader-manual-trigger-task').fineUploader('uploadStoredFiles')
+                        }
                         //close modal
                         $('#task-modal-form').modal('hide');
+
                     });
         }
     });
@@ -578,6 +580,9 @@ $(document).ready(function () {
         });
         loadI18n(); //overwrite with localized ones
 
+        //bind save button
+        $('#save-timeline').click(saveGanttOnServer);
+
         //in order to force compute the best-fitting zoom level
         delete ge.gantt.zoom;
 
@@ -606,11 +611,9 @@ $(document).ready(function () {
         }, function (response) {
             //console.debug(response);
             if (response.ok) {
-                //prof.stop();
-
                 ge.loadProject(response.project);
                 ge.checkpoint(); //empty the undo stack
-                if (response.project.canWrite) {
+                if (!response.project.canWrite) {
                     $(".ganttButtonBar button.requireWrite").attr("disabled", "true");
                 }
                 if (typeof (callback) == "function") {
@@ -662,7 +665,11 @@ $(document).ready(function () {
     }
 
     function saveGanttOnServer() {
-
+        var n = new Noty({
+            timeout: false,
+            layout: 'center',
+            text: 'Saving to server',
+        }).show();
         var prj = ge.saveProject();
 
         delete prj.resources;
@@ -674,18 +681,18 @@ $(document).ready(function () {
             }
         }
 
-        $.ajax(base_url + "/publik/save_timeline", {
+        $.ajax(base_url + "/project/save_timeline", {
             dataType: "json",
             data: {
                 project_id: $('.main-panel').data('project'),
-                project: JSON.stringify(prj)
+                timeline: JSON.stringify(prj)
             },
             type: "POST",
 
             success: function (response) {
                 if (response.ok) {
                     if (response.project) {
-                        ge.loadProject(response.project); //must reload as "tmp_" ids are now the good ones
+                        n.close()
                     } else {
                         ge.reset();
                     }

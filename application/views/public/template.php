@@ -11,6 +11,8 @@
         <!--<link rel="stylesheet" type="text/css" href="css/jquery.bxslider.css">-->
         <?php echo css_asset('font-awesome/css/font-awesome.min.css'); ?>
         <?php echo css_asset('bootstrap/css/bootstrap.css'); ?>
+        <!-- Noty -->
+        <?php echo css_asset('noty/noty.css'); ?>
         <link href="<?php echo base_url(); ?>/dist/css/public/style.css" rel="stylesheet">
         <!-- =======================================================
             Theme Name: Baker
@@ -86,6 +88,8 @@
         </div>
         <!-- jQuery -->
         <?php echo js_asset('jquery/jquery.min.js'); ?>
+        <!-- Noty -->
+        <?php echo js_asset('noty/noty.min.js'); ?>
         <!-- easing -->
         <?php echo js_asset('jquery-ui/ui/effect.js'); ?>
         <!-- Bootstrap Core JavaScript -->

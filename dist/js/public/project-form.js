@@ -23,7 +23,7 @@ $(document).ready(function () {
     // ====================== DATA TABLE =============================
     var tasks_table = $('#tasks-datatable').DataTable({
         order: [
-            [2, "desc"]
+            [5, "asc"]
         ],
         responsive: true,
         processing: true,
@@ -69,7 +69,9 @@ $(document).ready(function () {
                 render: renderStatus
             },
             //weight
-            {}
+            {},
+            //order
+            {visible:false,searchable:false}
         ]
     });
 
@@ -370,6 +372,7 @@ $(document).ready(function () {
     function initGE() {
         // here starts gantt initialization
         ge = new GanttMaster();
+        ge.permissions.canSeePopEdit = false;
         ge.resourceUrl = base_url + 'vendor/jquery-gantt/res/';
         ge.set100OnClose = true;
 
@@ -403,23 +406,15 @@ $(document).ready(function () {
             initGE();
     });
 
-    function loadFromServer(taskId, callback) {
-
-
-        //this is the real implementation
-        //var prof = new Profiler("loadServerSide");
-        //rof.reset();
-
+    function loadFromServer(callback) {
         $.getJSON(base_url + "publik/get_timeline", {
             project_id: $('.main-panel').data('project')
         }, function (response) {
             //console.debug(response);
             if (response.ok) {
-                //prof.stop();
-
                 ge.loadProject(response.project);
                 ge.checkpoint(); //empty the undo stack
-                if (response.project.canWrite) {
+                if (!response.project.canWrite) {
                     $(".ganttButtonBar button.requireWrite").attr("disabled", "true");
                 }
                 if (typeof (callback) == "function") {

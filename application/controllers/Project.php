@@ -84,11 +84,51 @@ class Project extends Module_Controller {
     }
 
     public function save_timeline() {
+        //preparing data
+        $statmap = [];
+        foreach ($this->db->get('project_statuses')->result() as $stat) {
+            $statmap[$stat->name] = $stat->status_id;
+        }
         $proj_id = $this->input->post('project_id');
-        $proj = $this->input->post('timeline');
+        $json = $this->input->post('timeline');
+        $proj = json_decode($json);
         // do save..
+        foreach ($proj->tasks as $i => $task) {
+            if ($task->level === 0) {
+                $update = [
+                    'project_status' => $statmap[$task->status],
+                    //convert millisecond to date
+                    'start_date' => date("Y-m-d", ($task->start / 1000)),
+                    'end_date' => date("Y-m-d", ($task->end / 1000)),
+                    'duration' => $task->duration,
+                ];
+                $project_id = $task->id;
+                $this->db->where('project_id', $task->id);
+                $this->db->update('projects', $update);
+            } else {
+                //only level, dates, progress
+                //status, order and dependency might be changed
+                $update = [
+                    'task_order' => $i,
+                    'progress' => ($task->progress) / 100,
+                    'level' => $task->level,
+                    'start_date' => date("Y-m-d", ($task->start / 1000)),
+                    'end_date' => date("Y-m-d", ($task->end / 1000)),
+                    'depends' => $task->depends,
+                    'status' => $statmap[$task->status],
+                    'startIsMilestone' => $task->startIsMilestone,
+                    'endIsMilestone' => $task->endIsMilestone
+                ];
+                $this->db->where('task_id', $task->id);
+                $this->db->update('tasks', $update);
+            }
+        }
         // reload
-        $this->get_timeline();
+        $ret = [
+            'ok' => true,
+            'project' => $this->projects_model->get_tasks_timeline($project_id, true)
+        ];
+        echo json_encode($ret);
     }
 
     function get_task_comment($task_id) {
@@ -122,13 +162,15 @@ class Project extends Module_Controller {
             $task_name = $this->input->post('task_name');
             $desc = $this->input->post('desc');
             $user = $this->input->post('assigned_to');
-            $date = date_format(date_create($this->input->post('start_date')), "Y-m-d H:i:s");
-            $end_date = date_format(date_create($this->input->post('end_date')), "Y-m-d H:i:s");
+            // TODO : clean this date-time remnants
+            $date = date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00");
+            $end_date = date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59");
             $weight = $this->input->post('weight');
+            $status = $this->input->post('task_status');
             $task_id = $this->input->post('task_id');
             if (empty($task_id)) {
                 $change = $this->projects_model->add_task(
-                        $project_id, $task_name, $desc, $date, $end_date, $this->logged_user->user_id, $user, $weight
+                        $project_id, $task_name, $desc, $date, $end_date, $this->logged_user->user_id, $user, $weight, $status
                 );
                 echo json_encode([
                     'success' => $change,
@@ -136,7 +178,7 @@ class Project extends Module_Controller {
                 ]);
             } else {
                 //edit
-                $change = $this->projects_model->edit_task($task_id, $task_name, $desc, $date, $end_date, $user, $weight, $this->input->post('task_status')
+                $change = $this->projects_model->edit_task($task_id, $task_name, $desc, $date, $end_date, $user, $weight, $status
                 );
                 echo json_encode(['success' => $change]);
             }
@@ -270,8 +312,8 @@ class Project extends Module_Controller {
                     $this->input->post('assigned_to'),
                     //name
                     $this->input->post('name'),
-                    //due date (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('end_date')), "Y-m-d H:i:s"),
+                    //dates (adjust the format to comply SQL datetime format)
+                    date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
                     //description
                     $this->input->post('description'),
                     //topic
@@ -308,8 +350,8 @@ class Project extends Module_Controller {
                     $this->input->post('assigned_to'),
                     //name
                     $this->input->post('name'),
-                    //due date (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('end_date')), "Y-m-d H:i:s"),
+                    //dates (adjust the format to comply SQL datetime format)
+                    date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
                     //description
                     $this->input->post('description'),
                     //topic

@@ -91,6 +91,9 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/bootstrap-wysiwyg/js/*'])
             .pipe(gulp.dest('vendor/bootstrap-wysiwyg'))
+    
+    gulp.src(['bower_components/noty/lib/*'])
+            .pipe(gulp.dest('vendor/noty'))
 
     gulp.src(['bower_components/underscore/*.js'])
             .pipe(gulp.dest('vendor/underscore'))
