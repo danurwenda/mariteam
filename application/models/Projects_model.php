@@ -278,7 +278,7 @@ class Projects_model extends CI_Model {
                         ->result_array();
     }
 
-    public function update($id, $user, $name, $due_date, $description, $topics, $status) {
+    public function update($id, $user, $name,$start_date, $due_date, $description, $topics, $status) {
         $this->db->where('project_id', $id);
         //update username
         if (isset($user)) {
@@ -286,6 +286,7 @@ class Projects_model extends CI_Model {
         }
         $this->db->set('project_name', $name);
         $this->db->set('project_status', $status);
+        $this->db->set('start_date', $start_date);
         $this->db->set('end_date', $due_date);
         $this->db->set('description', $description);
         //do update
