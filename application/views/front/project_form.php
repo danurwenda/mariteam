@@ -346,6 +346,7 @@
             <div class="__template__" type="GANTBUTTONS"><!--
               <div class="ganttButtonBar noprint">
                 <div class="buttons">
+                  <span class="ganttButtonSeparator requireCanWrite"></span>
                   <button onclick="$('#workSpace').trigger('undo.gantt');return false;" class="button textual icon requireCanWrite" title="undo"><span class="teamworkIcon">&#39;</span></button>
                   <button onclick="$('#workSpace').trigger('redo.gantt');return false;" class="button textual icon requireCanWrite" title="redo"><span class="teamworkIcon">&middot;</span></button>
                   <span class="ganttButtonSeparator requireCanWrite requireCanInOutdent"></span>

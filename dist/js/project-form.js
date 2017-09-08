@@ -407,8 +407,11 @@ $(document).ready(function () {
             })
                     // using the done promise callback
                     .done(function (data) {
-                        //refresh table
+                        //refresh task table
                         tasks_table.ajax.reload()
+                        //refresh timeline if it's already loaded
+                        if (ge)
+                            loadFromServer()
                         //submit outstanding files (if any)
                         if ($('#fine-uploader-manual-trigger-task').fineUploader('getUploads').length > 0) {
                             $('#fine-uploader-manual-trigger-task').fineUploader('setEndpoint', base_url + 'project/uploads/tasks/' + data.task_id)
@@ -614,7 +617,8 @@ $(document).ready(function () {
                 ge.loadProject(response.project);
                 ge.checkpoint(); //empty the undo stack
                 if (!response.project.canWrite) {
-                    $(".ganttButtonBar button.requireWrite").attr("disabled", "true");
+                    $(".ganttButtonBar .requireWrite").css("display", "none");
+                    $(".ganttButtonBar .requireCanWrite").css("display", "none");
                 }
                 if (typeof (callback) == "function") {
                     callback(response);

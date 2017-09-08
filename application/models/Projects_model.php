@@ -108,7 +108,7 @@ class Projects_model extends CI_Model {
      * See https://roberto.open-lab.com/2012/08/24/jquery-gantt-editor/
      * @param type $project_id the project id
      */
-    public function get_tasks_timeline($project_id, $canWrite = false) {
+    public function get_tasks_timeline($project_id) {
 
         $this->db
                 ->select('task_id id')
@@ -137,7 +137,7 @@ class Projects_model extends CI_Model {
         }
         //insert the project itself as the first element
         array_splice($ori, 0, 0, $this->project_as_task($project_id));
-        $ret = ['tasks' => $ori, 'canWrite' => $canWrite];
+        $ret = ['tasks' => $ori];
         return $ret;
     }
 

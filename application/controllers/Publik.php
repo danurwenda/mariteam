@@ -126,9 +126,11 @@ class Publik extends CI_Controller {
 
     public function get_timeline() {
         $project_id = $this->input->get('project_id');
+        $timeline = $this->projects_model->get_tasks_timeline($project_id);
+        $timeline['canWrite']=false;
         $ret = [
             'ok' => true,
-            'project' => $this->projects_model->get_tasks_timeline($project_id)
+            'project' => $timeline
         ];
         echo json_encode($ret);
     }

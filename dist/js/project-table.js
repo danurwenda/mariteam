@@ -31,12 +31,19 @@ $(document).ready(function () {
             if (percent > -1) {
                 var cls = '';
                 if (f[2] === '2') {
+                    //udah beres
                     cls = 'progress-bar-info';
-                } else if (f[2] === '3' || new Date() > new Date(f[3])) {
-                    cls = 'progress-bar-danger';
                 } else if (f[2] === '4') {
+                    //suspended
                     cls = 'progress-bar-warning';
+                } else if (f[2] === '1' && new Date() > new Date(f[3])) {
+                    //masih aktif tapi udah telat
+                    cls = 'progress-bar-danger';
+                } else if (f[2] === '1' && f[6]) {
+                    //masih aktif, project belum telat, tapi ada task yang telat
+                    cls = 'progress-bar-late';
                 } else {
+                    //active dan belum telat
                     cls = 'progress-bar-success'
                 }
 //                percent =percent*100;// WHY IT GOT ROUNDING ERROR

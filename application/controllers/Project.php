@@ -76,9 +76,17 @@ class Project extends Module_Controller {
 
     public function get_timeline() {
         $project_id = $this->input->get('project_id');
+        $project = $this->projects_model->get_project($project_id);
+        $project_owner_person = $this->users_model->get_person($project->assigned_to);
+        // can delete as the owner of the project
+        $can_delete = ($this->logged_user->user_id == $project_owner_person->user_id);
+
+        $timeline = $this->projects_model->get_tasks_timeline($project_id);
+        //can write if admin or project owner
+        $timeline['canWrite'] = ($this->logged_user->role_id == 1) || $can_delete;
         $ret = [
             'ok' => true,
-            'project' => $this->projects_model->get_tasks_timeline($project_id, true)
+            'project' => $timeline
         ];
         echo json_encode($ret);
     }
