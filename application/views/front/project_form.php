@@ -192,12 +192,12 @@ if (
                                 </div>
                                 <div class="form-group ">
                                     <label for="project_date">Start Date</label>
-                                    <input class="form-control datetimepicker" name="start_date" type="text" id="project_start_date" value="<?php echo set_value('start_date', isset($project) ? date_format(date_create($project->start_date), "d-F-Y H:i:s") : ''); ?>">
+                                    <input class="form-control datetimepicker" name="start_date" type="text" id="project_start_date" value="<?php echo set_value('start_date', isset($project) ? date_format(date_create($project->start_date), "d-F-Y") : ''); ?>">
                                     <?php echo form_error('start_date', '<div class="has-error"><label class="control-label">', '</label></div>'); ?>
                                 </div>
                                 <div class="form-group ">
                                     <label for="project_date">Due Date</label>
-                                    <input class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y H:i:s") : ''); ?>">
+                                    <input class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
                                     <?php echo form_error('end_date', '<div class="has-error"><label class="control-label">', '</label></div>'); ?>
                                 </div>
                                 <?php if (isset($project)) { ?>
@@ -240,12 +240,12 @@ if (
 
                             <dt>Start date</dt>
                             <dd>
-                                <span id="project-start-date"><?php echo date_format(date_create($project->start_date), "d-F-Y H:i"); ?></span>
+                                <span id="project-start-date"><?php echo date_format(date_create($project->start_date), "d-F-Y"); ?></span>
                             </dd>
 
                             <dt>End date</dt>
                             <dd>
-                                <span id="project-due-date"><?php echo date_format(date_create($project->end_date), "d-F-Y H:i"); ?></span>
+                                <span id="project-due-date"><?php echo date_format(date_create($project->end_date), "d-F-Y"); ?></span>
                                 <span id="project-due-date-remain"></span>
                             </dd>
 
