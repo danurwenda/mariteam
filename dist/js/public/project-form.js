@@ -71,7 +71,7 @@ $(document).ready(function () {
             //weight
             {},
             //order
-            {visible:false,searchable:false}
+            {visible: false, searchable: false}
         ]
     });
 
@@ -431,157 +431,7 @@ $(document).ready(function () {
 
     //-------------------------------------------  Create some demo data ------------------------------------------------------
 
-
-    function loadI18n() {
-        GanttMaster.messages = {
-            "CANNOT_WRITE": "CANNOT_WRITE",
-            "CHANGE_OUT_OF_SCOPE": "NO_RIGHTS_FOR_UPDATE_PARENTS_OUT_OF_EDITOR_SCOPE",
-            "START_IS_MILESTONE": "START_IS_MILESTONE",
-            "END_IS_MILESTONE": "END_IS_MILESTONE",
-            "TASK_HAS_CONSTRAINTS": "TASK_HAS_CONSTRAINTS",
-            "GANTT_ERROR_DEPENDS_ON_OPEN_TASK": "GANTT_ERROR_DEPENDS_ON_OPEN_TASK",
-            "GANTT_ERROR_DESCENDANT_OF_CLOSED_TASK": "GANTT_ERROR_DESCENDANT_OF_CLOSED_TASK",
-            "TASK_HAS_EXTERNAL_DEPS": "TASK_HAS_EXTERNAL_DEPS",
-            "GANTT_ERROR_LOADING_DATA_TASK_REMOVED": "GANTT_ERROR_LOADING_DATA_TASK_REMOVED",
-            "ERROR_SETTING_DATES": "ERROR_SETTING_DATES",
-            "CIRCULAR_REFERENCE": "CIRCULAR_REFERENCE",
-            "CANNOT_DEPENDS_ON_ANCESTORS": "CANNOT_DEPENDS_ON_ANCESTORS",
-            "CANNOT_DEPENDS_ON_DESCENDANTS": "CANNOT_DEPENDS_ON_DESCENDANTS",
-            "INVALID_DATE_FORMAT": "INVALID_DATE_FORMAT",
-            "TASK_MOVE_INCONSISTENT_LEVEL": "TASK_MOVE_INCONSISTENT_LEVEL",
-
-            "GANTT_QUARTER_SHORT": "trim.",
-            "GANTT_SEMESTER_SHORT": "sem."
-        };
-    }
-
-
-
-    //-------------------------------------------  Get project file as JSON (used for migrate project from gantt to Teamwork) ------------------------------------------------------
-    function getFile() {
-        $("#gimBaPrj").val(JSON.stringify(ge.saveProject()));
-        $("#gimmeBack").submit();
-        $("#gimBaPrj").val("");
-
-        /*  var uriContent = "data:text/html;charset=utf-8," + encodeURIComponent(JSON.stringify(prj));
-         neww=window.open(uriContent,"dl");*/
-    }
-
-    function saveGanttOnServer() {
-
-        var prj = ge.saveProject();
-
-        delete prj.resources;
-        delete prj.roles;
-
-        if (ge.deletedTaskIds.length > 0) {
-            if (!confirm("TASK_THAT_WILL_BE_REMOVED\n" + ge.deletedTaskIds.length)) {
-                return;
-            }
-        }
-
-        $.ajax(base_url + "/publik/save_timeline", {
-            dataType: "json",
-            data: {
-                project_id: $('.main-panel').data('project'),
-                project: JSON.stringify(prj)
-            },
-            type: "POST",
-
-            success: function (response) {
-                if (response.ok) {
-                    if (response.project) {
-                        ge.loadProject(response.project); //must reload as "tmp_" ids are now the good ones
-                    } else {
-                        ge.reset();
-                    }
-                } else {
-                    var errMsg = "Errors saving project\n";
-                    if (response.message) {
-                        errMsg = errMsg + response.message + "\n";
-                    }
-
-                    if (response.errorMessages.length) {
-                        errMsg += response.errorMessages.join("\n");
-                    }
-
-                    alert(errMsg);
-                }
-            }
-
-        });
-
-    }
-
-    //-------------------------------------------  Open a black popup for managing resources. This is only an axample of implementation (usually resources come from server) ------------------------------------------------------
-    function editResources() {
-
-        //make resource editor
-        var resourceEditor = $.JST.createFromTemplate({}, "RESOURCE_EDITOR");
-        var resTbl = resourceEditor.find("#resourcesTable");
-
-        for (var i = 0; i < ge.resources.length; i++) {
-            var res = ge.resources[i];
-            resTbl.append($.JST.createFromTemplate(res, "RESOURCE_ROW"))
-        }
-
-
-        //bind add resource
-        resourceEditor.find("#addResource").click(function () {
-            resTbl.append($.JST.createFromTemplate({
-                id: "new",
-                name: "resource"
-            }, "RESOURCE_ROW"))
-        });
-
-        //bind save event
-        resourceEditor.find("#resSaveButton").click(function () {
-            var newRes = [];
-            //find for deleted res
-            for (var i = 0; i < ge.resources.length; i++) {
-                var res = ge.resources[i];
-                var row = resourceEditor.find("[resId=" + res.id + "]");
-                if (row.length > 0) {
-                    //if still there save it
-                    var name = row.find("input[name]").val();
-                    if (name && name != "")
-                        res.name = name;
-                    newRes.push(res);
-                } else {
-                    //remove assignments
-                    for (var j = 0; j < ge.tasks.length; j++) {
-                        var task = ge.tasks[j];
-                        var newAss = [];
-                        for (var k = 0; k < task.assigs.length; k++) {
-                            var ass = task.assigs[k];
-                            if (ass.resourceId != res.id)
-                                newAss.push(ass);
-                        }
-                        task.assigs = newAss;
-                    }
-                }
-            }
-
-            //loop on new rows
-            var cnt = 0
-            resourceEditor.find("[resId=new]").each(function () {
-                cnt++;
-                var row = $(this);
-                var name = row.find("input[name]").val();
-                if (name && name != "")
-                    newRes.push(new Resource("tmp_" + new Date().getTime() + "_" + cnt, name));
-            });
-
-            ge.resources = newRes;
-
-            closeBlackPopup();
-            ge.redraw();
-        });
-
-
-        var ndo = createModalPopup(400, 500).append(resourceEditor);
-    }
-    $.JST.loadDecorator("RESOURCE_ROW", function (resTr, res) {
+$.JST.loadDecorator("RESOURCE_ROW", function (resTr, res) {
         resTr.find(".delRes").click(function () {
             $(this).closest("tr").remove()
         });
@@ -618,8 +468,7 @@ $(document).ready(function () {
         }
 
     });
-
-
+ 
     function loadI18n() {
         GanttMaster.messages = {
             "CANNOT_WRITE": "No permission to change the following task:",
@@ -646,19 +495,5 @@ $(document).ready(function () {
 
 
 
-    function createNewResource(el) {
-        var row = el.closest("tr[taskid]");
-        var name = row.find("[name=resourceId_txt]").val();
-        var url = contextPath + "/applications/teamwork/resource/resourceNew.jsp?CM=ADD&name=" + encodeURI(name);
-
-        openBlackPopup(url, 700, 320, function (response) {
-            //fillare lo smart combo
-            if (response && response.resId && response.resName) {
-                //fillare lo smart combo e chiudere l'editor
-                row.find("[name=resourceId]").val(response.resId);
-                row.find("[name=resourceId_txt]").val(response.resName).focus().blur();
-            }
-
-        });
-    }
+    
 })
