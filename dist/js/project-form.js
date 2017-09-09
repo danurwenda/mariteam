@@ -89,7 +89,7 @@ $(document).ready(function () {
             //task name
             {
                 render: function (d, t, f, m) {
-                    return '<a href data-task="' + f[5] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
+                    return '<a href data-task="' + f[6] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
                 },
                 responsivePriority: 1
             },

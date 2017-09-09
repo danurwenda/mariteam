@@ -98,7 +98,7 @@ class Projects_model extends CI_Model {
     public function get_tasks_dt($project_id) {
         $this->datatables
                 ->where('project_id', $project_id)
-                ->select('task_name,person_name, end_date, status, weight, task_id,task_order')
+                ->select('task_name,person_name, end_date, status, weight,task_order, task_id')
                 ->join('persons', 'persons.person_id=tasks.assigned_to', 'left')
                 ->from('tasks');
         return $this->datatables->generate();
