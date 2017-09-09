@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     //=================== FORMATTING
     $('input#task-start-date').datetimepicker({
         format: "DD-MMMM-YYYY",
@@ -9,17 +8,16 @@ $(document).ready(function () {
         format: "DD-MMMM-YYYY",
         //maxDate: new Date($('#task-end-date').data('max'))
     });
-
     $('#project_start_date').datetimepicker({
         format: "DD-MMMM-YYYY"
     });
     $('#project_end_date').datetimepicker({
-        format: "DD-MMMM-YYYY", useCurrent: false
+        format: "DD-MMMM-YYYY",
+        useCurrent: false
     });
-
     $('#project_assign_to').select2({
-        theme: "bootstrap"})
-
+        theme: "bootstrap"
+    })
     $('#topics').select2({
         theme: "bootstrap",
         ajax: {
@@ -42,20 +40,18 @@ $(document).ready(function () {
                 };
             },
             cache: true
-        }
-        , escapeMarkup: function (markup) {
+        },
+        escapeMarkup: function (markup) {
             return markup;
         }
     });
-
     $('select#task-assign').select2({
         dropdownParent: $('#task-modal-form'),
         theme: "bootstrap"
     });
-
     $('.knob').knob()
-
     $('#project-due-date-remain').html('(' + moment($('#project-due-date').text(), 'D-MMMM-YYYY HH:mm').fromNow() + ')')
+
     function renderStatus(d) {
         switch (d) {
             case '1':
@@ -76,7 +72,9 @@ $(document).ready(function () {
     }
     // ====================== DATA TABLE =============================
     var tasks_table = $('#tasks-datatable').DataTable({
-        order: [[2, "desc"]],
+        order: [
+            [5, "asc"]
+        ],
         responsive: true,
         processing: true,
         serverSide: true,
@@ -92,7 +90,8 @@ $(document).ready(function () {
             {
                 render: function (d, t, f, m) {
                     return '<a href data-task="' + f[5] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
-                }
+                },
+                responsivePriority: 1
             },
             //PIC
             {},
@@ -102,8 +101,7 @@ $(document).ready(function () {
                     if (t === 'sort') {
                         return past;
                     } else {
-                        if (past)
-                        {
+                        if (past) {
                             var cls = '';
                             if (new Date() > new Date(f[2]) && f[3] !== '2') {
                                 cls = 'alert-danger';
@@ -116,19 +114,27 @@ $(document).ready(function () {
                 }
             },
             //status
-            {render: renderStatus
+            {
+                responsivePriority: 2,
+                render: renderStatus
             },
             //weight
-            {}
+            {},
+            //order
+            {visible: false, searchable: false}
         ]
     });
-
+    // trigger the responsive data table to adjust its appearance when the tab is shown
+    $('a[href="#task"]').on('shown.bs.tab', function (e) {
+        tasks_table.responsive.recalc();
+    });
     // since we use responsive datatables INSIDE a tabbed panel,
     // we need to trigger the calculating of table's width after the table is
     // displayed
-
     $(document).on("click", ".deldoc", function (e) {
-        var el = $(this), uid = $(this).data('doc_id'), source = $(this).data('source');
+        var el = $(this),
+                uid = $(this).data('doc_id'),
+                source = $(this).data('source');
         bootbox.confirm({
             message: "Are you sure you want to remove this document?",
             buttons: {
@@ -144,7 +150,9 @@ $(document).ready(function () {
             callback: function (result) {
                 if (result) {
                     $.ajax({
-                        data: {"doc_id": uid},
+                        data: {
+                            "doc_id": uid
+                        },
                         url: base_url + 'project/delete_doc',
                         type: 'POST',
                         success: function (result) {
@@ -187,8 +195,7 @@ $(document).ready(function () {
                     if (t === 'sort') {
                         return past;
                     } else {
-                        if (past)
-                        {
+                        if (past) {
                             var dpast = moment(new Date(past))
                             return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
                         }
@@ -207,15 +214,16 @@ $(document).ready(function () {
             }
         ]
     });
-
     // ============== MODALS TO LOAD ENTITY ==========================
     // TOPIC
     $('#topic-modal-form .btn-primary').click(function (e) {
         var form = $('#topic-modal-form form')
                 //serialize the form, except those in hidden template
-                , h = form.find(":input:not(.template :input)").serialize()
+                ,
+                h = form.find(":input:not(.template :input)").serialize()
                 // process the form
-                , action = form.attr('action');
+                ,
+                action = form.attr('action');
         $.ajax({
             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
             url: action, // the url where we want to POST
@@ -236,14 +244,13 @@ $(document).ready(function () {
         var docel = $('<li/>')
         docel.append('<a href="' + base_url + 'download/' + doc.dir + '"> ' + doc.filename + '</a>')
         if (doc.self) {
-            var deldoc = $('<span class="deldoc deldocbtn">')
-                    .attr('data-doc_id', doc.document_id)
-                    .attr('data-source', 'tasks');
+            var deldoc = $('<span class="deldoc deldocbtn">').attr('data-doc_id', doc.document_id).attr('data-source', 'tasks');
             deldoc.append('<i class="fa fa-times-circle-o"></i>')
             docel.append(deldoc)
         }
         return docel;
     }
+
     function reloadTaskDocs(task_id) {
         $.getJSON(base_url + 'project/get_task_docs/' + task_id, function (docs) {
             //clear list
@@ -253,6 +260,7 @@ $(document).ready(function () {
             })
         })
     }
+
     function createCommentEl(cmt) {
         var cmtel = $('<li/>').addClass('clearfix');
         //craft initial
@@ -265,34 +273,7 @@ $(document).ready(function () {
             initial += usernames[1].charAt(0)
         }
         //initial
-        cmtel
-                .append(
-                        $('<span/>')
-                        .addClass('chat-img')
-                        .attr('data-letters', initial))
-                .append(
-                        $('<div/>')
-                        .addClass('chat-body clearfix')
-                        .append(
-                                $('<div/>')
-                                .addClass('chat-header')
-
-                                .append(
-                                        $('<small/>')
-                                        .addClass('text-muted')
-                                        .append(
-                                                $('<i class="fa fa-clock-o fa-fw"></i>')
-                                                )
-                                        .append(
-                                                $('<span/>')
-                                                .addClass('comment-time')
-                                                .html(moment(cmt.time).fromNow())
-                                                )
-
-                                        )
-                                )
-                        .append($('<p/>').html(cmt.content))
-                        )
+        cmtel.append($('<span/>').addClass('chat-img').attr('data-letters', initial)).append($('<div/>').addClass('chat-body clearfix').append($('<div/>').addClass('chat-header').append($('<small/>').addClass('text-muted').append($('<i class="fa fa-clock-o fa-fw"></i>')).append($('<span/>').addClass('comment-time').html(moment(cmt.time).fromNow())))).append($('<p/>').html(cmt.content)))
         var user = $('<strong/>').addClass('primary-font').html(cmt.user);
         if (cmt.self) {
             cmtel.addClass('right')
@@ -308,9 +289,10 @@ $(document).ready(function () {
     }
     $('#task-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
-                , task_id = button.data('task')
-                , modal = $(this)
-                , form = modal.find('.modal-body').hasClass('modal-form');
+                ,
+                task_id = button.data('task'),
+                modal = $(this),
+                form = modal.find('.modal-body').hasClass('modal-form');
         if (task_id) {
             //prepare form to be submitted for editing entry
             //populate form after ajax load
@@ -319,20 +301,15 @@ $(document).ready(function () {
                     modal.find('#task-name').val(task.task_name)
                     modal.find('[name=task_id]').val(task.task_id)
                     modal.find('#task-desc').val(task.description)
-
                     // show status
                     modal.find('[name=task_status]').closest('.form-group').removeClass('hide')
                     modal.find('[name=task_status]').val([task.status])
-
                     modal.find('#task-assign').val(task.assigned_to)
                     modal.find('#task-start-date').data("DateTimePicker").date(new Date(task.start_date));
                     modal.find('#task-end-date').data("DateTimePicker").date(new Date(task.end_date));
                     modal.find('#task-weight').val(task.weight).trigger('change')
                     //show "Remove" button
-                    modal.find('.btn-danger')
-                            .data('task_name', task.task_name)
-                            .data('task_id', task.task_id)
-                            .removeClass('hide')
+                    modal.find('.btn-danger').data('task_name', task.task_name).data('task_id', task.task_id).removeClass('hide')
                 } else {
                     //read only
                     modal.find('#task-name').html(task.task_name)
@@ -342,16 +319,12 @@ $(document).ready(function () {
                     modal.find('#task-desc').html(task.description)
                     modal.find('#task-due-date-remain').html(due.fromNow())
                     modal.find('#task-weight').html(task.weight)
-
-                    modal.find('#task-status').html(
-                            renderStatus(task.status)
-                            )
+                    modal.find('#task-status').html(renderStatus(task.status))
                     modal.find('#task-assign').html(task.person_name)
                 }
                 $('#fine-uploader-manual-trigger-task').fineUploader('setEndpoint', base_url + 'project/uploads/tasks/' + task_id)
                 modal.find('.comment-panel #btn-chat').data('task_id', task_id)
             });
-
             // show chat
             $('#task-chat-panel').removeClass('hide');
             // show upload
@@ -370,10 +343,7 @@ $(document).ready(function () {
             //create
             modal.find('[name=task_id]').val('')
             //hide "Remove" button
-            modal.find('.btn-danger')
-                    .removeData('task_name')
-                    .removeData('task_id')
-                    .addClass('hide')
+            modal.find('.btn-danger').removeData('task_name').removeData('task_id').addClass('hide')
             // hide status
             modal.find('[name=task_status]').closest('.form-group').addClass('hide')
             // hide chat
@@ -384,19 +354,16 @@ $(document).ready(function () {
             $('.trigger-upload').addClass('hide')
             //reset form
             $('#task-modal-form #task-form')[0].reset();
-            $('#task-modal-form #task-form')
-                    .find('#task-weight').val(3)
-                    .trigger('change')
+            $('#task-modal-form #task-form').find('#task-weight').val(3).trigger('change')
         }
     });
-
-
     var task_validator = $('#task-modal-form #task-form').validate();
     $('#task-modal-form .btn-subm').click(function (e) {
         var form = $('#task-modal-form #task-form')
                 //serialize the form, except those in hidden template
-                , action = form.attr('action')
-                , h = form.find(":input:not(.template :input)").serialize();
+                ,
+                action = form.attr('action'),
+                h = form.find(":input:not(.template :input)").serialize();
         // validate form
         if (task_validator.form()) {
             // process the form
@@ -421,11 +388,9 @@ $(document).ready(function () {
                         }
                         //close modal
                         $('#task-modal-form').modal('hide');
-
                     });
         }
     });
-
     // ======================== ACTION LISTENER =============================
     // add person
     // create person as user will toggle email column
@@ -433,29 +398,26 @@ $(document).ready(function () {
         $(this).parent().parent().next().toggle();
     })
     $('.add-person-btn').click(function (e) {
-        var
-                btn = $(this),
+        var btn = $(this),
                 select = btn.parent().parent().find('select'),
                 person_form = $('.new-person-form').clone(true).removeClass('hide'),
                 is_user = person_form.find("[name=is_user]"),
-                person_validator = person_form.validate(
-                        {
-                            rules: {
-                                email: {
-                                    required: {
-                                        depends: function (element) {
-                                            return is_user.is(":checked");
-                                        }
-                                    },
-                                    email: {
-                                        depends: function (element) {
-                                            return is_user.is(":checked");
-                                        }
-                                    }
+                person_validator = person_form.validate({
+                    rules: {
+                        email: {
+                            required: {
+                                depends: function (element) {
+                                    return is_user.is(":checked");
+                                }
+                            },
+                            email: {
+                                depends: function (element) {
+                                    return is_user.is(":checked");
                                 }
                             }
                         }
-                );
+                    }
+                });
         var dialog = bootbox.dialog({
             title: 'Add new Person',
             message: person_form,
@@ -484,15 +446,11 @@ $(document).ready(function () {
                                             //insert the new person and make it selected
                                             var option = new Option(data.person_name, data.success);
                                             option.selected = true;
-
                                             select.append(option);
                                             select.trigger("change");
                                         }
-
                                         //close modal
                                         dialog.modal('hide');
-
-
                                     });
                         }
                         return false;
@@ -517,7 +475,10 @@ $(document).ready(function () {
         var new_comment = $(this).parent().prev().val();
         var task_id = $(this).data('task_id');
         $.ajax({
-            data: {"task_id": task_id, "content": new_comment},
+            data: {
+                "task_id": task_id,
+                "content": new_comment
+            },
             url: base_url + 'project/add_task_comment',
             type: 'POST',
             dataType: 'json',
@@ -548,7 +509,9 @@ $(document).ready(function () {
             callback: function (result) {
                 if (result) {
                     $.ajax({
-                        data: {"project_id": uid},
+                        data: {
+                            "project_id": uid
+                        },
                         url: base_url + 'project/delete',
                         type: 'POST',
                         success: function (result) {
@@ -579,7 +542,9 @@ $(document).ready(function () {
             callback: function (result) {
                 if (result) {
                     $.ajax({
-                        data: {"task_id": uid},
+                        data: {
+                            "task_id": uid
+                        },
                         url: base_url + 'project/delete_task',
                         type: 'POST',
                         success: function (result) {
@@ -636,18 +601,12 @@ $(document).ready(function () {
             }
         }
     });
-
-
-
     $('#task-modal-form .trigger-upload').click(function () {
         $('#fine-uploader-manual-trigger-task').fineUploader('uploadStoredFiles');
     })
-
     $('#documents .trigger-upload').click(function () {
         $('#fine-uploader-manual-trigger-project').fineUploader('uploadStoredFiles');
     });
-
-
     /////////////////////////////// GANTT
     function initGE() {
         // here starts gantt initialization
@@ -655,7 +614,6 @@ $(document).ready(function () {
         ge.permissions.canSeePopEdit = false;
         ge.resourceUrl = base_url + 'vendor/jquery-gantt/res/';
         ge.set100OnClose = true;
-
         var workSpace = $('#workSpace');
         ge.init(workSpace);
         workSpace.css({
@@ -663,25 +621,14 @@ $(document).ready(function () {
             height: $(window).height() - 280
         });
         loadI18n(); //overwrite with localized ones
-
         //bind save button
         $('#save-timeline').click(saveGanttOnServer);
-
         //in order to force compute the best-fitting zoom level
         delete ge.gantt.zoom;
-
-
         loadFromServer();
-
-
-
-
-
         ge.editor.element.oneTime(100, "cl", function () {
             $(this).find("tr.emptyRow:first").click()
         });
-
-
     }
     // lazy init GE on the first time tab shown
     $('a[href="#timeline"]').on('shown.bs.tab', function (e) {
@@ -706,9 +653,7 @@ $(document).ready(function () {
                 }
             }
         });
-
     }
-
 
     function saveGanttOnServer() {
         var n = new Noty({
@@ -717,16 +662,13 @@ $(document).ready(function () {
             text: 'Saving to server',
         }).show();
         var prj = ge.saveProject();
-
         delete prj.resources;
         delete prj.roles;
-
         if (ge.deletedTaskIds.length > 0) {
             if (!confirm("TASK_THAT_WILL_BE_REMOVED\n" + ge.deletedTaskIds.length)) {
                 return;
             }
         }
-
         $.ajax(base_url + "/project/save_timeline", {
             dataType: "json",
             data: {
@@ -734,7 +676,6 @@ $(document).ready(function () {
                 timeline: JSON.stringify(prj)
             },
             type: "POST",
-
             success: function (response) {
                 n.close()
                 if (response.ok) {
@@ -755,19 +696,14 @@ $(document).ready(function () {
                     if (response.message) {
                         errMsg = errMsg + response.message + "\n";
                     }
-
                     if (response.errorMessages.length) {
                         errMsg += response.errorMessages.join("\n");
                     }
-
                     alert(errMsg);
                 }
             }
-
         });
-
     }
-
 
     function loadI18n() {
         GanttMaster.messages = {
@@ -792,8 +728,4 @@ $(document).ready(function () {
             "PLEASE_SAVE_PROJECT": "PLEASE_SAVE_PROJECT"
         };
     }
-
-
-
-
 })
