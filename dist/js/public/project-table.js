@@ -29,26 +29,31 @@ $(document).ready(function () {
             return percent;
         } else {
             if (percent > -1) {
-                var cls = '';
+                var cls = '',tooltip='';
                 if (f[2] === '2') {
                     //udah beres
                     cls = 'progress-bar-info';
+                    tooltip='finished project';
                 } else if (f[2] === '4') {
                     //suspended
                     cls = 'progress-bar-warning';
+                    tooltip='suspended project';
                 } else if (f[2] === '1' && new Date() > new Date(f[3])) {
                     //masih aktif tapi udah telat
                     cls = 'progress-bar-danger';
+                    tooltip='behind schedule';
                 } else if (f[2] === '1' && f[6]) {
                     //masih aktif, project belum telat, tapi ada task yang telat
+                    tooltip='overdue task';
                     cls = 'progress-bar-late';
                 } else {
                     //active dan belum telat
+                    tooltip='in progress';
                     cls = 'progress-bar-success'
                 }
 //                percent =percent*100;// WHY IT GOT ROUNDING ERROR
                 percent = percent * 10000 / 100;
-                return `<div class="progress">
+                return `<div class="progress" data-toggle="tooltip" title="`+tooltip+`">
                     <div class="progress-bar progress-bar-striped ` + cls + `" role="progressbar" aria-valuenow="` + percent + `" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: ` + percent + `%">
                         ` + percent + `%
                     </div>
