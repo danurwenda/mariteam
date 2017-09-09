@@ -31,7 +31,7 @@
                 <tbody>
                     <?php foreach ($ps as $p) { ?>
                         <tr data-uid="<?php echo $p->user_id; ?>">
-                            <td><?php echo $p->user_name; ?></td>
+                            <td><?php echo $p->person_name; ?></td>
                             <td><?php echo $p->status == 0 ? 'Blocked' : 'Active'; ?></td>
                             <td><?php echo $p->rname; ?></td>
                             <td><?php echo $p->created_at; ?></td>

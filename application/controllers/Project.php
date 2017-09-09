@@ -48,7 +48,7 @@ class Project extends Module_Controller {
             'self' => true,
             'content' => $content,
             'time' => $cmt->time,
-            'user' => $this->logged_user->user_name
+            'user' => $this->logged_user->person_name
         ]);
     }
 
@@ -56,12 +56,12 @@ class Project extends Module_Controller {
         $task = $this->projects_model->get_task($task_id);
         $task_owner_person = $this->users_model->get_person($task->assigned_to);
         // can delete as the owner of the task
-        $can_delete = ($this->logged_user->user_id == $task_owner_person->user_id);
+        $can_delete = ($this->logged_user->person_id == $task_owner_person->person_id);
         if (!$can_delete) {
             $project = $this->projects_model->get_project($task->project_id);
             $project_owner_person = $this->users_model->get_person($project->assigned_to);
             // can delete as the owner of the project
-            $can_delete = ($this->logged_user->user_id == $project_owner_person->user_id);
+            $can_delete = ($this->logged_user->person_id == $project_owner_person->person_id);
         }
         $docs = $this->documents_model->get_documents('tasks', $task_id);
         foreach ($docs as $d) {
@@ -79,7 +79,7 @@ class Project extends Module_Controller {
         $project = $this->projects_model->get_project($project_id);
         $project_owner_person = $this->users_model->get_person($project->assigned_to);
         // can delete as the owner of the project
-        $can_delete = ($this->logged_user->user_id == $project_owner_person->user_id);
+        $can_delete = ($this->logged_user->person_id == $project_owner_person->person_id);
 
         $timeline = $this->projects_model->get_tasks_timeline($project_id);
         //can write if admin or project owner
@@ -147,12 +147,13 @@ class Project extends Module_Controller {
         $comments = [];
 
         $this->db
-                ->select('users.user_id, content, time, users.user_name')
-                ->join('users', 'users.user_id=task_comments.user_id');
+                ->select('users.user_id, content, time, person_name')
+                ->join('users', 'users.user_id=task_comments.user_id')
+                ->join('persons','persons.person_id=users.person_id');
         $q = $this->db->get_where('task_comments', ['task_id' => $task_id]);
         foreach ($q->result() as $comment) {
             $comments[] = [
-                'user' => $comment->user_name,
+                'user' => $comment->person_name,
                 'self' => ($this->logged_user->user_id === $comment->user_id),
                 'content' => $comment->content,
                 'time' => $comment->time
@@ -170,9 +171,8 @@ class Project extends Module_Controller {
             $task_name = $this->input->post('task_name');
             $desc = $this->input->post('desc');
             $user = $this->input->post('assigned_to');
-            // TODO : clean this date-time remnants
-            $date = date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00");
-            $end_date = date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59");
+            $date = date_format(date_create($this->input->post('start_date')), "Y-m-d");
+            $end_date = date_format(date_create($this->input->post('end_date')), "Y-m-d");
             $weight = $this->input->post('weight');
             $status = $this->input->post('task_status');
             $task_id = $this->input->post('task_id');
@@ -248,7 +248,7 @@ class Project extends Module_Controller {
                 $task = $this->projects_model->get_task($doc->source_id);
                 $task_owner_person = $this->users_model->get_person($task->assigned_to);
                 // can delete as the owner of the task
-                $can_delete = ($this->logged_user->user_id == $task_owner_person->user_id);
+                $can_delete = ($this->logged_user->person_id == $task_owner_person->person_id);
             }
             // last resort
             if (!can_delete || $doc->source_table == 'projects') {
@@ -283,7 +283,7 @@ class Project extends Module_Controller {
                 $doc[] = // the owner of this document
                         ($doc[5] === $this->logged_user->user_id) ||
 //project owner
-                        ($project_owner->user_id == $this->logged_user->user_id) ||
+                        ($project_owner->person_id == $this->logged_user->person_id) ||
 // or an admin
                         ($this->logged_user->role_id == 1);
             }
@@ -359,7 +359,8 @@ class Project extends Module_Controller {
                     //name
                     $this->input->post('name'),
                     //dates (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
+                    date_format(date_create($this->input->post('start_date')), "Y-m-d"), 
+                    date_format(date_create($this->input->post('end_date')), "Y-m-d"),
                     //description
                     $this->input->post('description'),
                     //topic
@@ -379,7 +380,8 @@ class Project extends Module_Controller {
         if ($project) {
             $data['admin'] = $this->logged_user->role_id == 1;
             $pic = $this->users_model->get_person($project->assigned_to);
-            $data['owner'] = $pic && $this->logged_user->user_id == $pic->user_id;
+            $user_pic = $this->users_model->get_user_by_person($pic->person_id);
+            $data['owner'] = $user_pic && $this->logged_user->user_id == $user_pic->user_id;
             $data['pagetitle'] = 'Edit Project';
             $data['project'] = $project;
             $data['users'] = $this->db->get('persons')->result();

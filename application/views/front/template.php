@@ -69,7 +69,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-user">
                             <li>
-                                <i><?php echo $_loggeduser->user_name; ?></i>
+                                <i><?php echo $_loggeduser->person_name; ?></i>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('user/profile'); ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>

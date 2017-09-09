@@ -1,8 +1,7 @@
 <?php
 
 defined('BASEPATH') OR exit('No direct script access allowed');
-/* to Change this template, choose Tools | Templates
- * and open the template in the editor.
+/* This Controller can only be accessed by Administrator
  */
 
 class People extends Module_Controller {
@@ -75,11 +74,52 @@ class People extends Module_Controller {
         $this->template->display('people_form', $data);
     }
 
-    function create() {
+    function create_user_simple() {
+        $person_name = $this->input->post('person_name');
+        $institusi = $this->input->post('institusi');
+        $jabatan = $this->input->post('jabatan');
+        $is_user = $this->input->post('is_user');
+        $change = false;
+        if ($is_user) {
+            //create user
+            $change = $this->users_model->create_user(
+                    //email
+                    $this->input->post('email'),
+                    //plain password
+                    'mariteam',
+                    //fullname
+                    $person_name,
+                    //instansi,
+                    $institusi,
+                    //jabatan
+                    $jabatan,
+                    //status, default : active
+                    1,
+                    //role_id, default : editor
+                    2
+            );
+        } else {
+            //create person only
+            $change = $this->users_model->create_person(
+                    //fullname
+                    $person_name,
+                    //instansi,
+                    $institusi,
+                    //jabatan
+                    $jabatan
+            );
+        }
+        echo json_encode([
+            'success' => $change,
+            'person_name' => $person_name
+        ]);
+    }
+
+    function create_user() {
         $data['pagetitle'] = 'Add User';
         $data['roles'] = $this->db->get('roles')->result();
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('email', 'Username', ['trim', 'required', 'strip_tags', 'is_unique[users.email]']);
+        $this->form_validation->set_rules('email', 'Username', ['trim', 'required', 'strip_tags', 'is_unique[persons.email]']);
         $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
         $this->form_validation->set_rules('password', 'Password', 'required');
         $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');

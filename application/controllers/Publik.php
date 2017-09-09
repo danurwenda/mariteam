@@ -105,12 +105,13 @@ class Publik extends CI_Controller {
         $comments = [];
 
         $this->db
-                ->select('users.user_id, content, time, users.user_name')
-                ->join('users', 'users.user_id=task_comments.user_id');
+                ->select('users.user_id, content, time, person_name')
+                ->join('users', 'users.user_id=task_comments.user_id')
+                ->join('persons', 'persons.person_id=users.person_id');
         $q = $this->db->get_where('task_comments', ['task_id' => $task_id]);
         foreach ($q->result() as $comment) {
             $comments[] = [
-                'user' => $comment->user_name,
+                'user' => $comment->person_name,
                 'self' => false,
                 'content' => $comment->content,
                 'time' => $comment->time

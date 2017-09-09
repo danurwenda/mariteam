@@ -181,36 +181,6 @@ class Projects_model extends CI_Model {
         return $this->datatables->generate();
     }
 
-    public function get_table_data($logged_user_id = null) {
-        if (isset($logged_user_id)) {
-            $this->db->where('projects.assigned_to', $logged_user_id)
-                    ->or_where('tasks.assigned_to', $logged_user_id);
-        }
-        $this->db
-                ->distinct()
-                ->select('projects.project_id, project_name,project_statuses.name status, projects.end_date, user_name');
-        $this->db->join('users', 'users.user_id = projects.assigned_to')
-                ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                ->join('project_statuses', 'project_statuses.status_id=projects.project_status');
-        $ret = $this->db->get($this->table)->result();
-
-        foreach ($ret as $row) {
-            //calculate progress            
-            $this->db->select_sum('weight');
-            $weight_sum = $this->db->get_where('tasks', ['project_id' => $row->project_id]);
-            $project_weight = $weight_sum->row()->weight;
-            if ($project_weight > 0) {
-                //calculate the total weight of those tasks done
-                $this->db->select_sum('weight');
-                $done_sum = $this->db->get_where('tasks', ['project_id' => $row->project_id, 'is_done' => true]);
-                $row->progress = round(10000 * ($done_sum->row()->weight) / $project_weight) / 100;
-            } else {
-                $row->progress = -1;
-            }
-        }
-        return $ret;
-    }
-
     public function get_login_info($u) {
         $this->db->where('email', $u)->limit(1);
         $q = $this->db->get($this->table);

@@ -48,7 +48,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#assign-task').select2({
+    $('select#task-assign').select2({
         dropdownParent: $('#task-modal-form'),
         theme: "bootstrap"
     });
@@ -381,17 +381,17 @@ $(document).ready(function () {
             $('#task-upload').removeClass('col-md-6');
             $('.trigger-upload').addClass('hide')
             //reset form
-            $('#task-modal-form form')[0].reset();
-            $('#task-modal-form form')
+            $('#task-modal-form #task-form')[0].reset();
+            $('#task-modal-form #task-form')
                     .find('#task-weight').val(3)
                     .trigger('change')
         }
     });
 
 
-    var task_validator = $('#task-modal-form form').validate();
-    $('#task-modal-form .btn-primary').click(function (e) {
-        var form = $('#task-modal-form form')
+    var task_validator = $('#task-modal-form #task-form').validate();
+    $('#task-modal-form .btn-subm').click(function (e) {
+        var form = $('#task-modal-form #task-form')
                 //serialize the form, except those in hidden template
                 , action = form.attr('action')
                 , h = form.find(":input:not(.template :input)").serialize();
@@ -425,6 +425,86 @@ $(document).ready(function () {
     });
 
     // ======================== ACTION LISTENER =============================
+    // add person
+    // create person as user will toggle email column
+    $('.new-person-form').on('change', '[name=is_user]', function () {
+        $(this).parent().parent().next().toggle();
+    })
+    $('.add-person-btn').click(function (e) {
+        var
+                btn = $(this),
+                select = btn.parent().parent().find('select'),
+                person_form = $('.new-person-form').clone(true).removeClass('hide'),
+                is_user = person_form.find("[name=is_user]"),
+                person_validator = person_form.validate(
+                        {
+                            rules: {
+                                email: {
+                                    required: {
+                                        depends: function (element) {
+                                            return is_user.is(":checked");
+                                        }
+                                    },
+                                    email: {
+                                        depends: function (element) {
+                                            return is_user.is(":checked");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                );
+        var dialog = bootbox.dialog({
+            title: 'Add new Person',
+            message: person_form,
+            buttons: {
+                cancel: {
+                    label: '<i class="ace-icon fa fa-times"></i>Cancel',
+                    className: 'btn-sm'
+                },
+                submit: {
+                    label: '<i class="ace-icon fa fa-check"></i>Submit',
+                    className: 'btn-sm btn-primary',
+                    callback: function () {
+                        var h = person_form.find(":input:not(.template :input)").serialize();
+                        if (person_validator.form()) {
+                            // process the form
+                            $.ajax({
+                                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                                url: person_form.attr('action'), // the url where we want to POST
+                                data: h, // our data object
+                                dataType: 'json', // what type of data do we expect back from the server
+                                encode: true
+                            })
+                                    // using the done promise callback
+                                    .done(function (data) {
+                                        if (data.success) {
+                                            //insert the new person and make it selected
+                                            var option = new Option(data.person_name, data.success);
+                                            option.selected = true;
+
+                                            select.append(option);
+                                            select.trigger("change");
+                                        }
+
+                                        //close modal
+                                        dialog.modal('hide');
+
+
+                                    });
+                        }
+                        return false;
+                    }
+                },
+            }
+        });
+        //since this dialog might be displayed above another modal..
+        //https://stackoverflow.com/questions/31187708/show-bootbox-over-modal-dialog
+        dialog.one('hidden.bs.modal', function () {
+            if ($('.modal.in').css('display') == 'block')
+                $('body').addClass('modal-open')
+        })
+    })
     // add comment
     $('.comment-panel #btn-input').keyup(function () {
         //enable button only if comment is not empty

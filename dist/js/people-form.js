@@ -1,5 +1,5 @@
 $('.btn-danger').on("click", function (e) {
-    var name = $(this).data('user_name')
+    var name = $(this).data('person_name')
     var uid = $(this).data('user_id')
     bootbox.confirm({
         message: "Are you sure you want to remove the account " + name + "?",

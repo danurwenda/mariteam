@@ -47,6 +47,54 @@
 
             , '<?php echo base_url('dist/js/project-form.js') ?>');
 </script>
+<?php
+if (
+        $admin ||
+        (isset($project) && $owner)
+) {
+    ?>
+    <form action="<?php echo $admin ? site_url('people/create_user_simple') : site_url('user/create_person'); ?>" class="row form-horizontal hide new-person-form" method="post" accept-charset="utf-8">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Name </label>
+
+                <div class="col-sm-9">
+                    <input required minlength="5" type="text" placeholder="Person name" class="form-control" name="person_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Institution </label>
+
+                <div class="col-sm-9">
+                    <input required minlength="3" type="text" placeholder="Institution/Company" class="form-control" name="institusi">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Position </label>
+
+                <div class="col-sm-9">
+                    <input required minlength="3" type="text" placeholder="Position" class="form-control" name="jabatan">
+                </div>
+            </div>
+            <?php if ($admin) { ?>
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <input type="checkbox" name="is_user"> Create user account for this person?
+                    </div>
+                </div>
+                <div class="form-group" id="new-person-form-email" style="display: none">
+                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Email </label>
+
+                    <div class="col-sm-9">
+                        <input type="email" placeholder="Email" class="form-control" name="email">
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </form>
+
+<?php } ?>
+
 <div class="col-lg-12">
     <div class="panel panel-default main-panel" data-project="<?php echo isset($project) ? $project->project_id : null; ?>">
         <div class="panel-heading">
@@ -96,6 +144,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label>Assign to</label>
+                                    <div class="input-group">
                                     <?php
                                     $options = [];
                                     foreach ($users as $u) {
@@ -112,6 +161,12 @@
                                             , $js);
                                     echo form_error('assigned_to', '<div class="has-error"><label class="control-label">', '</label></div>');
                                     ?>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default add-person-btn" type="button" >
+                                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                            </button>
+                                        </span>
+                                </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="multi-append" class="control-label">Topics</label>
@@ -673,10 +728,9 @@
                         <h4 class="blue bigger">Task</h4>
                     </div>
 
-                    <?php if ($owner || $admin) 
-                        { ?>
+                    <?php if ($owner || $admin) { ?>
                         <div class="modal-body modal-form">
-                            <?php echo form_open(site_url('project/edit_task'), ['class' => 'row form-horizontal'], ['task_id' => null, 'project_id' => isset($project) ? $project->project_id : null]); ?>
+                            <?php echo form_open(site_url('project/edit_task'), ['id' => 'task-form', 'class' => 'row form-horizontal'], ['task_id' => null, 'project_id' => isset($project) ? $project->project_id : null]); ?>
                             <div class="col-xs-12">
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label no-padding-right" for="task_name"> Task </label>
@@ -695,19 +749,26 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Assign to </label>
                                     <div class="col-sm-9">
-                                        <?php
-                                        $options = [];
-                                        foreach ($users as $u) {
-                                            $options[$u->person_id] = $u->person_name;
-                                        }
+                                        <div class="input-group">
+                                            <?php
+                                            $options = [];
+                                            foreach ($users as $u) {
+                                                $options[$u->person_id] = $u->person_name;
+                                            }
 
-                                        $js = [
-                                            'id' => 'task-assign',
-                                            'class' => 'form-control select2-in',
-                                            'style' => 'width:100%'
-                                        ];
-                                        echo form_dropdown('assigned_to', $options, isset($project) ? $project->assigned_to : null, $js);
-                                        ?>
+                                            $js = [
+                                                'id' => 'task-assign',
+                                                'class' => 'form-control select2-in',
+                                                'style' => 'width:100%'
+                                            ];
+                                            echo form_dropdown('assigned_to', $options, isset($project) ? $project->assigned_to : null, $js);
+                                            ?>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default add-person-btn" type="button">
+                                                    <span class="glyphicon glyphicon-plus-sign"></span>
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group ">
@@ -800,7 +861,7 @@
                                 Cancel
                             </button>
 
-                            <button class="btn btn-sm btn-primary">
+                            <button class="btn btn-sm btn-primary btn-subm">
                                 <i class="ace-icon fa fa-check"></i>
                                 Submit
                             </button>
@@ -810,8 +871,8 @@
                                 Remove
                             </button>
                         </div>
-                    <?php }
-                    else { ?>
+                    <?php } else {
+                        ?>
                         <!-- label and text only, non-editable -->    
                         <div class="modal-body">
                             <div class='row'>

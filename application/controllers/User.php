@@ -11,11 +11,6 @@ class User extends Member_Controller {
         parent::__construct();
     }
 
-    /**
-     * Dashboard home.
-     * Shows statistical information (e.g chart) about projects under logged user's privilege.
-     * May display different information for different role.
-     */
     function profile() {
         $data['pagetitle'] = 'User Profile';
         $this->template->display('profile', $data);
@@ -45,6 +40,26 @@ class User extends Member_Controller {
             $this->form_validation->set_message('check_self_or_unique', 'This %s is already taken');
             return false;
         }
+    }
+
+    function create_person() {
+        $person_name = $this->input->post('person_name');
+        $institusi = $this->input->post('institusi');
+        $jabatan = $this->input->post('jabatan');
+        //create person only
+        $change = $this->users_model->create_person(
+                //fullname
+                $person_name,
+                //instansi,
+                $institusi,
+                //jabatan
+                $jabatan
+        );
+
+        echo json_encode([
+            'success' => $change,
+            'person_name' => $person_name
+        ]);
     }
 
 }
