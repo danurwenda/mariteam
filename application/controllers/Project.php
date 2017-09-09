@@ -149,7 +149,7 @@ class Project extends Module_Controller {
         $this->db
                 ->select('users.user_id, content, time, person_name')
                 ->join('users', 'users.user_id=task_comments.user_id')
-                ->join('persons','persons.person_id=users.person_id');
+                ->join('persons', 'persons.person_id=users.person_id');
         $q = $this->db->get_where('task_comments', ['task_id' => $task_id]);
         foreach ($q->result() as $comment) {
             $comments[] = [
@@ -178,7 +178,7 @@ class Project extends Module_Controller {
             $task_id = $this->input->post('task_id');
             if (empty($task_id)) {
                 $change = $this->projects_model->add_task(
-                        $project_id, $task_name, $desc, $date, $end_date, $this->logged_user->user_id, $user, $weight, $status
+                        $project_id, $task_name, $desc, $date, $end_date, $this->logged_user->user_id, $user, $weight, 1
                 );
                 echo json_encode([
                     'success' => $change,
@@ -359,8 +359,7 @@ class Project extends Module_Controller {
                     //name
                     $this->input->post('name'),
                     //dates (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('start_date')), "Y-m-d"), 
-                    date_format(date_create($this->input->post('end_date')), "Y-m-d"),
+                    date_format(date_create($this->input->post('start_date')), "Y-m-d"), date_format(date_create($this->input->post('end_date')), "Y-m-d"),
                     //description
                     $this->input->post('description'),
                     //topic

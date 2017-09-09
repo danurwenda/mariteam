@@ -320,6 +320,8 @@ $(document).ready(function () {
                     modal.find('[name=task_id]').val(task.task_id)
                     modal.find('#task-desc').val(task.description)
 
+                    // show status
+                    modal.find('[name=task_status]').closest('.form-group').removeClass('hide')
                     modal.find('[name=task_status]').val([task.status])
 
                     modal.find('#task-assign').val(task.assigned_to)
@@ -373,7 +375,7 @@ $(document).ready(function () {
                     .removeData('task_id')
                     .addClass('hide')
             // hide status
-            modal.find('#is_done').parent().parent().addClass('hide')
+            modal.find('[name=task_status]').closest('.form-group').addClass('hide')
             // hide chat
             $('#task-chat-panel').addClass('hide');
             // hide upload
