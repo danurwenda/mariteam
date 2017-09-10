@@ -15,8 +15,6 @@ class Project extends Module_Controller {
     }
 
     /**
-     * Table view. If user logged in as a Contributor, then only projects 
-     * in which they are involved are shown.
      */
     function index() {
         $data['pagetitle'] = 'Project';
@@ -108,7 +106,6 @@ class Project extends Module_Controller {
                     //convert millisecond to date
                     'start_date' => date("Y-m-d", ($task->start / 1000)),
                     'end_date' => date("Y-m-d", ($task->end / 1000)),
-                    'duration' => $task->duration,
                 ];
                 $project_id = $task->id;
                 $this->db->where('project_id', $task->id);
@@ -233,7 +230,7 @@ class Project extends Module_Controller {
     }
 
     function delete_doc() {
-        $document_id = $this->input->post('document_id');
+        $document_id = $this->input->post('doc_id');
         //find doc
         $doc = $this->documents_model->get_document($document_id);
         $can_delete = // the owner
