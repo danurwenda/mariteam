@@ -17,6 +17,9 @@ body {
 ol, ul {
     list-style: none;
 }
+dt{
+    margin-top: 20px;
+}
 blockquote, q {
     quotes: none;
 }

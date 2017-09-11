@@ -48,7 +48,7 @@
                                     <ul class="nav navbar-nav navbar-right">
                                         <li class="<?php echo $page == 'home' ? 'active' : ''; ?>"><a href="<?php echo site_url(); ?>">Home</a></li>
                                         <li class="<?php echo $page == 'projects' ? 'active' : ''; ?>"><a href="<?php echo site_url('publik/projects'); ?>">Projects</a></li>
-                                        <li class="<?php echo $page == 'events' ? 'active' : ''; ?>"><a href="<?php echo site_url('publik/events'); ?>">Events</a></li>
+                                        <!--<li class="<?php echo $page == 'events' ? 'active' : ''; ?>"><a href="<?php echo site_url('publik/events'); ?>">Events</a></li>-->
                                         <li><a href="<?php echo site_url('dashboard'); ?>">Login</a></li>
                                     </ul>
                                 </div>

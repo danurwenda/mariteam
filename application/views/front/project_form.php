@@ -145,28 +145,28 @@ if (
                                 <div class="form-group">
                                     <label>Assign to</label>
                                     <div class="input-group">
-                                    <?php
-                                    $options = [];
-                                    foreach ($users as $u) {
-                                        $options[$u->person_id] = $u->person_name;
-                                    }
+                                        <?php
+                                        $options = [];
+                                        foreach ($users as $u) {
+                                            $options[$u->person_id] = $u->person_name;
+                                        }
 
-                                    $js = [
-                                        'id' => 'project_assign_to',
-                                        'class' => 'form-control select2'
-                                    ];
-                                    echo form_dropdown(
-                                            'assigned_to', $options, set_value('assigned_to', isset($project) ? $project->assigned_to : null
-                                            )
-                                            , $js);
-                                    echo form_error('assigned_to', '<div class="has-error"><label class="control-label">', '</label></div>');
-                                    ?>
+                                        $js = [
+                                            'id' => 'project_assign_to',
+                                            'class' => 'form-control select2'
+                                        ];
+                                        echo form_dropdown(
+                                                'assigned_to', $options, set_value('assigned_to', isset($project) ? $project->assigned_to : null
+                                                )
+                                                , $js);
+                                        echo form_error('assigned_to', '<div class="has-error"><label class="control-label">', '</label></div>');
+                                        ?>
                                         <span class="input-group-btn">
                                             <button class="btn btn-default add-person-btn" type="button" >
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
                                             </button>
                                         </span>
-                                </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="multi-append" class="control-label">Topics</label>
@@ -257,8 +257,12 @@ if (
                                     foreach ($topics as $u) {
                                         $topic_opts[$u->topic_id] = $u->topic_name;
                                     }
-                                    foreach ($project->topics as $t) {
-                                        echo "<li>" . $topic_opts[$t] . "</li>";
+                                    if (count($project->topics) > 0) {
+                                        foreach ($project->topics as $t) {
+                                            echo "<li>" . $topic_opts[$t] . "</li>";
+                                        }
+                                    } else {
+                                        echo "<li>-</li>";
                                     }
                                     ?>
                                 </ul>

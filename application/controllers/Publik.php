@@ -52,6 +52,36 @@ class Publik extends CI_Controller {
         $this->public_template->display('public/projects_table', $data);
     }
 
+    /**
+     * Fetching list of projects, 30 items per page
+     * @return type
+     */
+    public function projects_s2() {
+        $q = $this->input->get('q');
+        $page = $this->input->get('page') || 1;
+
+        $this->db->start_cache();
+        //filtering criteria, without paging..
+        $this->db
+                ->or_like('UPPER(project_name)', strtoupper($q));
+        $this->db->stop_cache();
+
+        // count all
+        $all = $this->db->get('projects')->num_rows();
+
+        // put paging on
+        $this->db->limit(30, 30 * ($page - 1));
+        $this->db->select('project_id id,project_name');
+        $items = $this->db
+                ->get('projects')
+                ->result();
+
+        echo json_encode([
+            'total_count' => $all,
+            'items' => $items
+        ]);
+    }
+
     public function projects_dt() {
         if ($this->input->is_ajax_request()) {
             echo $this->projects_model->get_dt();
@@ -128,12 +158,36 @@ class Publik extends CI_Controller {
     public function get_timeline() {
         $project_id = $this->input->get('project_id');
         $timeline = $this->projects_model->get_tasks_timeline($project_id);
-        $timeline['canWrite']=false;
+        $timeline['canWrite'] = false;
         $ret = [
             'ok' => true,
             'project' => $timeline
         ];
         echo json_encode($ret);
+    }
+
+    /**
+     * Data provider for FullCalendar library
+     */
+    public function calendar() {
+        $this->db->select('start_time start, end_time end, event_id id, event_name title,description,location, person_name pic');
+        $this->db->join('persons', 'persons.person_id=events.pic');
+        $this->db->or_where('start_time > ', $this->input->get('start'));
+        $this->db->or_where('end_time < ', $this->input->get('end'));
+        $events = $this->db->get('events')->result();
+
+        foreach ($events as $e) {
+            $projects = null;
+            //find related projects
+            $this->db->join('projects', 'projects.project_id=project_event.project_id');
+            $pes = $this->db->get_where('project_event', ['event_id' => $e->id])->result();
+            foreach ($pes as $pe) {
+                $projects[$pe->project_id] = $pe->project_name;
+            }
+            $e->projects=$projects;
+        }
+
+        echo json_encode($events);
     }
 
     /**

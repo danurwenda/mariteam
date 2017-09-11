@@ -76,7 +76,7 @@ class Projects_model extends CI_Model {
             // but the expected end time for this project is actually still in the future
             $project[] = ( $project[3] > date('Y-m-d')) && $this->is_delayed($project[5]);
         }
-        echo json_encode($decoded);
+        return json_encode($decoded);
     }
 
     /**

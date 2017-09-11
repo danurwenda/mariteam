@@ -89,8 +89,12 @@
                                 foreach ($topics as $u) {
                                     $topic_opts[$u->topic_id] = $u->topic_name;
                                 }
-                                foreach ($project->topics as $t) {
-                                    echo "<li>" . $topic_opts[$t] . "</li>";
+                                if (count($project->topics) > 0) {
+                                    foreach ($project->topics as $t) {
+                                        echo "<li>" . $topic_opts[$t] . "</li>";
+                                    }
+                                } else {
+                                    echo "<li>-</li>";
                                 }
                                 ?>
                             </ul>

@@ -17,7 +17,11 @@
             '<?php echo js_asset_url('fullcalendar/fullcalendar.min.js') ?>',
             );
 </script>
-
+<style>
+    .fc-content {
+        cursor:pointer;
+    }
+</style>
 <div class='center-block row' id="piechart" ></div>
 <div class="col-md-12">
 

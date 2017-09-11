@@ -34,9 +34,9 @@ $(document).ready(function () {
         },
         navLinks: true, // can click day/week names to navigate views
         eventLimit: true, // allow "more" link when too many events
-        events: [
-            
-        ]
-
+        events: base_url + 'publik/calendar',
+        eventClick: function (e) {
+            window.location = base_url+'event/edit/'+e.id;
+        }
     });
 })
