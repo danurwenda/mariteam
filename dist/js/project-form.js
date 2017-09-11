@@ -5,8 +5,15 @@ $(document).ready(function () {
         //minDate: new Date($('#task-start-date').data('min'))
     });
     $('input#task-end-date').datetimepicker({
-        format: "DD-MMMM-YYYY",
+        format: "DD-MMMM-YYYY",useCurrent:false
         //maxDate: new Date($('#task-end-date').data('max'))
+    });
+    //link those datetimepickers
+    $("input#task-start-date").on("dp.change", function (e) {
+        $('input#task-end-date').data("DateTimePicker").minDate(e.date);
+    });
+    $("input#task-end-date").on("dp.change", function (e) {
+        $('input#task-start-date').data("DateTimePicker").maxDate(e.date);
     });
     $('#project_start_date').datetimepicker({
         format: "DD-MMMM-YYYY"
@@ -14,6 +21,13 @@ $(document).ready(function () {
     $('#project_end_date').datetimepicker({
         format: "DD-MMMM-YYYY",
         useCurrent: false
+    });
+    //link those datetimepickers
+    $("#project_start_date").on("dp.change", function (e) {
+        $('#project_end_date').data("DateTimePicker").minDate(e.date);
+    });
+    $("#project_end_date").on("dp.change", function (e) {
+        $('#project_start_date').data("DateTimePicker").maxDate(e.date);
     });
     $('#project_assign_to').select2({
         theme: "bootstrap"
