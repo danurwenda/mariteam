@@ -26,7 +26,7 @@
                         <th>PIC</th>
                         <th>Status</th>
                         <th>Due date</th>
-                        <th>Progress</th>
+                        <th>Progress (%)</th>
                     </tr>
                 </thead>
             </table>

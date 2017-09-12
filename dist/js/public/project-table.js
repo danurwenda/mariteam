@@ -65,18 +65,19 @@ $(document).ready(function () {
     };
 
     renderStatus = function (d, t, f, m) {
+
         switch (d) {
             case '1':
-                return '<span class="label label-success">Active</span>'
+                return '<span class="label label-success">Active</span>';
                 break;
             case '2':
-                return '<span class="label label-info">Done</span>'
+                return '<span class="label label-info">Done</span>';
                 break;
             case '3':
-                return '<span class="label label-danger">Failed</span>'
+                return '<span class="label label-danger">Failed</span>';
                 break;
             case '4':
-                return '<span class="label label-warning">Suspended</span>'
+                return '<span class="label label-warning">Suspended</span>';
                 break;
             default:
                 return 'Undefined'
