@@ -14,7 +14,7 @@ $(document).ready(function () {
             if (past)
             {
                 var cls = '';
-                if (new Date() > new Date(f[3]) && f[2] !== '2') {
+                if (f[2] === '3') {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
