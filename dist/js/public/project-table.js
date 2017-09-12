@@ -38,7 +38,7 @@ $(document).ready(function () {
                     //suspended
                     cls = 'progress-bar-warning';
                     tooltip = 'suspended project';
-                } else if (f[2] === '1' && new Date() > new Date(f[3])) {
+                } else if (f[2] === '3') {
                     //masih aktif tapi udah telat
                     cls = 'progress-bar-danger';
                     tooltip = 'behind schedule';
@@ -54,7 +54,7 @@ $(document).ready(function () {
                 percent = percent * 100;
                 percent = percent.toFixed(2);
                 return `<div class="progress" data-toggle="tooltip" title="` + tooltip + `">
-                    <div class="progress-bar progress-bar-striped ` + cls + `" role="progressbar" aria-valuenow="` + percent + `" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: ` + percent + `%">
+                    <div class="progress-bar progress-bar-striped ` + cls + `" role="progressbar" aria-valuenow="` + percent + `" aria-valuemin="0" aria-valuemax="100" style="font-weight:bold;color:black;padding-left:5px;min-width: 0.2em;width: ` + percent + `%">
                         ` + percent + `%
                     </div>
                 </div>`;
