@@ -103,19 +103,19 @@ if (
         <div class="panel-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#basic" data-toggle="tab">Basic</a>
+                <li <?php if (!isset($project)) { ?> class="active"<?php } ?>><a href="#basic" data-toggle="tab">Basic</a>
                 </li>
                 <?php if (isset($project)) { ?>
-                    <li><a href="#task" data-toggle="tab">Task</a>
+                    <li class="active"><a href="#task" data-toggle="tab">Tasks</a>
                     </li>
                     <li><a href="#documents" data-toggle="tab">Documents</a>
                     </li>
-                    <li class=""><a href="#timeline" data-toggle="tab">Timeline</a>
-                    </li>
+                    <li class=""><a href="#timeline" data-toggle="tab">Timeline</a></li>
+                    <li class=""><a href="#events" data-toggle="tab">Events</a></li>
                 <?php } ?>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade in active" id="basic">
+                <div class="tab-pane fade <?php if (!isset($project)) { ?> in active<?php } ?>" id="basic">
                     <?php
                     if ($admin) {
                         echo form_open(isset($project) ? 'project/update' : 'project/create', ['id' => 'project_form'], isset($project) ? ['project_id' => $project->project_id] : []);
@@ -271,7 +271,7 @@ if (
                     <?php } ?>
                 </div>
                 <?php if (isset($project)) { ?>
-                    <div class="tab-pane fade" id="task">
+                    <div class="tab-pane fade in active" id="task">
                         <div class="row">
                             <div class="col-lg-12">
                                 <?php if ($admin || $owner) { ?>
@@ -353,6 +353,32 @@ if (
                                 </div>
 
 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="events">
+                        <div class='row'>
+                            <div class='col-lg-12'>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Related Events
+                                    </div>
+                                    <!-- /.panel-heading -->
+                                    <div class="panel-body">
+                                        <table width="100%" class="table table-striped table-bordered table-hover" id="events-datatable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>PIC</th>
+                                                    <th>Date & Time</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <!-- /.table-responsive -->
+                                    </div>
+                                    <!-- /.panel-body -->
+                                </div>
                             </div>
                         </div>
                     </div>

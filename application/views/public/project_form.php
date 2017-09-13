@@ -46,17 +46,17 @@
         <div class="panel-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#basic" data-toggle="tab">Basic</a>
+                <li><a href="#basic" data-toggle="tab">Basic</a>
                 </li>
-                <li><a href="#task" data-toggle="tab">Task</a>
-                </li>
-                <li><a href="#documents" data-toggle="tab">Documents</a>
+                <li class="active"><a href="#task" data-toggle="tab">Tasks</a>
                 </li>
                 <li class=""><a href="#timeline" data-toggle="tab">Timeline</a>
                 </li>
+                <li><a href="#events" data-toggle="tab">Events</a>
+                </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade in active" id="basic">
+                <div class="tab-pane fade" id="basic">
                     <dl>
                         <dt>Project Name</dt>
                         <dd><?php echo $project->project_name; ?></dd>
@@ -101,7 +101,7 @@
                         </dd>
                     </dl>
                 </div>
-                <div class="tab-pane fade" id="task">
+                <div class="tab-pane fade in active" id="task">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="panel panel-default">
@@ -131,31 +131,6 @@
 
                     </div>
                 </div>
-                <div class="tab-pane fade" id="documents">
-                    <div class='row'>
-                        <div class='col-lg-12'>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Document List
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('publik/docs_dt'); ?>">
-                                        <thead>
-                                            <tr>
-                                                <th>File name</th>
-                                                <th>Size</th>
-                                                <th>Uploaded</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    <!-- /.table-responsive -->
-                                </div>
-                                <!-- /.panel-body -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="tab-pane fade" id="timeline">
                     <div class='row'>
                         <div class='col-lg-12'>
@@ -168,6 +143,33 @@
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="events">
+                    <div class='row'>
+                        <div class='col-lg-12'>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Related Events
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <table width="100%" class="table table-striped table-bordered table-hover" id="events-datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>PIC</th>
+                                                <th>Date & Time</th>
+                                                <th>Location</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <!-- /.table-responsive -->
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <!-- /.panel-body -->
         </div>

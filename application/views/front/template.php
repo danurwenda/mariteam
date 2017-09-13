@@ -6,10 +6,11 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
+        <meta name="description" content="A project management tools collection for Coordinating Ministry for Maritime Affairs">
+        <meta name="author" content="Slurp">
+        <link rel="icon" type="image/png" href="<?php echo base_url('image.png');?>" />
 
-        <title>MariTeam | A Project Management Tool for Your Team</title>
+        <title>MariTeam | Admin Panel</title>
 
         <!-- Bootstrap Core CSS -->
         <?php echo css_asset('bootstrap/css/bootstrap.css'); ?>
@@ -42,7 +43,7 @@
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-        <script>var $$ = [];var base_url = '<?php echo base_url(); ?>';</script>
+        <script>var $$ = [], base_url = '<?php echo base_url(); ?>';</script>
     </head>
 
     <body>
@@ -89,14 +90,14 @@
                     <div class="sidebar-nav navbar-collapse">
                         <ul class="nav" id="side-menu">
                             <li class="sidebar-search">
-                                <div class="input-group custom-search-form">
+                                <!--div class="input-group custom-search-form">
                                     <input id="searchBox" type="text" class="form-control" placeholder="Search..." onkeypress="return runScript(event)">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="button">
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </span>
-                                </div>
+                                </div-->
                                 <!-- /input-group -->
                             </li>
                             <li>

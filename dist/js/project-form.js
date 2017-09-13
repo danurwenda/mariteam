@@ -5,8 +5,8 @@ $(document).ready(function () {
         //minDate: new Date($('#task-start-date').data('min'))
     });
     $('input#task-end-date').datetimepicker({
-        format: "DD-MMMM-YYYY",useCurrent:false
-        //maxDate: new Date($('#task-end-date').data('max'))
+        format: "DD-MMMM-YYYY", useCurrent: false
+                //maxDate: new Date($('#task-end-date').data('max'))
     });
     //link those datetimepickers
     $("input#task-start-date").on("dp.change", function (e) {
@@ -66,24 +66,7 @@ $(document).ready(function () {
     $('.knob').knob()
     $('#project-due-date-remain').html('(' + moment($('#project-due-date').text(), 'D-MMMM-YYYY HH:mm').fromNow() + ')')
 
-    function renderStatus(d) {
-        switch (d) {
-            case '1':
-                return '<span class="label label-success">Active</span>'
-                break;
-            case '2':
-                return '<span class="label label-info">Done</span>'
-                break;
-            case '3':
-                return '<span class="label label-danger">Failed</span>'
-                break;
-            case '4':
-                return '<span class="label label-warning">Suspended</span>'
-                break;
-            default:
-                return 'Undefined'
-        }
-    }
+
     // ====================== DATA TABLE =============================
     var tasks_table = $('#tasks-datatable').DataTable({
         order: [
@@ -117,11 +100,14 @@ $(document).ready(function () {
                     } else {
                         if (past) {
                             var cls = '';
-                            if (new Date() > new Date(f[2]) && f[3] !== '2') {
+                            if (f[3] === '3') {
                                 cls = 'alert-danger';
                             }
-                            var dpast = moment(new Date(past))
-                            return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
+                            var dpast = moment(past, 'YYYY-MM-DD')
+                            dpast.seconds(59);
+                            dpast.minutes(59);
+                            dpast.hours(23);
+                            return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY') + '">' + dpast.fromNow() + '</span>';
                         }
                         return 'Never';
                     }
@@ -130,7 +116,24 @@ $(document).ready(function () {
             //status
             {
                 responsivePriority: 2,
-                render: renderStatus
+                render: function (d) {
+                    switch (d) {
+                        case '1':
+                            return '<span class="label label-success">Active</span>'
+                            break;
+                        case '2':
+                            return '<span class="label label-info">Done</span>'
+                            break;
+                        case '3':
+                            return '<span class="label label-danger">Failed</span>'
+                            break;
+                        case '4':
+                            return '<span class="label label-warning">Suspended</span>'
+                            break;
+                        default:
+                            return 'Undefined'
+                    }
+                }
             },
             //weight
             {},
@@ -226,6 +229,39 @@ $(document).ready(function () {
                         return ''
                 }
             }
+        ]
+    });
+    var event_table = $('#events-datatable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: base_url + 'event/events_dt',
+            type: 'POST',
+            data: function (d) {
+                d['project_id'] = $('.main-panel').data('project')                
+            }
+        },
+        columns: [
+            // name link
+            {
+                render: function (n, t, f, m) {
+                    if (t === 'sort') {
+                        return n;
+                    } else {
+                        //render link using id
+                        return '<a href="' + base_url + 'event/edit/' + f[4] + '">' + n + '</a>'
+                    }
+                }
+            },
+            // PIC
+            {},
+            // start time
+            {
+                
+            },
+            // location
+            {}
         ]
     });
     // ============== MODALS TO LOAD ENTITY ==========================

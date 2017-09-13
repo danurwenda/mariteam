@@ -3,7 +3,7 @@ $(document).ready(function () {
         var data = google.visualization.arrayToDataTable(raw);
 
         var options = {
-            colors: ["#2f7ed8", "#0d233a", "#8bbc21", "#910000", "#1aadce", "#492970", "#f28f43", "#77a1e5", "#c42525", "#a6c96a"],
+            colors: ["#5cb85c", "#5bc0de", "#d9534f", "#f9c154", "#1aadce", "#492970", "#f28f43", "#77a1e5", "#c42525", "#a6c96a"],
             is3D: true,
             title: 'Project by Status'
         };

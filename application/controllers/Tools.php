@@ -15,6 +15,7 @@ class Tools extends CI_Controller {
     public function message() {
         if (is_cli()) {
             $this->db->query("update `projects` set project_status=3 WHERE date(now())>end_date and project_status=1");
+            $this->db->query("update `tasks` set status=3 WHERE date(now())>end_date and status=1");
         }
     }
 

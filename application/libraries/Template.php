@@ -36,7 +36,7 @@ class Template {
         $data['menus'] = $menus;
         $data['_loggeduser'] = $this->user;
         $data['_content'] = $this->_ci->load->view('front/' . $template, $data, true);
-        $this->_ci->load->view('front/template.php', $data);
+        $this->_ci->load->view('front/template2.php', $data);
     }
 
 }

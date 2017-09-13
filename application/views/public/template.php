@@ -3,10 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>MariTeam Project Tracker</title>
-        <meta name="description" content="Free Bootstrap Theme by BootstrapMade.com">
-        <meta name="keywords" content="free website templates, free bootstrap themes, free template, free bootstrap, free website template">
-        <link rel="icon" type="image/png" href="<?php echo base_url('image.png');?>" />
+        <title>MariTeam | Maritim Project Management Tools</title>
+        <meta name="description" content="A project management tools collection for Coordinating Ministry for Maritime Affairs">
+        <link rel="icon" type="image/png" href="<?php echo base_url('image.png'); ?>" />
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300|Raleway:300,400,900,700italic,700,300,600">
         <!--<link rel="stylesheet" type="text/css" href="css/jquery.bxslider.css">-->
         <?php echo css_asset('font-awesome/css/font-awesome.min.css'); ?>
@@ -20,7 +19,7 @@
             Author: BootstrapMade.com
             Author URL: https://bootstrapmade.com
         ======================================================= -->
-        <script>var $$ = [];var base_url = '<?php echo base_url(); ?>';</script>
+        <script>var $$ = [], base_url = '<?php echo base_url(); ?>';</script>
     </head>
     <body>
 
@@ -41,7 +40,7 @@
                                     <a class="navbar-brand" href="<?php echo site_url(); ?>">
                                         Mari<span class="logo-dec">team</span>
                                         <div style="clear:both"></div>
-                                        <span class="subs">Maritim Project Management Tool</span>
+                                        <span class="subs">Maritim Project Management Tools</span>
                                     </a>
                                 </div>
                                 <div class="collapse navbar-collapse" id="myNavbar">
