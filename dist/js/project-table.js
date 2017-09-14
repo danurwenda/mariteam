@@ -6,7 +6,33 @@
 
 
 $(document).ready(function () {
-
+$('#topics').select2({
+        theme: "bootstrap",
+        ajax: {
+            url: base_url + 'project/get_topics',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.topic_name,
+                            id: item.topic_id
+                        }
+                    })
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        }
+    });
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
             return past;

@@ -17,6 +17,7 @@ class Event extends Module_Controller {
     /**
      */
     function index() {
+        $data['active_menu'] = 3;
         $data['pagetitle'] = 'Event';
         $data['admin'] = $this->logged_user->role_id == 1;
         $this->template->display('event_table', $data);
@@ -43,6 +44,7 @@ class Event extends Module_Controller {
     }
 
     function create() {
+        $data['active_menu'] = 3;
         if ($this->logged_user->role_id != 1) {
             //forbidden
             redirect('event');
@@ -75,6 +77,7 @@ class Event extends Module_Controller {
     }
 
     function edit($event_id) {
+        $data['active_menu'] = 3;
         $event = $this->events_model->get_event($event_id);
         if ($event) {
             $data['admin'] = $this->logged_user->role_id == 1;

@@ -119,7 +119,7 @@
                                                 , $js);
                                         ?>
                                         <span class="input-group-btn">
-                                            <button class="btn btn-default add-person-btn" type="button" >
+                                            <button class="btn btn-sm btn-default add-person-btn" type="button" >
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
                                             </button>
                                         </span>
@@ -292,7 +292,7 @@
             <div class="qq-upload-button-selector qq-upload-button">
             <div>Select files</div>
             </div>
-            <button type="button" class="btn btn-primary trigger-upload">
+            <button type="button" class="btn btn-primary trigger-upload btn-minier">
             <i class="icon-upload icon-white"></i> Upload
             </button>
             </div>

@@ -18,6 +18,8 @@ class Project extends Module_Controller {
      */
     function index() {
         $data['pagetitle'] = 'Project';
+        $data['active_menu'] = 1;
+        $data['topics'] = $this->db->get('topics')->result();
         $data['admin'] = $this->logged_user->role_id == 1;
         $this->template->display('project_table', $data);
     }
@@ -295,6 +297,7 @@ class Project extends Module_Controller {
     }
 
     function create() {
+        $data['active_menu'] = 1;
         if ($this->logged_user->role_id != 1) {
             //forbidden
             redirect('project');
@@ -372,6 +375,7 @@ class Project extends Module_Controller {
     }
 
     function edit($project_id) {
+        $data['active_menu'] = 1;
         $project = $this->projects_model->get_project($project_id);
         if ($project) {
             $data['admin'] = $this->logged_user->role_id == 1;

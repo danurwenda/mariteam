@@ -63,10 +63,11 @@ class Projects_model extends CI_Model {
         $this->datatables
                 ->distinct('projects.project_id')
                 // additional field to search into : project description, task name, task description
-                ->add_search_column(['projects.description', 'tasks.description', 'task_name'])
-                ->select('project_name,person_name, project_status,projects.end_date,projects.progress, projects.project_id')
+                ->add_search_column(['projects.description', 'tasks.description', 'task_name','p2.person_name'])
+                ->select('project_name,p1.person_name, project_status,projects.end_date,projects.progress, projects.project_id')
                 ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                ->join('persons', 'persons.person_id=projects.assigned_to', 'left')
+                ->join('persons p1', 'p1.person_id=projects.assigned_to', 'left')
+                ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
                 ->from('projects');
         $json = $this->datatables->generate();
         $decoded = json_decode($json);

@@ -68,6 +68,24 @@ $(document).ready(function () {
 
 
     // ====================== DATA TABLE =============================
+    function renderStatus(d) {
+        switch (d) {
+            case '1':
+                return '<span class="label label-success">Active</span>'
+                break;
+            case '2':
+                return '<span class="label label-info">Done</span>'
+                break;
+            case '3':
+                return '<span class="label label-danger">Failed</span>'
+                break;
+            case '4':
+                return '<span class="label label-warning">Suspended</span>'
+                break;
+            default:
+                return 'Undefined'
+        }
+    }
     var tasks_table = $('#tasks-datatable').DataTable({
         order: [
             [5, "asc"]
@@ -116,34 +134,13 @@ $(document).ready(function () {
             //status
             {
                 responsivePriority: 2,
-                render: function (d) {
-                    switch (d) {
-                        case '1':
-                            return '<span class="label label-success">Active</span>'
-                            break;
-                        case '2':
-                            return '<span class="label label-info">Done</span>'
-                            break;
-                        case '3':
-                            return '<span class="label label-danger">Failed</span>'
-                            break;
-                        case '4':
-                            return '<span class="label label-warning">Suspended</span>'
-                            break;
-                        default:
-                            return 'Undefined'
-                    }
-                }
+                render: renderStatus
             },
             //weight
             {},
             //order
             {visible: false, searchable: false}
         ]
-    });
-    // trigger the responsive data table to adjust its appearance when the tab is shown
-    $('a[href="#task"]').on('shown.bs.tab', function (e) {
-        tasks_table.responsive.recalc();
     });
     // since we use responsive datatables INSIDE a tabbed panel,
     // we need to trigger the calculating of table's width after the table is
@@ -231,7 +228,7 @@ $(document).ready(function () {
             }
         ]
     });
-    var event_table = $('#events-datatable').DataTable({
+    var events_table = $('#events-datatable').DataTable({
         responsive: true,
         processing: true,
         serverSide: true,
@@ -239,7 +236,7 @@ $(document).ready(function () {
             url: base_url + 'event/events_dt',
             type: 'POST',
             data: function (d) {
-                d['project_id'] = $('.main-panel').data('project')                
+                d['project_id'] = $('.main-panel').data('project')
             }
         },
         columns: [
@@ -258,11 +255,21 @@ $(document).ready(function () {
             {},
             // start time
             {
-                
+
             },
             // location
             {}
         ]
+    });
+    // trigger the responsive data table to adjust its appearance when the tab is shown
+    $('a[href="#task"]').on('shown.bs.tab', function (e) {
+        tasks_table.responsive.recalc();
+    });
+    $('a[href="#documents"]').on('shown.bs.tab', function (e) {
+        docs_table.responsive.recalc();
+    });
+    $('a[href="#events"]').on('shown.bs.tab', function (e) {
+        events_table.responsive.recalc();
     });
     // ============== MODALS TO LOAD ENTITY ==========================
     // TOPIC

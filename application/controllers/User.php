@@ -13,10 +13,12 @@ class User extends Member_Controller {
 
     function profile() {
         $data['pagetitle'] = 'User Profile';
+        $data['active_menu'] = 2;
         $this->template->display('profile', $data);
     }
 
     function update() {
+        $data['active_menu'] = 2;
         $data['pagetitle'] = 'User Profile';
         $this->load->library('form_validation');
         $this->form_validation->set_rules('email', 'Username', 'trim|required|strip_tags|callback_check_self_or_unique');

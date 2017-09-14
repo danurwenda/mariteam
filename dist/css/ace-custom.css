@@ -1,0 +1,50 @@
+/* 
+    Created on : Sep 13, 2017, 7:22:20 PM
+    Author     : danur
+*/
+
+
+
+
+/* Kill col-sm-12 class from div parent of a table set by datatables.bootstrap*/
+.dataTables_wrapper>.row>.col-sm-12{
+    padding-left:0px;
+    padding-right:0px;
+}
+
+/* Overriding bootstrap style to comply with ace-bs layout*/
+@media (min-width: 768px) {
+    .navbar-toggle {
+        display: block;
+    }
+}
+@media (min-width: 992px) {
+    .navbar-toggle {
+        display: none;
+    }
+}
+
+/* Sometimes we init a select2 to a select element which is hidden by default*/
+.select2-container {
+    width: 100% !important;
+}
+
+/* https://stackoverflow.com/questions/34310271/css-place-in-circle-first-letter-of-the-name */
+[data-letters]:before {
+    content:attr(data-letters);
+    display:inline-block;
+    font-size:1em;
+    width:3.5em;
+    height:3.5em;
+    line-height:3.5em;
+    text-align:center;
+    border-radius:50%;
+    background:plum;
+    vertical-align:middle;
+    color:white;
+}
+
+/* Originally search bar was located at the far right of breadcrumb div*/
+.sidebar-shortcuts .nav-search{
+    top:6px;
+}

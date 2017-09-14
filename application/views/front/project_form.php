@@ -3,6 +3,7 @@
 <?php echo css_asset('select2/select2.min.css'); ?>
 <?php echo css_asset('select2/themes/select2-bootstrap.min.css'); ?>
 <?php echo css_asset('fine-uploader/fine-uploader-new.min.css'); ?>
+<?php echo css_asset('datatables-plugins/dataTables.bootstrap.css'); ?>
 <?php echo css_asset('datatables-responsive/responsive.dataTables.css'); ?>
 <?php echo css_asset('jquery-gantt/platform.css'); ?>
 <?php echo css_asset('jquery-gantt/libs/jquery/dateField/jquery.dateField.css'); ?>
@@ -162,7 +163,7 @@ if (
                                         echo form_error('assigned_to', '<div class="has-error"><label class="control-label">', '</label></div>');
                                         ?>
                                         <span class="input-group-btn">
-                                            <button class="btn btn-default add-person-btn" type="button" >
+                                            <button class="btn btn-default add-person-btn btn-sm" type="button" >
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
                                             </button>
                                         </span>
@@ -184,7 +185,7 @@ if (
                                         echo form_multiselect('topics[]', $topic_opts, set_value('topics[]', isset($project) ? $project->topics : null ), $js);
                                         ?>
                                         <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#topic-modal-form">
+                                            <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#topic-modal-form">
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
                                             </button>
                                         </span>
@@ -273,7 +274,7 @@ if (
                 <?php if (isset($project)) { ?>
                     <div class="tab-pane fade in active" id="task">
                         <div class="row">
-                            <div class="col-lg-12">
+                            <div class="col-xs-12">
                                 <?php if ($admin || $owner) { ?>
                                     <div class="pull-right">
                                         <span><a class="btn btn-primary btn-raised pull-right" data-toggle="modal" data-target="#task-modal-form"><i class="fa fa-tasks"></i> Create</a></span>
@@ -307,7 +308,7 @@ if (
                     </div>
                     <div class="tab-pane fade" id="documents">
                         <div class='row'>
-                            <div class='col-lg-12'>
+                            <div class='col-xs-12'>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         Document List
@@ -331,7 +332,7 @@ if (
                             </div>
                         </div>
                         <div class='row'>
-                            <div class='col-lg-12'>
+                            <div class='col-xs-12'>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         Upload Document
@@ -346,7 +347,7 @@ if (
                     </div>
                     <div class="tab-pane fade" id="timeline">
                         <div class='row'>
-                            <div class='col-lg-12'>
+                            <div class='col-xs-12'>
 
                                 <div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden; border:1px solid #e5e5e5; position:relative; margin:0 5px; width:100%;">
 
@@ -358,7 +359,7 @@ if (
                     </div>
                     <div class="tab-pane fade" id="events">
                         <div class='row'>
-                            <div class='col-lg-12'>
+                            <div class='col-xs-12'>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         Related Events
@@ -673,7 +674,7 @@ if (
             <div class="qq-upload-button-selector qq-upload-button">
             <div>Select files</div>
             </div>
-            <button type="button" class="btn btn-primary trigger-upload">
+            <button type="button" class="btn btn-primary trigger-upload btn-minier">
             <i class="icon-upload icon-white"></i> Upload
             </button>
             </div>
@@ -794,7 +795,7 @@ if (
                                             echo form_dropdown('assigned_to', $options, isset($project) ? $project->assigned_to : null, $js);
                                             ?>
                                             <span class="input-group-btn">
-                                                <button class="btn btn-default add-person-btn" type="button">
+                                                <button class="btn btn-default add-person-btn btn-sm" type="button">
                                                     <span class="glyphicon glyphicon-plus-sign"></span>
                                                 </button>
                                             </span>
@@ -993,3 +994,4 @@ if (
         </div>
         <?php
     }?>
+<!-- di mana -->

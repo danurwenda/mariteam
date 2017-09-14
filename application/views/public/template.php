@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300|Raleway:300,400,900,700italic,700,300,600">
         <!--<link rel="stylesheet" type="text/css" href="css/jquery.bxslider.css">-->
         <?php echo css_asset('font-awesome/css/font-awesome.min.css'); ?>
-        <?php echo css_asset('bootstrap/css/bootstrap.css'); ?>
+        <?php echo css_asset('bootstrap/css/bootstrap.min.css'); ?>
         <!-- Noty -->
         <?php echo css_asset('noty/noty.css'); ?>
         <link href="<?php echo base_url(); ?>/dist/css/public/style.css" rel="stylesheet">

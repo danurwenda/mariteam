@@ -13,7 +13,7 @@
         <title>MariTeam | Admin Panel</title>
 
         <!-- Bootstrap Core CSS -->
-        <?php echo css_asset('bootstrap/css/bootstrap.css'); ?>
+        <?php echo css_asset('bootstrap/css/bootstrap.min.css'); ?>
 
         <!-- MetisMenu CSS -->
         <?php echo css_asset('metisMenu/metisMenu.min.css'); ?>

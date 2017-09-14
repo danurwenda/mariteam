@@ -18,6 +18,7 @@ class Dashboard extends Member_Controller {
      */
     function index() {
         $data['pagetitle'] = 'Dashboard';
+        $data['active_menu'] = 0;
         $this->template->display('dashboard', $data);
     }
 

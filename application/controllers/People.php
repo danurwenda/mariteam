@@ -16,6 +16,7 @@ class People extends Module_Controller {
      * May display different information for different role.
      */
     function index() {
+        $data['active_menu'] = 2;
         $data['pagetitle'] = 'People';
         $data['ps'] = $this->users_model->get_all_joined();
         $this->template->display('people_table', $data);
