@@ -6,33 +6,8 @@
 
 
 $(document).ready(function () {
-$('#topics').select2({
-        theme: "bootstrap",
-        ajax: {
-            url: base_url + 'project/get_topics',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    term: params.term
-                };
-            },
-            processResults: function (data, params) {
-                return {
-                    results: $.map(data, function (item) {
-                        return {
-                            text: item.topic_name,
-                            id: item.topic_id
-                        }
-                    })
-                };
-            },
-            cache: true
-        },
-        escapeMarkup: function (markup) {
-            return markup;
-        }
-    });
+    
+
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
             return past;
@@ -90,14 +65,16 @@ $('#topics').select2({
         }
     };
 
-    $('#projects-datatable').DataTable({
+    var projects_dt = $('#projects-datatable').DataTable({
         responsive: true,
         processing: true,
         serverSide: true,
         ajax: {
             url: base_url + 'project/projects_dt',
             type: 'POST',
-            //data: function (d) {}
+            data: function (d) {
+                d['groups[]'] = $('#groups').val()
+            }
         },
         columns: [
             // name link
@@ -141,4 +118,37 @@ $('#topics').select2({
             {render: renderProgress}
         ]
     });
+    
+    $('#groups').select2({
+        theme: "bootstrap",
+        ajax: {
+            url: base_url + 'project/get_groups',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.group_name,
+                            id: item.group_id
+                        }
+                    })
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        }
+    });
+
+    $('#groups').change(function () {
+        //update table
+        projects_dt.ajax.reload()
+    })
 });

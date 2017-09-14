@@ -60,10 +60,17 @@ class Projects_model extends CI_Model {
     }
 
     public function get_dt() {
+        if ($groups = $this->input->post('groups')) {
+            $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
+            foreach ($groups as $g) {
+                $this->datatables->or_where('group_id', $g);
+            }
+        }
         $this->datatables
                 ->distinct('projects.project_id')
+
                 // additional field to search into : project description, task name, task description
-                ->add_search_column(['projects.description', 'tasks.description', 'task_name','p2.person_name'])
+                ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
                 ->select('project_name,p1.person_name, project_status,projects.end_date,projects.progress, projects.project_id')
                 ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                 ->join('persons p1', 'p1.person_id=projects.assigned_to', 'left')
@@ -242,6 +249,10 @@ class Projects_model extends CI_Model {
         }
     }
 
+    /**
+     * For select2
+     * @return type
+     */
     public function get_topics() {
         return $this->db
                         ->where('UPPER(topic_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
@@ -249,7 +260,25 @@ class Projects_model extends CI_Model {
                         ->result_array();
     }
 
-    public function update($id, $user, $name,$start_date, $due_date, $description, $topics, $status) {
+    /**
+     * For select2
+     * @return type
+     */
+    public function get_groups($person_id) {
+        if (isset($person_id)) {
+            $this->db
+                    ->group_start()
+                    ->where('is_public', 1)
+                    ->or_where("exists(SELECT * from person_group where person_id = $person_id and group_id=groups.group_id)")
+                    ->group_end();
+        }
+        return $this->db
+                        ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
+                        ->get('groups')
+                        ->result_array();
+    }
+
+    public function update($id, $user, $name, $start_date, $due_date, $description, $topics, $status) {
         $this->db->where('project_id', $id);
         //update username
         if (isset($user)) {

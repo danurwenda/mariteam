@@ -10,38 +10,7 @@
             , '<?php echo js_asset_url('select2/select2.min.js') ?>'
             , '<?php echo base_url('dist/js/project-table.js') ?>');
 </script>
-<div class="col-xs-12 widget-container-col" id="widget-container-col-1">
-    <div class="widget-box" id="widget-box-1">
-        <div class="widget-header">
-            <h5 class="widget-title">Project Filter</h5>
-
-            <div class="widget-toolbar">
-                <a href="#" data-action="collapse">
-                    <i class="ace-icon fa fa-chevron-up"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="widget-body">
-            <div class="widget-main">
-                <form>
-                    <div class="form-group">
-                        <label for="multi-append" class="control-label">Topics</label>
-                        <div class="input-group">
-                            <select multiple="multiple" name="topics" id="topics"></select>
-                            <span class="input-group-btn">
-                                <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#topic-modal-form">
-                                    <span class="glyphicon glyphicon-plus-sign"></span>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-xs-12">
+<div class="col-lg-12">
     <div class="pull-right">
         <?php if ($admin) { ?>
             <span><a class="btn btn-primary btn-raised pull-right" href="<?php echo site_url('project/create'); ?>"><i class="fa fa-cubes"></i> Create</a></span>
@@ -53,6 +22,35 @@
         </div>
         <!-- /.panel-heading -->
         <div class="panel-body">
+            <div class="col-xs-12 widget-container-col" id="widget-container-col-9">
+                <div class="widget-box collapsed" id="widget-box-9">
+                    <div class="widget-header">
+                        <h5 class="widget-title">Project Filter</h5>
+
+                        <div class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                                <i class="ace-icon fa fa-chevron-down"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <div class="form-group">
+                                <label for="multi-append" class="control-label">Project Group</label>
+                                <select class="form-control" multiple="multiple" name="groups" id="groups"></select>
+                            </div>
+                        </div>
+
+                        <!--div class="widget-toolbox padding-8 clearfix">
+                            <button class="btn" type="reset">
+                                <i class="ace-icon fa fa-undo bigger-110"></i>
+                                Reset
+                            </button>
+                        </div-->
+                    </div>
+                </div>
+            </div>
             <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
                 <thead>
                     <tr>

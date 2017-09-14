@@ -408,6 +408,13 @@ class Project extends Module_Controller {
         echo json_encode($this->projects_model->get_topics());
     }
 
+    function get_groups() {
+        echo json_encode($this->projects_model->get_groups(
+                        $this->logged_user->role_id == 1 ? null :
+                                $this->logged_user->person_id
+        ));
+    }
+
     function uploads($source, $source_id = null) {
         $this->load->library('UploadHandler');
         $uploader = new UploadHandler();
