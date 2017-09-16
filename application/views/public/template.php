@@ -70,7 +70,7 @@
             <footer id="footer">
                 <div class="container">
                     <div class="row text-center">
-                        <p>&copy; Baker Theme & Dimas Danurwenda. All Rights Reserved.</p>
+                        <p>&copy; 2017 Baker Theme & Dimas Danurwenda. All Rights Reserved.</p>
                         <div class="credits">
                             <!-- 
                                 All the links in the footer should remain intact. 
