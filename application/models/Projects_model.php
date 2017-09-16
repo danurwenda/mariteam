@@ -271,7 +271,7 @@ class Projects_model extends CI_Model {
      * @return type
      */
     public function get_groups($person_id = null, $role = null) {
-        if ($role !== 1) {
+        if ($role != 1) {
             $this->db
                     ->group_start()
                     ->where('is_public', 1);
