@@ -313,6 +313,14 @@ class Project extends Module_Controller {
         $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
         $this->form_validation->set_rules('end_date', 'Due Date', 'required');
         if ($this->form_validation->run() == true) {
+            $topics = $this->input->post('topics');
+            if ($topics === null) {
+                $topics = [];
+            }
+            $groups = $this->input->post('groups');
+            if ($groups === null) {
+                $groups = [];
+            }
             $data['updated'] = true;
             $this->projects_model->create(
                     //logged user
@@ -326,9 +334,9 @@ class Project extends Module_Controller {
                     //description
                     $this->input->post('description'),
                     //topic
-                    $this->input->post('topics'),
+                    $topics,
                     //groups
-                    $this->input->post('groups')
+                    $groups
             );
             //return to table view
             redirect('project');
@@ -356,6 +364,14 @@ class Project extends Module_Controller {
             $this->form_validation->set_rules('assigned_to', 'Assigned User', 'required');
         }
         if ($this->form_validation->run() == true) {
+            $topics = $this->input->post('topics');
+            if ($topics === null) {
+                $topics = [];
+            }
+            $groups = $this->input->post('groups');
+            if ($groups === null) {
+                $groups = [];
+            }
             $data['updated'] = true;
             $this->projects_model->update(
                     $project_id,
@@ -368,11 +384,11 @@ class Project extends Module_Controller {
                     //description
                     $this->input->post('description'),
                     //topic
-                    $this->input->post('topics'),
+                    $topics,
                     //status
                     $this->input->post('status'),
                     //groups
-                    $this->input->post('groups')
+                    $groups
             );
             //redirect to edit
             redirect('project/edit/' . $project_id);

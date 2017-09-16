@@ -83,6 +83,9 @@ class People extends Module_Controller {
         $phone = $this->input->post('phone');
         // groups
         $groups = $this->input->post('groups');
+        if ($groups === null) {
+            $groups = [];
+        }
         if ($this->input->post('user')) {
             $succ = $this->users_model->create_user(
                     $name, $instansi, $jabatan, $phone,
@@ -103,6 +106,10 @@ class People extends Module_Controller {
     function update() {
         $user = $this->input->post('user');
         $password = $this->input->post('password');
+        $groups = $this->input->post('groups');
+        if ($groups === null) {
+            $groups = [];
+        }
         if (!isset($user)) {
             // updating existing user
             // $user_id is set to an integer
@@ -131,7 +138,7 @@ class People extends Module_Controller {
                 $user, $this->input->post('email'),
                 // password
                 $password, // <-- may be empty
-                $this->input->post('status'), $this->input->post('role'), $this->input->post('groups')
+                $this->input->post('status'), $this->input->post('role'), $groups
         );
         echo json_encode(['success' => $succ]);
     }
