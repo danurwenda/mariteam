@@ -305,6 +305,7 @@ class Project extends Module_Controller {
         $data['pagetitle'] = 'Add Project';
         $data['admin'] = $this->logged_user->role_id == 1;
         $data['users'] = $this->db->get('persons')->result();
+        $data['groups'] = $this->db->get('groups')->result();
         $data['topics'] = $this->db->get('topics')->result();
         $data['statuses'] = $this->db->get('project_statuses')->result();
         $this->load->library('form_validation');
@@ -325,7 +326,9 @@ class Project extends Module_Controller {
                     //description
                     $this->input->post('description'),
                     //topic
-                    $this->input->post('topics')
+                    $this->input->post('topics'),
+                    //groups
+                    $this->input->post('groups')
             );
             //return to table view
             redirect('project');
@@ -339,11 +342,13 @@ class Project extends Module_Controller {
         $project_id = $this->input->post('project_id');
         $project = $this->projects_model->get_project($project_id);
         $data['project'] = $project;
-        $data['users'] = $this->db->get('users')->result();
+        $data['users'] = $this->db->get('persons')->result();
+        $data['groups'] = $this->db->get('groups')->result();
         $data['topics'] = $this->db->get('topics')->result();
         $data['admin'] = $this->logged_user->role_id == 1;
         $data['owner'] = $this->logged_user->user_id == $project->assigned_to;
         $data['statuses'] = $this->db->get('project_statuses')->result();
+        $data['active_menu'] = 1;
         $this->load->library('form_validation');
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('end_date', 'Due Date', 'required');
@@ -365,7 +370,9 @@ class Project extends Module_Controller {
                     //topic
                     $this->input->post('topics'),
                     //status
-                    $this->input->post('status')
+                    $this->input->post('status'),
+                    //groups
+                    $this->input->post('groups')
             );
             //redirect to edit
             redirect('project/edit/' . $project_id);
@@ -384,6 +391,7 @@ class Project extends Module_Controller {
             $data['owner'] = $user_pic && $this->logged_user->user_id == $user_pic->user_id;
             $data['pagetitle'] = 'Edit Project';
             $data['project'] = $project;
+            $data['groups'] = $this->db->get('groups')->result();
             $data['users'] = $this->db->get('persons')->result();
             $data['topics'] = $this->db->get('topics')->result();
             $data['statuses'] = $this->db->get('project_statuses')->result();
@@ -410,8 +418,7 @@ class Project extends Module_Controller {
 
     function get_groups() {
         echo json_encode($this->projects_model->get_groups(
-                        $this->logged_user->role_id == 1 ? null :
-                                $this->logged_user->person_id
+                        $this->logged_user->person_id, $this->logged_user->role_id
         ));
     }
 

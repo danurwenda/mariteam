@@ -82,6 +82,9 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/bootbox.js/*.js'])
             .pipe(gulp.dest('vendor/bootbox'))
+    
+    gulp.src(['bower_components/jquery-form/dist/*.js'])
+            .pipe(gulp.dest('vendor/jquery-form'))
 
     gulp.src(['bower_components/datatables-plugins/integration/bootstrap/3/*'])
             .pipe(gulp.dest('vendor/datatables-plugins'))

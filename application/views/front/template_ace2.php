@@ -23,6 +23,7 @@
         <![endif]-->
         <?php echo css_asset("ace2/css/ace-skins.min.css"); ?>
         <?php echo css_asset("ace2/css/ace-rtl.min.css"); ?>
+        <?php echo css_asset("noty/noty.css"); ?>
 
         <!--[if lte IE 9]>
         <?php echo css_asset("/ace-ie.min.css"); ?>
@@ -163,6 +164,13 @@
                     </div>
 
                     <div class="page-content">
+                        <?php if (isset($pagetitle)) { ?>
+                            <div class="page-header">
+                                <h1>
+                                    <?php echo $pagetitle;?>
+                                </h1>
+                            </div>
+                        <?php } ?>
                         <div class="row">
                             <div class="col-xs-12">
                                 <!-- PAGE CONTENT BEGINS -->

@@ -88,6 +88,10 @@ class Publik extends CI_Controller {
         }
     }
 
+    function get_groups() {
+        echo json_encode($this->projects_model->get_groups());
+    }
+
     /**
      * Detailed view of a project
      * @param int $project_id project id
@@ -184,7 +188,7 @@ class Publik extends CI_Controller {
             foreach ($pes as $pe) {
                 $projects[$pe->project_id] = $pe->project_name;
             }
-            $e->projects=$projects;
+            $e->projects = $projects;
         }
 
         echo json_encode($events);

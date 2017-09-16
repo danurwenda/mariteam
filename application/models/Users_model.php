@@ -21,11 +21,12 @@ class Users_model extends CI_Model {
         parent::__construct();
     }
 
-    public function get_all_joined() {
-        $this->db->select('users.user_id, person_name, users.status, roles.name rname, users.created_at, users.last_access');
-        $this->db->join('roles', 'roles.role_id=users.role_id')
-                ->join('persons', 'persons.person_id=users.person_id');
-        return $this->db->get($this->table)->result();
+    public function get_table() {
+        $this->db->select('persons.person_id,person_name,user_id,name,last_access');
+        $this->db
+                ->join('users', 'persons.person_id=users.person_id', 'left')
+                ->join('roles', 'roles.role_id=users.role_id', 'left');
+        return $this->db->get('persons')->result();
     }
 
     public function get_login_info($u) {
@@ -43,9 +44,23 @@ class Users_model extends CI_Model {
     }
 
     public function get_person($person_id) {
-        $this->db->where('person_id', $person_id)->limit(1);
+        $this->db->select('persons.*');
+        $this->db->select('user_id,role_id,status');
+        $this->db->where('persons.person_id', $person_id)->limit(1);
+        $this->db->join('users', 'persons.person_id=users.person_id', 'left');
         $q = $this->db->get("persons");
-        return ($q->num_rows() > 0) ? $q->row() : false;
+        if ($q->num_rows() > 0) {
+            $p = $q->row();
+            //add groups
+            $p->groups = [];
+            $groups = $this->db->get_where('person_group', ['person_id' => $p->person_id]);
+            foreach ($groups->result() as $pt) {
+                $p->groups[] = $pt->group_id;
+            }
+            return $p;
+        } else {
+            return false;
+        }
     }
 
     public function get_user_by_person($person_id) {
@@ -54,31 +69,59 @@ class Users_model extends CI_Model {
         return ($q->num_rows() > 0) ? $q->row() : false;
     }
 
-    public function update($id, $username, $password = '', $name = '', $status = null, $role = null) {
-        if ((!empty($password)) || (isset($status)) || (isset($role))) {
-            $this->db->where('user_id', $id);
-            //and update password if $password is not empty
+    public function update(
+    $person_id, $name, $instansi, $jabatan, $phone, $is_user, $email, $password, $status, $role, $groups
+    ) {
+        $this->db->where('person_id', $person_id);
+        $ret = $this->db->update('persons', [
+            'person_name' => $name,
+            'instansi' => $instansi,
+            'jabatan' => $jabatan,
+            'email' => $email,
+            'phone' => $phone
+        ]);
+        $this->set_groups($person_id, $groups);
+        if (isset($is_user) ){
+            // password may or may not be set
             if (!empty($password)) {
                 $this->db->set('hash', password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]));
             }
-            if (isset($status)) {
-                $this->db->set('status', $status);
+            $this->db->set('status', $status);
+            $this->db->set('role_id', $role);
+            if ($is_user == 'on') {
+                $this->db->set('person_id', $person_id);
+                //create new user
+                $ret = $ret && $this->db->insert('users');
+                $is_user = $this->db->insert_id();
+            } else {
+                $this->db->where('user_id', $is_user);
+                $ret = $ret && $this->db->update('users');
             }
-            if (isset($role)) {
-                $this->db->set('role_id', $role);
-            }
-            //do update
-            $this->db->update($this->table);
         }
-        ////////////////////////////////////////////////////////
-        $this->db->where('person_id', $this->get_user($id)->person_id);
-        //update username
-        $this->db->set('email', $username);
-        if (!empty($name)) {
-            $this->db->set('person_name', $name);
+        return $ret;
+    }
+
+    public function get_groups_dt() {
+        $this->datatables
+                ->select('group_name,is_public,users,projects,groups.group_id')
+                ->from('groups')
+                ->join('(select group_id, count(person_id) as users from person_group group by group_id) C1', 'C1.group_id = groups.group_id', 'left')
+                ->join('(select group_id, count(project_id) as projects from project_group group by group_id) C2', 'C2.group_id = groups.group_id', 'left')
+        ;
+        return $this->datatables->generate();
+    }
+
+    public function set_groups($pid, $groups) {
+        //clear previous set of group
+        $this->db->where('person_id', $pid);
+        $this->db->delete('person_group');
+        //insert new
+        foreach ($groups as $tid) {
+            $this->db->insert('person_group', [
+                'group_id' => $tid,
+                'person_id' => $pid
+            ]);
         }
-        //do update
-        $this->db->update('persons');
     }
 
     public function auth($username, $password) {
@@ -99,19 +142,22 @@ class Users_model extends CI_Model {
         return password_verify($password, $user->hash);
     }
 
-    public function create_user($email, $plainpassword, $fullname, $institusi, $jabatan, $status, $role_id) {
+    public function create_user($fullname, $institusi, $jabatan, $phone, $email, $plainpassword, $status, $role_id, $groups = null) {
         //create person first
         $person = $this->db->insert('persons', [
             'person_name' => $fullname,
             'instansi' => $institusi,
             'jabatan' => $jabatan,
-            'email' => $email
+            'email' => $email,
+            'phone' => $phone
         ]);
         if (!$person) {
             return false;
         }
-        //then create user
         $person_id = $this->db->insert_id();
+        // associate group
+        $this->set_groups($person_id, $groups);
+        //then create user
         $user = $this->db->insert($this->table, [
             'hash' => password_hash($plainpassword, PASSWORD_DEFAULT, ['cost' => 10]),
             'status' => $status,
@@ -124,21 +170,24 @@ class Users_model extends CI_Model {
         return $person_id;
     }
 
-    public function create_person($person_name, $institusi, $jabatan) {
+    public function create_person($person_name, $institusi, $jabatan, $phone, $groups) {
         $person = $this->db->insert('persons', [
             'person_name' => $person_name,
             'instansi' => $institusi,
-            'jabatan' => $jabatan
+            'jabatan' => $jabatan,
+            'phone' => $phone
         ]);
         if (!$person) {
             return false;
         } else {
-            return $this->db->insert_id();
+            $pid = $this->db->insert_id();
+            $this->set_groups($pid, $groups);
+            return $pid;
         }
     }
 
-    public function delete($uid) {
-        $this->db->delete($this->table, ['user_id' => $uid]);
+    public function delete_person($pid) {
+        return $this->db->delete('persons', ['person_id' => $pid]);
     }
 
     public function update_last_access($uid) {

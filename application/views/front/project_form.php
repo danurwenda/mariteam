@@ -170,6 +170,21 @@ if (
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="multi-append" class="control-label">Groups</label>
+                                    <?php
+                                    $group_opts = [];
+                                    foreach ($groups as $u) {
+                                        $group_opts[$u->group_id] = $u->group_name;
+                                    }
+
+                                    $js = [
+                                        'id' => 'groups',
+                                        'class' => 'form-control select2'
+                                    ];
+                                    echo form_multiselect('groups[]', $group_opts, set_value('groups[]', isset($project) ? $project->groups : null ), $js);
+                                    ?>
+                                </div>
+                                <div class="form-group">
                                     <label for="multi-append" class="control-label">Topics</label>
                                     <div class="input-group">
                                         <?php
@@ -992,6 +1007,6 @@ if (
                 </div>
             </div>
         </div>
-        <?php
-    }?>
-<!-- di mana -->
+        <?php }
+    ?>
+    <!-- di mana -->

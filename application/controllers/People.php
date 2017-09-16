@@ -8,6 +8,17 @@ class People extends Module_Controller {
 
     function __construct() {
         parent::__construct(2);
+        $this->load->library('Datatables');
+    }
+
+    function check_email() {
+        $person_id = $this->input->post('person_id');
+        $email = $this->input->post('email');
+        if ($person_id) {
+            $this->db->where('person_id !=', $person_id);
+        }
+        $valid = $this->db->get_where('persons', ['email' => $email])->num_rows() == 0;
+        echo json_encode($valid);
     }
 
     /**
@@ -18,61 +29,111 @@ class People extends Module_Controller {
     function index() {
         $data['active_menu'] = 2;
         $data['pagetitle'] = 'People';
-        $data['ps'] = $this->users_model->get_all_joined();
+        $data['ps'] = $this->users_model->get_table();
         $this->template->display('people_table', $data);
     }
 
+    function groups_dt() {
+        if ($this->input->is_ajax_request()) {
+            echo $this->users_model->get_groups_dt();
+        }
+    }
+
+    /**
+     * TODO : check permission
+     */
+    function delete_group() {
+        $group_id = $this->input->post('group_id');
+        echo json_encode(['success' => $this->db->delete('groups', ['group_id' => $group_id])]);
+    }
+
     function delete() {
-        $this->users_model->delete($this->input->post('user_id'));
+        $success = $this->users_model->delete_person($this->input->post('person_id'));
+        echo json_encode(['success' => $success]);
     }
 
     /**
      * Full view untuk update user
-     * @param type $user_id
+     * @param type $person_id
      */
-    function edit($user_id) {
-        $user = $this->users_model->get_user($user_id);
+    function edit($person_id) {
+        $user = $this->users_model->get_person($person_id);
         if (!$user) {
             //user not found
             //redirect to table
             redirect('people');
         } else {
+            $data['active_menu'] = 2;
             $data['pagetitle'] = 'Edit User';
-            $data['user'] = $user;
+            $data['person'] = $user;
+            $data['groups'] = $this->db->get('groups')->result();
             $data['roles'] = $this->db->get('roles')->result();
             $this->template->display('people_form', $data);
         }
     }
 
-    function update() {
-        $data['pagetitle'] = 'Edit User';
-        $user_id = $this->input->post('user_id');
-        $data['user'] = $this->users_model->get_user($user_id);
-        $data['roles'] = $this->db->get('roles')->result();
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('email', 'Username', ['trim', 'required', 'strip_tags',
-            ['username_callable',
-                function($email) {
-                    if ($this->users_model->get_user($this->input->post('user_id'))->email === $email || !$this->users_model->get_login_info($email)) {
-                        return true;
-                    } else {
-                        $this->form_validation->set_message('username_callable', 'This %s is already taken');
-                        return false;
-                    }
-                }
-        ]]);
-        $this->form_validation->set_rules('password', 'Password', 'matches[passconf]');
-        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'matches[password]');
-        $this->form_validation->set_rules('status', 'Status', 'required');
-        $this->form_validation->set_rules('role', 'Role', 'required');
-        $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
-        if ($this->form_validation->run() == true) {
-            $data['updated'] = true;
-            $this->users_model->update(
-                    $user_id, $this->input->post('email'), $this->input->post('password'), $this->input->post('name'), $this->input->post('status'), $this->input->post('role')
+    function create() {
+        // name
+        $name = $this->input->post('person_name');
+        // instansi
+        $instansi = $this->input->post('instansi');
+        // jabatan
+        $jabatan = $this->input->post('jabatan');
+        // phone
+        $phone = $this->input->post('phone');
+        // groups
+        $groups = $this->input->post('groups');
+        if ($this->input->post('user')) {
+            $succ = $this->users_model->create_user(
+                    $name, $instansi, $jabatan, $phone,
+                    // is a user?
+                    $this->input->post('email'),
+                    // password
+                    $this->input->post('password'), // <-- may be empty
+                    $this->input->post('status'), $this->input->post('role'), $groups
+            );
+        } else {
+            $succ = $this->users_model->create_person(
+                    $name, $instansi, $jabatan, $phone, $groups
             );
         }
-        $this->template->display('people_form', $data);
+        echo json_encode(['success' => $succ]);
+    }
+
+    function update() {
+        $user = $this->input->post('user');
+        $password = $this->input->post('password');
+        if (!isset($user)) {
+            // updating existing user
+            // $user_id is set to an integer
+            // or simply updating person
+            // $user_id is not set
+            $user = $this->input->post('user_id');
+        } else {
+            // create new user
+            // make sure the password is set
+            if (empty($password)) {
+                $password = 'mariteam';
+            }
+        }
+        $succ = $this->users_model->update(
+                // person id
+                $this->input->post('person_id'),
+                // name
+                $this->input->post('person_name'),
+                // instansi
+                $this->input->post('instansi'),
+                // jabatan
+                $this->input->post('jabatan'),
+                // phone
+                $this->input->post('phone'),
+                // is a user?
+                $user, $this->input->post('email'),
+                // password
+                $password, // <-- may be empty
+                $this->input->post('status'), $this->input->post('role'), $this->input->post('groups')
+        );
+        echo json_encode(['success' => $succ]);
     }
 
     function create_user_simple() {
@@ -84,16 +145,18 @@ class People extends Module_Controller {
         if ($is_user) {
             //create user
             $change = $this->users_model->create_user(
-                    //email
-                    $this->input->post('email'),
-                    //plain password
-                    'mariteam',
                     //fullname
                     $person_name,
                     //instansi,
                     $institusi,
                     //jabatan
                     $jabatan,
+                    //phone,
+                    null,
+                    //email
+                    $this->input->post('email'),
+                    //plain password
+                    'mariteam',
                     //status, default : active
                     1,
                     //role_id, default : editor
@@ -117,24 +180,23 @@ class People extends Module_Controller {
     }
 
     function create_user() {
+        $data['active_menu'] = 2;
         $data['pagetitle'] = 'Add User';
         $data['roles'] = $this->db->get('roles')->result();
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('email', 'Username', ['trim', 'required', 'strip_tags', 'is_unique[persons.email]']);
-        $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
-        $this->form_validation->set_rules('password', 'Password', 'required');
-        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
-        $this->form_validation->set_rules('status', 'Status', 'required');
-        $this->form_validation->set_rules('role', 'Role', 'required');
-        if ($this->form_validation->run() == true) {
-            $data['updated'] = true;
-            $this->users_model->create(
-                    $this->input->post('email'), $this->input->post('password'), $this->input->post('name'), $this->input->post('status'), $this->input->post('role')
-            );
-            //return to table view
-            redirect('people');
+        $data['groups'] = $this->db->get('groups')->result();
+        $this->template->display('people_form', $data);
+    }
+
+    function create_group() {
+        $inserted = $this->db->insert('groups', [
+            'group_name' => $this->input->post('group_name'),
+            'is_public' => null !== $this->input->post('is_public')
+        ]);
+        if ($this->input->is_ajax_request()) {
+            echo json_encode(['success' => $inserted]);
         } else {
-            $this->template->display('people_form', $data);
+            //back to table view
+            redirect('project/create');
         }
     }
 

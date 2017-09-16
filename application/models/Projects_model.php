@@ -237,6 +237,12 @@ class Projects_model extends CI_Model {
         $q = $this->db->get($this->table);
         if ($q->num_rows() > 0) {
             $p = $q->row();
+            //add groups
+            $p->groups = [];
+            $groups = $this->db->get_where('project_group', ['project_id' => $p->project_id]);
+            foreach ($groups->result() as $pt) {
+                $p->groups[] = $pt->group_id;
+            }
             //add topics
             $p->topics = [];
             $topics = $this->db->get_where('project_topic', ['project_id' => $p->project_id]);
@@ -264,13 +270,15 @@ class Projects_model extends CI_Model {
      * For select2
      * @return type
      */
-    public function get_groups($person_id) {
-        if (isset($person_id)) {
+    public function get_groups($person_id = null, $role = null) {
+        if ($role !== 1) {
             $this->db
                     ->group_start()
-                    ->where('is_public', 1)
-                    ->or_where("exists(SELECT * from person_group where person_id = $person_id and group_id=groups.group_id)")
-                    ->group_end();
+                    ->where('is_public', 1);
+            if ($person_id !== null) {
+                $this->db->or_where("exists(SELECT * from person_group where person_id = $person_id and group_id=groups.group_id)");
+            }
+            $this->db->group_end();
         }
         return $this->db
                         ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
@@ -278,7 +286,7 @@ class Projects_model extends CI_Model {
                         ->result_array();
     }
 
-    public function update($id, $user, $name, $start_date, $due_date, $description, $topics, $status) {
+    public function update($id, $user, $name, $start_date, $due_date, $description, $topics, $status, $groups) {
         $this->db->where('project_id', $id);
         //update username
         if (isset($user)) {
@@ -293,9 +301,11 @@ class Projects_model extends CI_Model {
         $this->db->update($this->table);
         //update topics
         $this->set_topics($id, $topics);
+        //update groups
+        $this->set_groups($id, $groups);
     }
 
-    public function create($creator, $user, $name, $start_date, $due_date, $description, $topics) {
+    public function create($creator, $user, $name, $start_date, $due_date, $description, $topics, $groups) {
         $this->db->insert($this->table, [
             'created_by' => $creator,
             'assigned_to' => $user,
@@ -308,6 +318,20 @@ class Projects_model extends CI_Model {
         ]);
         $pid = $this->db->insert_id();
         $this->set_topics($pid, $topics);
+        $this->set_groups($pid, $groups);
+    }
+
+    public function set_groups($pid, $groups) {
+        //clear previous set of group
+        $this->db->where('project_id', $pid);
+        $this->db->delete('project_group');
+        //insert new
+        foreach ($groups as $tid) {
+            $this->db->insert('project_group', [
+                'group_id' => $tid,
+                'project_id' => $pid
+            ]);
+        }
     }
 
     public function set_topics($pid, $topics) {

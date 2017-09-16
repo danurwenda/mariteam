@@ -32,6 +32,33 @@ $(document).ready(function () {
     $('#project_assign_to').select2({
         theme: "bootstrap"
     })
+    $('#groups').select2({
+        theme: "bootstrap",
+        ajax: {
+            url: base_url + 'project/get_groups',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.group_name,
+                            id: item.group_id
+                        }
+                    })
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        }
+    });
     $('#topics').select2({
         theme: "bootstrap",
         ajax: {

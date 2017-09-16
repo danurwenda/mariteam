@@ -756,6 +756,9 @@ cta
 .label-late {
     background-color: 	#7F00FF;
 }
+.select2-container {
+    width: 100% !important;
+}
 /***********************************
 ************************************
 Responsive media queries
