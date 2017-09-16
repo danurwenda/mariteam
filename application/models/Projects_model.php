@@ -42,10 +42,15 @@ class Projects_model extends CI_Model {
             return null;
     }
 
-    public function get_chart_data() {
-        $this->db->select('name,count(project_id) as total')
+    public function get_chart_data($public_only=false) {
+        $this->db->select('name,count(projects.project_id) as total')
                 ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
                 ->group_by('name');
+        if ($public_only) {
+            $this->db->join('project_group', 'project_group.project_id=projects.project_id');
+            $this->db->join('groups', 'project_group.group_id=groups.group_id');
+            $this->db->where('is_public', 1);
+        }
         $q = $this->db->get('projects');
 
         return $q->result();
@@ -59,12 +64,16 @@ class Projects_model extends CI_Model {
         return $this->db->get('tasks')->num_rows() > 0;
     }
 
-    public function get_dt() {
+    public function get_dt($public_only = false) {
         if ($groups = $this->input->post('groups')) {
             $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
             foreach ($groups as $g) {
                 $this->datatables->or_where('group_id', $g);
             }
+        } else if ($public_only) {
+            $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
+            $this->datatables->join('groups', 'project_group.group_id=groups.group_id');
+            $this->datatables->where('is_public', 1);
         }
         $this->datatables
                 ->distinct('projects.project_id')

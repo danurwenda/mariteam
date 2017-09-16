@@ -41,7 +41,7 @@ class Publik extends CI_Controller {
     }
 
     public function get_project_chart_data() {
-        echo json_encode($this->projects_model->get_chart_data());
+        echo json_encode($this->projects_model->get_chart_data(true));
     }
 
     /**
@@ -84,7 +84,7 @@ class Publik extends CI_Controller {
 
     public function projects_dt() {
         if ($this->input->is_ajax_request()) {
-            echo $this->projects_model->get_dt();
+            echo $this->projects_model->get_dt(true);
         }
     }
 
