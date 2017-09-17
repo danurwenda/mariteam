@@ -42,7 +42,7 @@ class Projects_model extends CI_Model {
             return null;
     }
 
-    public function get_chart_data($public_only=false) {
+    public function get_chart_data($public_only = false) {
         $this->db->select('name,count(projects.project_id) as total')
                 ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
                 ->group_by('name');
@@ -65,15 +65,26 @@ class Projects_model extends CI_Model {
     }
 
     public function get_dt($public_only = false) {
+        $case = 1;
         if ($groups = $this->input->post('groups')) {
             $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
             foreach ($groups as $g) {
                 $this->datatables->or_where('group_id', $g);
             }
+        } else if (is_array($public_only)) {
+            // return those projects in public groups and those in accessible groups
+            $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
+            $this->datatables->join('groups', 'project_group.group_id=groups.group_id');
+            $this->datatables->or_where('is_public', 1);
+            foreach ($public_only as $g) {
+                $this->datatables->or_where('groups.group_id', $g);
+            }
+            $case = 2;
         } else if ($public_only) {
             $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
             $this->datatables->join('groups', 'project_group.group_id=groups.group_id');
             $this->datatables->where('is_public', 1);
+            $case = 3;
         }
         $this->datatables
                 ->distinct('projects.project_id')
@@ -87,6 +98,8 @@ class Projects_model extends CI_Model {
                 ->from('projects');
         $json = $this->datatables->generate();
         $decoded = json_decode($json);
+        $decoded->q = $this->db->last_query();
+        $decoded->c = $case;
         foreach ($decoded->data as &$project) {
             // add info about time table of this project
             // set delayed == true if this project has one or more overdue task

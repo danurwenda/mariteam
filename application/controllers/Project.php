@@ -265,7 +265,23 @@ class Project extends Module_Controller {
 
     function projects_dt() {
         if ($this->input->is_ajax_request()) {
-            echo $this->projects_model->get_dt();
+            if ($this->logged_user->role_id == 1) {
+                echo $this->projects_model->get_dt();
+            } else {
+                $q = $this->db->get_where('person_group', [
+                    'person_id' => $this->logged_user->person_id
+                ]);
+                if ($q->num_rows() == 0) {
+                    //logged user is not belong to any group
+                    echo $this->projects_model->get_dt(true);
+                } else {
+                    $groups = [];
+                    foreach ($q->result() as $pg) {
+                        $groups[] = $pg->group_id;
+                    }
+                    echo $this->projects_model->get_dt($groups);
+                }
+            }
         }
     }
 
