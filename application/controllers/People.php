@@ -177,7 +177,11 @@ class People extends Module_Controller {
                     //instansi,
                     $institusi,
                     //jabatan
-                    $jabatan
+                    $jabatan,
+                    //phone,
+                    null,
+                    //groups
+                    []
             );
         }
         echo json_encode([
