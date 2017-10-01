@@ -84,7 +84,7 @@ class Publik extends CI_Controller {
 
     public function projects_dt() {
         if ($this->input->is_ajax_request()) {
-            echo $this->projects_model->get_dt(true);
+            echo $this->projects_model->get_dt2(true);
         }
     }
 

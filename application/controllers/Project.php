@@ -266,20 +266,20 @@ class Project extends Module_Controller {
     function projects_dt() {
         if ($this->input->is_ajax_request()) {
             if ($this->logged_user->role_id == 1) {
-                echo $this->projects_model->get_dt();
+                echo $this->projects_model->get_dt2();
             } else {
                 $q = $this->db->get_where('person_group', [
                     'person_id' => $this->logged_user->person_id
                 ]);
                 if ($q->num_rows() == 0) {
-                    //logged user is not belong to any group
-                    echo $this->projects_model->get_dt(true);
+                    //logged user does not belong to any group
+                    echo $this->projects_model->get_dt2(true);
                 } else {
                     $groups = [];
                     foreach ($q->result() as $pg) {
                         $groups[] = $pg->group_id;
                     }
-                    echo $this->projects_model->get_dt($groups);
+                    echo $this->projects_model->get_dt2($groups);
                 }
             }
         }
@@ -313,52 +313,46 @@ class Project extends Module_Controller {
     }
 
     function create() {
-        $data['active_menu'] = 1;
+        $topics = $this->input->post('topics');
+        if ($topics === null) {
+            $topics = [];
+        }
+        $groups = $this->input->post('groups');
+        if ($groups === null) {
+            $groups = [];
+        }
+        $this->projects_model->create(
+                //logged user
+                $this->logged_user->user_id,
+                //assigned to
+                $this->input->post('assigned_to'),
+                //name
+                $this->input->post('name'),
+                //dates (adjust the format to comply SQL datetime format)
+                date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
+                //description
+                $this->input->post('description'),
+                //topic
+                $topics,
+                //groups
+                $groups
+        );
+        redirect('project');
+    }
+
+    function create_form() {
         if ($this->logged_user->role_id != 1) {
             //forbidden
             redirect('project');
         }
+        $data['active_menu'] = 1;
         $data['pagetitle'] = 'Add Project';
         $data['admin'] = $this->logged_user->role_id == 1;
         $data['users'] = $this->db->get('persons')->result();
         $data['groups'] = $this->db->get('groups')->result();
         $data['topics'] = $this->db->get('topics')->result();
         $data['statuses'] = $this->db->get('project_statuses')->result();
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('assigned_to', 'Assigned User', 'required');
-        $this->form_validation->set_rules('name', 'Display Name', ['trim', 'required', 'strip_tags']);
-        $this->form_validation->set_rules('end_date', 'Due Date', 'required');
-        if ($this->form_validation->run() == true) {
-            $topics = $this->input->post('topics');
-            if ($topics === null) {
-                $topics = [];
-            }
-            $groups = $this->input->post('groups');
-            if ($groups === null) {
-                $groups = [];
-            }
-            $data['updated'] = true;
-            $this->projects_model->create(
-                    //logged user
-                    $this->logged_user->user_id,
-                    //assigned to
-                    $this->input->post('assigned_to'),
-                    //name
-                    $this->input->post('name'),
-                    //dates (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
-                    //description
-                    $this->input->post('description'),
-                    //topic
-                    $topics,
-                    //groups
-                    $groups
-            );
-            //return to table view
-            redirect('project');
-        } else {
-            $this->template->display('project_form', $data);
-        }
+        $this->template->display('project_form', $data);
     }
 
     function update() {

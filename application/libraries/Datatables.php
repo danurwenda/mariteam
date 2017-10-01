@@ -314,7 +314,9 @@ class Datatables {
      * @return mixed
      */
     private function get_display_result() {
-        return $this->ci->db->get($this->table);
+        $c = $this->ci->db->get($this->table);
+        $this->dataq= $this->ci->db->last_query();
+        return $c;
     }
 
     /**
@@ -356,6 +358,11 @@ class Datatables {
                 (
                 'draw' => intval($this->ci->input->post('draw')),
                 'recordsTotal' => $iTotal,
+                'dataq' => $this->dataq,
+                'totalq' => $this->totalq,
+                'filterq' => $this->filteredq,
+                'select'=> $this->select,
+                'columns'=> $this->columns,
                 'recordsFiltered' => $iFilteredTotal,
                 'data' => $aaData,
                 $this->ci->security->get_csrf_token_name() => $this->ci->security->get_csrf_hash()
@@ -367,6 +374,10 @@ class Datatables {
         } else
             return array('aaData' => $aaData);
     }
+
+    private $totalq;
+    private $filteredq;
+    private $dataq;
 
     /**
      * Get result count
@@ -394,6 +405,11 @@ class Datatables {
             $this->ci->db->select($this->select);
         }
         $query = $this->ci->db->get($this->table, NULL, NULL, FALSE);
+        if ($filtering) {
+            $this->filteredq = $this->ci->db->last_query();
+        } else {
+            $this->totalq = $this->ci->db->last_query();
+        }
         return $query->num_rows();
     }
 
@@ -532,6 +548,26 @@ class Datatables {
      */
     public function last_query() {
         return $this->ci->db->last_query();
+    }
+
+    public function group_start() {
+        $this->ci->db->group_start();
+    }
+
+    public function group_end() {
+        $this->ci->db->group_end();
+    }
+
+    public function or_group_start() {
+        $this->ci->db->or_group_start();
+    }
+
+    public function not_group_start() {
+        $this->ci->db->not_group_start();
+    }
+
+    public function or_not_group_start() {
+        $this->ci->db->or_not_group_start();
     }
 
 }

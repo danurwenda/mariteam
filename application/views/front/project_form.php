@@ -132,15 +132,12 @@ if (
                             <div class="col-lg-6">    
                                 <div class="form-group">
                                     <label>Name</label>
-                                    <input name="name" type="text" class="form-control" value="<?php echo set_value('name', isset($project) ? $project->project_name : ''); ?>">
-                                    <?php echo form_error('name', '<div class="has-error"><label class="control-label">', '</label></div>'); ?>
+                                    <input required="" minlength="5" name="name" type="text" class="form-control" value="<?php echo set_value('name', isset($project) ? $project->project_name : ''); ?>">
                                 </div>
                                 <div class="form-group ">
                                     <label for="description">Description</label>
                                     <textarea class="form-control " name="description" cols="50" rows="10" id="description"><?php echo set_value('description', isset($project) ? $project->description : ''); ?></textarea>
-                                </div>  
-
-
+                                </div> 
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
@@ -160,7 +157,6 @@ if (
                                                 'assigned_to', $options, set_value('assigned_to', isset($project) ? $project->assigned_to : null
                                                 )
                                                 , $js);
-                                        echo form_error('assigned_to', '<div class="has-error"><label class="control-label">', '</label></div>');
                                         ?>
                                         <span class="input-group-btn">
                                             <button class="btn btn-default add-person-btn btn-sm" type="button" >
@@ -208,13 +204,11 @@ if (
                                 </div>
                                 <div class="form-group ">
                                     <label for="project_date">Start Date</label>
-                                    <input class="form-control datetimepicker" name="start_date" type="text" id="project_start_date" value="<?php echo set_value('start_date', isset($project) ? date_format(date_create($project->start_date), "d-F-Y") : ''); ?>">
-                                    <?php echo form_error('start_date', '<div class="has-error"><label class="control-label">', '</label></div>'); ?>
+                                    <input required class="form-control datetimepicker" name="start_date" type="text" id="project_start_date" value="<?php echo set_value('start_date', isset($project) ? date_format(date_create($project->start_date), "d-F-Y") : ''); ?>">
                                 </div>
                                 <div class="form-group ">
                                     <label for="project_date">Due Date</label>
-                                    <input class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
-                                    <?php echo form_error('end_date', '<div class="has-error"><label class="control-label">', '</label></div>'); ?>
+                                    <input required class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
                                 </div>
                                 <?php if (isset($project)) { ?>
                                     <div class="form-group">

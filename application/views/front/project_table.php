@@ -13,7 +13,7 @@
 <div class="col-lg-12">
     <div class="pull-right">
         <?php if ($admin) { ?>
-            <span><a class="btn btn-primary btn-raised pull-right" href="<?php echo site_url('project/create'); ?>"><i class="fa fa-cubes"></i> Create</a></span>
+            <span><a class="btn btn-primary btn-raised pull-right" href="<?php echo site_url('project/create_form'); ?>"><i class="fa fa-cubes"></i> Create</a></span>
         <?php } ?>
     </div>
     <div class="panel panel-default">

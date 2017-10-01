@@ -7,7 +7,7 @@
 
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
+        <link rel="icon" type="image/png" href="<?php echo base_url('image.png'); ?>" />
         <!-- bootstrap & fontawesome -->
         <?php echo css_asset('bootstrap/css/bootstrap.min.css'); ?>
         <?php echo css_asset('font-awesome/css/font-awesome.min.css'); ?>
@@ -32,9 +32,8 @@
         <!-- inline styles related to this page -->
         <link href="<?php echo base_url(); ?>/dist/css/ace-custom.css" rel="stylesheet">
         <!-- ace settings handler -->
-        <?php echo js_asset('ace2/js/ace-extra.min.js'); ?>
-
         <?php
+        echo js_asset('ace2/js/ace-extra.min.js');
         if (!empty($js_assets)) {
             foreach ($js_assets as $value) {
                 echo js_asset($value['asset'], $value['module']);
@@ -164,17 +163,17 @@
                     </div>
 
                     <div class="page-content">
-                        <?php if (isset($pagetitle)) { ?>
+<?php if (isset($pagetitle)) { ?>
                             <div class="page-header">
                                 <h1>
-                                    <?php echo $pagetitle;?>
+    <?php echo $pagetitle; ?>
                                 </h1>
                             </div>
-                        <?php } ?>
+<?php } ?>
                         <div class="row">
                             <div class="col-xs-12">
                                 <!-- PAGE CONTENT BEGINS -->
-                                <?php echo $_content; ?>
+<?php echo $_content; ?>
                                 <!-- PAGE CONTENT ENDS -->
                             </div><!-- /.col -->
                         </div><!-- /.row -->
@@ -207,20 +206,20 @@
         <!-- <![endif]-->
 
         <!--[if IE]>
-        <?php echo js_asset("/jquery-1.11.3.min.js"); ?>
+<?php echo js_asset("/jquery-1.11.3.min.js"); ?>
        <![endif]-->
         <script type="text/javascript">
             if ('ontouchstart' in document.documentElement)
                 document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
         </script>
-        <?php echo js_asset('bootstrap/js/bootstrap.min.js'); ?>
+<?php echo js_asset('bootstrap/js/bootstrap.min.js'); ?>
 
         <!-- page specific plugin scripts -->
         <?php echo js_asset('noty/noty.min.js'); ?>
         <?php echo js_asset('moment/moment.min.js'); ?>
         <!-- ace scripts -->
         <?php echo js_asset("ace2/js/ace-elements.min.js"); ?>
-        <?php echo js_asset("ace2/js/ace.min.js"); ?>
+<?php echo js_asset("ace2/js/ace.min.js"); ?>
 
         <!-- inline scripts related to this page -->
         <script>

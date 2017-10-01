@@ -64,52 +64,60 @@ class Projects_model extends CI_Model {
         return $this->db->get('tasks')->num_rows() > 0;
     }
 
-    public function get_dt($public_only = false) {
+    public function get_dt2($public_only = false) {
+        $this->load->library('Datatables3');
+        $this->datatables3->init();
         $case = 1;
         if ($groups = $this->input->post('groups')) {
-            $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
+            // TODO : check user access to group
+            $this->db->join('project_group', 'project_group.project_id=projects.project_id');
             foreach ($groups as $g) {
-                $this->datatables->or_where('group_id', $g);
+                $this->db->or_where('group_id', $g);
             }
         } else if (is_array($public_only)) {
             // return those projects in public groups and those in accessible groups
-            $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
-            $this->datatables->join('groups', 'project_group.group_id=groups.group_id');
-            $this->datatables->or_where('is_public', 1);
+            $this->db->join('project_group', 'project_group.project_id=projects.project_id');
+            $this->db->join('groups', 'project_group.group_id=groups.group_id');
+            $this->db->group_start();
+            $this->db->or_where('is_public', 1);
             foreach ($public_only as $g) {
-                $this->datatables->or_where('groups.group_id', $g);
+                $this->db->or_where('groups.group_id', $g);
             }
+            $this->db->group_end();
             $case = 2;
         } else if ($public_only) {
-            $this->datatables->join('project_group', 'project_group.project_id=projects.project_id');
-            $this->datatables->join('groups', 'project_group.group_id=groups.group_id');
-            $this->datatables->where('is_public', 1);
+            $this->db->join('project_group', 'project_group.project_id=projects.project_id');
+            $this->db->join('groups', 'project_group.group_id=groups.group_id');
+            $this->db->where('is_public', 1);
             $case = 3;
         }
-        $this->datatables
-                ->distinct('projects.project_id')
-
-                // additional field to search into : project description, task name, task description
+        // additional field to search into : project description, task name, task description
+        $this->datatables3
                 ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
-                ->select('project_name,p1.person_name, project_status,projects.end_date,projects.progress, projects.project_id')
+                ->distinct()
+                ->select('project_name,p1.person_name, project_status,projects.end_date,projects.progress, projects.project_id');
+        $this->db
                 ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                 ->join('persons p1', 'p1.person_id=projects.assigned_to', 'left')
                 ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
                 ->from('projects');
-        $json = $this->datatables->generate();
+        $json = $this->datatables3->generate();
         $decoded = json_decode($json);
-        $decoded->q = $this->db->last_query();
         $decoded->c = $case;
         foreach ($decoded->data as &$project) {
             // add info about time table of this project
             // set delayed == true if this project has one or more overdue task
             // but the expected end time for this project is actually still in the future
-            $project[] = ( $project[3] > date('Y-m-d')) && $this->is_delayed($project[5]);
+            if ($this->datatables3->isColIdxd()) {
+                $project[] = ( $project[3] > date('Y-m-d')) && $this->is_delayed($project[5]);
+            } else {
+                $project->delay = ( $project->end_date > date('Y-m-d')) && $this->is_delayed($project->project_id);
+            }
         }
         return json_encode($decoded);
     }
 
-    /**
+   /**
      * TODO
      * @param int $task_id
      */

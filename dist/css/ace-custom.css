@@ -23,7 +23,12 @@
         display: none;
     }
 }
-
+.progress-bar-late {
+    background-color: 	#9E3EFF;
+}
+.label-late {
+    background-color: 	#9E3EFF;
+}
 /* Sometimes we init a select2 to a select element which is hidden by default*/
 .select2-container {
     width: 100% !important;

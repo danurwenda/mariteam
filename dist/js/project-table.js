@@ -6,7 +6,7 @@
 
 
 $(document).ready(function () {
-    
+
 
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
@@ -15,7 +15,7 @@ $(document).ready(function () {
             if (past)
             {
                 var cls = '';
-                if (f[2] === "3") {
+                if (f['project_status'] === "3") {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
@@ -31,19 +31,20 @@ $(document).ready(function () {
         } else {
             if (percent > -1) {
                 var cls = '', tooltip = '';
-                if (f[2] === '2') {
+                var f2 = f['project_status'];
+                if (f2 === '2') {
                     //udah beres
                     cls = 'progress-bar-info';
                     tooltip = 'finished project';
-                } else if (f[2] === '4') {
+                } else if (f2 === '4') {
                     //suspended
                     cls = 'progress-bar-warning';
                     tooltip = 'suspended project';
-                } else if (f[2] === '3') {
+                } else if (f2 === '3') {
                     //masih aktif tapi udah telat
                     cls = 'progress-bar-danger';
                     tooltip = 'behind schedule';
-                } else if (f[2] === '1' && f[6]) {
+                } else if (f2 === '1' && f['delay']) {
                     //masih aktif, project belum telat, tapi ada task yang telat
                     tooltip = 'overdue task';
                     cls = 'progress-bar-late';
@@ -79,19 +80,23 @@ $(document).ready(function () {
         columns: [
             // name link
             {
+                data: 'project_name',
                 render: function (n, t, f, m) {
                     if (t === 'sort') {
                         return n;
                     } else {
                         //render link using id
-                        return '<a href="' + base_url + 'project/edit/' + f[5] + '">' + n + '</a>'
+                        return '<a href="' + base_url + 'project/edit/' + f['project_id'] + '">' + n + '</a>'
                     }
                 }
             },
             // PIC
-            {},
+            {
+                data: 'person_name'
+            },
             // project status
             {
+                data: 'project_status',
                 responsivePriority: 2,
                 render: function (d) {
                     switch (d) {
@@ -113,12 +118,18 @@ $(document).ready(function () {
                 }
             },
             // due date
-            {render: renderPast},
+            {
+                data: 'end_date',
+                render: renderPast
+            },
             // progress
-            {render: renderProgress}
+            {
+                data: 'progress',
+                render: renderProgress
+            }
         ]
     });
-    
+
     $('#groups').select2({
         theme: "bootstrap",
         ajax: {

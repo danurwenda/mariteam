@@ -441,6 +441,11 @@ $(document).ready(function () {
             $('#task-modal-form #task-form').find('#task-weight').val(3).trigger('change')
         }
     });
+    var project_validator = $('#project_form').validate({
+        rules:{
+            assigned_to:'required'
+        }
+    });
     var task_validator = $('#task-modal-form #task-form').validate();
     $('#task-modal-form .btn-subm').click(function (e) {
         var form = $('#task-modal-form #task-form')
