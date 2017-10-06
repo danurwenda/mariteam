@@ -170,7 +170,7 @@ class Users_model extends CI_Model {
         return $person_id;
     }
 
-    public function create_person($person_name, $institusi, $jabatan, $phone, $groups) {
+    public function create_person($person_name, $institusi, $jabatan, $phone=null, $groups=[]) {
         $person = $this->db->insert('persons', [
             'person_name' => $person_name,
             'instansi' => $institusi,
