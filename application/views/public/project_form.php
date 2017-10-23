@@ -41,7 +41,7 @@
 <div class="col-lg-12">
     <div class="panel panel-default main-panel" data-project="<?php echo isset($project) ? $project->project_id : null; ?>">
         <div class="panel-heading">
-            Project Information
+            <b><?php echo $project->project_name; ?></b>
         </div>
         <div class="panel-body">
             <!-- Nav tabs -->

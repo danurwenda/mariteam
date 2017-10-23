@@ -56,7 +56,7 @@ $(document).ready(function () {
                             if (f[3] === '3') {
                                 cls = 'alert-danger';
                             }
-                            var dpast = moment(past,'YYYY-MM-DD')
+                            var dpast = moment(past, 'YYYY-MM-DD')
                             dpast.seconds(59);
                             dpast.minutes(59);
                             dpast.hours(23);
@@ -291,6 +291,32 @@ $(document).ready(function () {
             })
         }
     });
+    var events_table = $('#events-datatable').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: base_url + 'event/events_dt',
+            type: 'POST',
+            data: function (d) {
+                d['project_id'] = $('.main-panel').data('project')
+            }
+        },
+        columns: [
+            // name link
+            {
+                
+            },
+            // PIC
+            {},
+            // start time
+            {
+
+            },
+            // location
+            {}
+        ]
+    });
 
     // ======================== ACTION LISTENER =============================
     // add comment
@@ -451,7 +477,7 @@ $(document).ready(function () {
 
     //-------------------------------------------  Create some demo data ------------------------------------------------------
 
-$.JST.loadDecorator("RESOURCE_ROW", function (resTr, res) {
+    $.JST.loadDecorator("RESOURCE_ROW", function (resTr, res) {
         resTr.find(".delRes").click(function () {
             $(this).closest("tr").remove()
         });
@@ -488,7 +514,7 @@ $.JST.loadDecorator("RESOURCE_ROW", function (resTr, res) {
         }
 
     });
- 
+
     function loadI18n() {
         GanttMaster.messages = {
             "CANNOT_WRITE": "No permission to change the following task:",
@@ -515,5 +541,5 @@ $.JST.loadDecorator("RESOURCE_ROW", function (resTr, res) {
 
 
 
-    
+
 })

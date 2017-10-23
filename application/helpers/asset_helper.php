@@ -1,7 +1,7 @@
 <?php
 
 defined('BASEPATH') OR
-    exit('No direct script access allowed');
+        exit('No direct script access allowed');
 /**
  * Code Igniter
  *
@@ -49,7 +49,7 @@ function other_asset_url($asset_name, $module_name = NULL) {
         $asset_location .= 'modules/' . $module_name . '/';
     endif;
 
-    $asset_location .=  $asset_name;
+    $asset_location .= $asset_name;
 
     return $asset_location;
 }
@@ -288,6 +288,30 @@ function getDefaultImageFileName($pid) {
     } else {
         return false;
     }
+}
+
+function excerpt($text, $query) {
+//words
+    $words = join('|', explode(' ', preg_quote($query)));
+
+//lookahead/behind assertions ensures cut between words
+    $s = '\s\x00-/:-@\[-`{-~'; //character set for start/end of words
+    preg_match_all('#(?<=[' . $s . ']).{1,50}((' . $words . ').{1,50})+(?=[' . $s . '])#uis', $text, $matches, PREG_SET_ORDER);
+    if (count($matches) == 0)
+        echo 'kosongg';
+//delimiter between occurences
+    $results = array();
+
+    foreach ($matches as $line) {
+        $results[] = htmlspecialchars($line[0], 0, 'UTF-8');
+    }
+    $ellips = ' ... ';
+    $result = count($results) > 0 ? $ellips . join($ellips, $results) . $ellips : '';
+
+//highlight
+    $result = preg_replace('#' . $words . '#iu', "<span class=\"highlighted\">\$0</span>", $result);
+
+    return $result;
 }
 
 ?>

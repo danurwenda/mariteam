@@ -124,13 +124,11 @@
                 </script>
 
                 <div class="sidebar-shortcuts" id="sidebar-shortcuts">
-                    <!--div class="nav-search" id="nav-search">
-                        <form class="form-search">
+                    <div class="nav-search" id="nav-search">
                             <span class="input-icon">
-                                <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                                <input type="text" placeholder="Search ..." class="nav-search-input" autocomplete="off" />
                                 <i class="ace-icon fa fa-search nav-search-icon"></i>
                             </span>
-                        </form>
                     </div><!-- /.nav-search -->
                 </div><!-- /.sidebar-shortcuts -->
 
@@ -223,17 +221,15 @@
 
         <!-- inline scripts related to this page -->
         <script>
-            function doSearch() {
-                var str = document.getElementById('searchBox').value;
+            function doSearch(e) {
+                var str = e.value;
                 if (str !== '') {
                     location.href = base_url + 'dashboard/search/' + encodeURIComponent(str)
                 }
             }
             function runScript(e) {
-                if (e.keyCode === 13) {
-                    doSearch()
-                    return false;
-                }
+                console.log(e)
+                
             }
             $(document).ready(function () {
                 $$.forEach(function (src) {
@@ -244,8 +240,13 @@
                 });
 
                 // search on lup logo after search box
-                $('#searchBox').next().click(function () {
-                    doSearch()
+                $('.nav-search-input').keypress(function(e){
+                    if (e.keyCode === 13) {
+                    doSearch(this)
+                }
+                });
+                $('.nav-search-input').next().click(function () {
+                    doSearch(this)
                 });
             })
         </script>

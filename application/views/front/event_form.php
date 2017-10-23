@@ -62,7 +62,7 @@
 <div class="col-lg-12">
     <div class="panel panel-default main-panel" data-event="<?php echo isset($event) ? $event->event_id : null; ?>">
         <div class="panel-heading">
-            Event Information
+            <b><?php echo $event->event_name; ?></b>
         </div>
         <div class="panel-body">
             <!-- Nav tabs -->

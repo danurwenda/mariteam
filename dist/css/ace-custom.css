@@ -53,3 +53,9 @@
 .sidebar-shortcuts .nav-search{
     top:6px;
 }
+
+.highlighted{
+    font-weight: bolder;
+    background: #ff0;
+    color: #000;
+}
