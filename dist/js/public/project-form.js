@@ -296,7 +296,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: base_url + 'event/events_dt',
+            url: base_url + 'publik/events_dt',
             type: 'POST',
             data: function (d) {
                 d['project_id'] = $('.main-panel').data('project')
