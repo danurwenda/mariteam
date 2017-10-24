@@ -297,7 +297,7 @@ function excerpt($text, $query) {
 //lookahead/behind assertions ensures cut between words
     $s = '\s\x00-/:-@\[-`{-~'; //character set for start/end of words
     preg_match_all('#(?<=[' . $s . ']).{1,50}((' . $words . ').{1,50})+(?=[' . $s . '])#uis', $text, $matches, PREG_SET_ORDER);
-    if (count($matches) == 0)
+    //if (count($matches) == 0)
         //echo 'kosongg';
 //delimiter between occurences
     $results = array();
