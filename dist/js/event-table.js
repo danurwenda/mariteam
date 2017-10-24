@@ -66,6 +66,7 @@ $(document).ready(function () {
 
     $('#events-datatable').DataTable({
         responsive: true,
+        stateSave:true,
         processing: true,
         serverSide: true,
         ajax: {

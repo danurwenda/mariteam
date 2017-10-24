@@ -87,6 +87,7 @@ $(document).ready(function () {
    var projects_dt= $('#projects-datatable').DataTable({
         responsive: true,
         processing: true,
+        stateSave:true,
         serverSide: true,
         ajax: {
             url: base_url + 'publik/projects_dt',

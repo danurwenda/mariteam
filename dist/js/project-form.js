@@ -259,6 +259,7 @@ $(document).ready(function () {
         responsive: true,
         processing: true,
         serverSide: true,
+        stateSave:true,
         ajax: {
             url: base_url + 'event/events_dt',
             type: 'POST',

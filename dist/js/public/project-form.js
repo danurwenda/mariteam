@@ -301,21 +301,7 @@ $(document).ready(function () {
             data: function (d) {
                 d['project_id'] = $('.main-panel').data('project')
             }
-        },
-        columns: [
-            // name link
-            {
-                
-            },
-            // PIC
-            {},
-            // start time
-            {
-
-            },
-            // location
-            {}
-        ]
+        }
     });
 
     // ======================== ACTION LISTENER =============================

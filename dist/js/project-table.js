@@ -67,6 +67,7 @@ $(document).ready(function () {
     };
 
     var projects_dt = $('#projects-datatable').DataTable({
+        stateSave:true,
         responsive: true,
         processing: true,
         serverSide: true,
@@ -129,7 +130,6 @@ $(document).ready(function () {
             }
         ]
     });
-
     $('#groups').select2({
         theme: "bootstrap",
         ajax: {
