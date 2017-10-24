@@ -99,7 +99,7 @@ if (
 <div class="col-lg-12">
     <div class="panel panel-default main-panel" data-project="<?php echo isset($project) ? $project->project_id : null; ?>">
         <div class="panel-heading">
-            <b><?php echo $project->project_name; ?></b>
+            <b><?php echo isset($project) ? $project->project_name : 'Project Information'; ?></b>
         </div>
         <div class="panel-body">
             <!-- Nav tabs -->
