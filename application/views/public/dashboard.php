@@ -13,7 +13,15 @@
         cursor:pointer;
     }
 </style>
-<div class='center-block row' id="piechart" ></div>
+<div class="row">
+    <div class="col-sm-6" id="piechart" style="min-height: 300px">
+    </div>
+
+    <div class="col-sm-6" id="piechartd" style="min-height: 300px">
+        
+    </div>
+</div>
+
 <div class="col-md-12">
 
     <h2>Calendar</h2>

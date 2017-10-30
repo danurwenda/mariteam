@@ -42,6 +42,17 @@ class Projects_model extends CI_Model {
             return null;
     }
 
+    public function get_chart_data_by_dep($public_only = false) {
+        $this->db->select('group_name,count(project_group.project_id) as total')
+                ->join('groups', 'project_group.group_id=groups.group_id')
+                ->group_by('group_name');
+        if ($public_only) {
+            $this->db->where('is_public', 1);
+        }
+        $q = $this->db->get('project_group');
+
+        return $q->result();
+    }
     public function get_chart_data($public_only = false) {
         $this->db->select('name,count(projects.project_id) as total')
                 ->join('project_statuses', 'project_statuses.status_id=projects.project_status')

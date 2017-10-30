@@ -1,27 +1,55 @@
 $(document).ready(function () {
     google.charts.load('current', {packages: ['corechart']});
-    google.charts.setOnLoadCallback(drawPie)
+    google.charts.setOnLoadCallback(drawCharts)
 
     $(window).resize(function () {
-        drawPie();
+        drawCharts();
     });
     var sraw = [
         ['Status', '#Projects']
-    ], options = {
+    ], optionss = {
+        element: 'piechart',
         colors: ["#5cb85c", "#5bc0de", "#d9534f", "#f9c154", "#1aadce", "#492970", "#f28f43", "#77a1e5", "#c42525", "#a6c96a"],
         is3D: true,
-        title: 'Project by Status'
+        t: 'pie',
+        title: 'Projects by Status'
+    };
+    var draw = [
+        ['Deputy', '#Projects']
+    ], optionsd = {
+        element: 'piechartd',
+        //colors: ["#5cb85c", "#5bc0de", "#d9534f", "#f9c154", "#1aadce", "#492970", "#f28f43", "#77a1e5", "#c42525", "#a6c96a"],
+        t: 'bar',legend: { position: 'none' },
+        title: 'Projects by Deputy'
     };
 
-    function doDraw(arr) {
+    function doDraw(arr, opts) {
         var data = google.visualization.arrayToDataTable(arr);
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-        chart.draw(data, options);
+        let chart;
+        if (opts.t == 'pie') {
+            chart = new google.visualization.PieChart(document.getElementById(opts.element));
+        } else if (opts.t == 'bar') {
+            chart = new google.visualization.ColumnChart(document.getElementById(opts.element));
+        }
+        chart.draw(data, opts);
     }
 
-    function drawPie() {
+    function drawCharts() {
+        //load statistic only once
+        if (draw.length === 1) {
+            //load json
+            $.getJSON(base_url + 'publik/get_project_chart_data_by_dep', function (data) {
+
+                data.forEach(function (stat) {
+                    draw.push([stat.group_name, Number(stat.total)])
+                })
+
+                doDraw(draw, optionsd);
+            })
+        } else {
+            //else, draw
+            doDraw(draw, optionsd);
+        }
         //load statistic only once
         if (sraw.length === 1) {
             //load json
@@ -31,11 +59,11 @@ $(document).ready(function () {
                     sraw.push([stat.name.substring(7), Number(stat.total)])
                 })
 
-                doDraw(sraw);
+                doDraw(sraw, optionss);
             })
         } else {
             //else, draw
-            doDraw(sraw);
+            doDraw(sraw, optionss);
         }
     }
     //init calendar
@@ -63,7 +91,7 @@ $(document).ready(function () {
                 form.find('.projects').show();
                 form.find('.event-projects').empty()
                 for (var prid in projects) {
-                    form.find('.event-projects').append(`<li><a href="`+base_url+`publik/project/${prid}">${projects[prid]}</a></li>`);
+                    form.find('.event-projects').append(`<li><a href="` + base_url + `publik/project/${prid}">${projects[prid]}</a></li>`);
                 }
             }
             //popup event detail

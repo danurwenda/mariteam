@@ -50,6 +50,9 @@ class Publik extends CI_Controller {
     public function get_project_chart_data() {
         echo json_encode($this->projects_model->get_chart_data(true));
     }
+    public function get_project_chart_data_by_dep() {
+        echo json_encode($this->projects_model->get_chart_data_by_dep(true));
+    }
 
     /**
      * Table view of projects
