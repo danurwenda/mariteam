@@ -80,6 +80,10 @@ class Projects_model extends CI_Model {
         $this->datatables3->init();
         $case = 1;
         if ($groups = $this->input->post('groups')) {
+            // handle "Menko" optgroup
+            if(in_array("0", $groups)){
+                $groups= array_merge($groups,["2","3","4","5"]);
+            }
             // TODO : check user access to group
             $this->db->join('project_group', 'project_group.project_id=projects.project_id');
             foreach ($groups as $g) {
@@ -321,10 +325,17 @@ class Projects_model extends CI_Model {
             }
             $this->db->group_end();
         }
-        return $this->db
+        $ret =  $this->db
                         ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
                         ->get('groups')
                         ->result_array();
+        // add hardcoded "Menko" optgroup
+        $ret[]=[
+            "group_id"=>"0",
+            "group_name"=>"Menko",
+            "group_leader"=>"3",
+            "is_public"=>"1"];
+        return $ret;
     }
 
     public function update($id, $user, $name, $start_date, $due_date, $description, $topics, $status, $groups) {
