@@ -53,6 +53,7 @@ class Projects_model extends CI_Model {
 
         return $q->result();
     }
+
     public function get_chart_data($public_only = false) {
         $this->db->select('name,count(projects.project_id) as total')
                 ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
@@ -81,8 +82,8 @@ class Projects_model extends CI_Model {
         $case = 1;
         if ($groups = $this->input->post('groups')) {
             // handle "Menko" optgroup
-            if(in_array("0", $groups)){
-                $groups= array_merge($groups,["2","3","4","5"]);
+            if (in_array("0", $groups)) {
+                $groups = array_merge($groups, ["2", "3", "4", "5"]);
             }
             // TODO : check user access to group
             $this->db->join('project_group', 'project_group.project_id=projects.project_id');
@@ -132,7 +133,7 @@ class Projects_model extends CI_Model {
         return json_encode($decoded);
     }
 
-   /**
+    /**
      * TODO
      * @param int $task_id
      */
@@ -310,6 +311,18 @@ class Projects_model extends CI_Model {
                         ->get('topics')
                         ->result_array();
     }
+    
+    public function get_groups_elmt(){
+        $gs = $this->input->get('groups');
+        if (is_array($gs)) {
+            return $this->db
+                    ->where_in('group_id',$gs)
+                    ->get('groups')
+                    ->result_array();
+        }else{
+            return [];
+        }
+    }
 
     /**
      * For select2
@@ -325,16 +338,19 @@ class Projects_model extends CI_Model {
             }
             $this->db->group_end();
         }
-        $ret =  $this->db
-                        ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
-                        ->get('groups')
-                        ->result_array();
+        $ret = $this->db
+                ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
+                ->get('groups')
+                ->result_array();
         // add hardcoded "Menko" optgroup
-        $ret[]=[
-            "group_id"=>"0",
-            "group_name"=>"Menko",
-            "group_leader"=>"3",
-            "is_public"=>"1"];
+        if (isset($person_id)) {
+            $ret[] = [
+                "group_id" => "0",
+                "person_id" => $person_id,
+                "group_name" => "Menko",
+                "group_leader" => "3",
+                "is_public" => "1"];
+        }
         return $ret;
     }
 

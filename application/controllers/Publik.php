@@ -28,6 +28,7 @@ class Publik extends CI_Controller {
         }
     }
 
+
     public function download($uuid) {
         $doc = $this->db->get_where('documents', ['dir' => $uuid]);
         if ($doc->num_rows() > 0) {
@@ -50,6 +51,7 @@ class Publik extends CI_Controller {
     public function get_project_chart_data() {
         echo json_encode($this->projects_model->get_chart_data(true));
     }
+
     public function get_project_chart_data_by_dep() {
         echo json_encode($this->projects_model->get_chart_data_by_dep(true));
     }
@@ -102,6 +104,10 @@ class Publik extends CI_Controller {
         echo json_encode($this->projects_model->get_groups());
     }
 
+    public function get_groups_elmt() {
+        echo json_encode($this->projects_model->get_groups_elmt());
+        
+    }
     /**
      * Detailed view of a project
      * @param int $project_id project id

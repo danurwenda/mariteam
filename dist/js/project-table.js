@@ -71,6 +71,36 @@ $(document).ready(function () {
         responsive: true,
         processing: true,
         serverSide: true,
+        stateSaveParams: function (settings, data) {
+            data['groups'] = $('#groups').val();
+        },
+        stateLoaded: function (settings, loadeddata) {
+            // Fetch the preselected item, and add to the control
+            var filterSelect = $('#groups');
+            $.ajax({
+                type: 'GET',
+                url: base_url + 'publik/get_groups_elmt',
+                data: {
+                    'groups[]': loadeddata.groups
+                }
+            }).then(function (data) {
+                data = JSON.parse(data);
+                for (var i = 0; i < data.length; i++) {
+                    let d = data[i];
+                    // create the option and append to Select2
+                    filterSelect.append(new Option(d.group_name, d.group_id, true, true));
+                }
+                filterSelect.trigger('change');
+
+                // manually trigger the `select2:select` event
+                filterSelect.trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: data
+                    }
+                });
+            });
+        },
         ajax: {
             url: base_url + 'project/projects_dt',
             type: 'POST',
