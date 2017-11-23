@@ -14,7 +14,7 @@ $(document).ready(function () {
             if (past)
             {
                 var cls = '';
-                if (f[2] === '3') {
+                if (f[3] === '3') {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
@@ -30,19 +30,20 @@ $(document).ready(function () {
         } else {
             if (percent > -1) {
                 var cls = '', tooltip = '';
-                if (f[2] === '2') {
+                console.log('f3? '+f[3])
+                if (f[3] === '2') {
                     //udah beres
                     cls = 'progress-bar-info';
                     tooltip = 'finished project';
-                } else if (f[2] === '4') {
+                } else if (f[3] === '4') {
                     //suspended
                     cls = 'progress-bar-warning';
                     tooltip = 'suspended project';
-                } else if (f[2] === '3') {
+                } else if (f[3] === '3') {
                     //masih aktif tapi udah telat
                     cls = 'progress-bar-danger';
                     tooltip = 'behind schedule';
-                } else if (f[2] === '1' && f[6]) {
+                } else if (f[3] === '1' && f[6]) {
                     //masih aktif, project belum telat, tapi ada task yang telat
                     tooltip = 'overdue task';
                     cls = 'progress-bar-late';
@@ -127,6 +128,7 @@ $(document).ready(function () {
             }
         },
         columns: [
+            {},
             // name link
             {
                 render: function (n, t, f, m) {
@@ -134,7 +136,7 @@ $(document).ready(function () {
                         return n;
                     } else {
                         //render link using id
-                        return '<a href="' + base_url + 'publik/project/' + f[5] + '">' + n + '</a>'
+                        return '<a href="' + base_url + 'publik/project/' + f[0] + '">' + n + '</a>'
                     }
                 }
             },
@@ -148,6 +150,14 @@ $(document).ready(function () {
             {render: renderProgress}
         ]
     });
+    projects_dt.on('order.dt search.dt draw.dt', function () {
+        //biar kolom angka ga ikut ke sort
+        var start = projects_dt.page.info().start;
+        projects_dt.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+            cell.innerHTML = start + i + 1;
+        });
+        
+    }).draw();
     $('#groups').select2({
         theme: "bootstrap",
         ajax: {

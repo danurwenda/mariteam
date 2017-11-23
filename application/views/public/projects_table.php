@@ -41,6 +41,7 @@
             <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Name</th>
                         <th>PIC</th>
                         <th>Status</th>
