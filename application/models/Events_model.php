@@ -93,13 +93,13 @@ class Events_model extends CI_Model {
 
     public function get_dt() {
         $project_id = $this->input->post('project_id');
-        if($project_id){
-            $this->datatables->where('project_id',$project_id)
-                    ->join('project_event','project_event.event_id=events.event_id');
+        if ($project_id) {
+            $this->datatables->where('project_id', $project_id)
+                    ->join('project_event', 'project_event.event_id=events.event_id');
         }
         $this->datatables
                 ->add_search_column(['description'])
-                ->select('event_name, person_name, start_time, location, events.event_id')
+                ->select('events.event_id,event_name, person_name, start_time, location,description,end_time')
                 ->join('persons', 'persons.person_id=events.pic', 'left')
                 ->from('events');
         return $this->datatables->generate();

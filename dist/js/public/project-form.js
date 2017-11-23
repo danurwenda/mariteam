@@ -23,7 +23,7 @@ $(document).ready(function () {
     // ====================== DATA TABLE =============================
     var tasks_table = $('#tasks-datatable').DataTable({
         order: [
-            [5, "asc"]
+            [0, "asc"]
         ],
         responsive: true,
         processing: true,
@@ -36,10 +36,11 @@ $(document).ready(function () {
             }
         },
         columns: [
+            {},
             //task name
             {
                 render: function (d, t, f, m) {
-                    return '<a href data-task="' + f[6] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
+                    return '<a href data-task="' + f[0] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
                 },
                 responsivePriority: 1
             },
@@ -53,7 +54,7 @@ $(document).ready(function () {
                     } else {
                         if (past) {
                             var cls = '';
-                            if (f[3] === '3') {
+                            if (f[4] === '3') {
                                 cls = 'alert-danger';
                             }
                             var dpast = moment(past, 'YYYY-MM-DD')
@@ -94,7 +95,14 @@ $(document).ready(function () {
             {visible: false, searchable: false}
         ]
     });
+    tasks_table.on('order.dt search.dt draw.dt', function () {
+        //biar kolom angka ga ikut ke sort
+        var start = tasks_table.page.info().start;
+        tasks_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+            cell.innerHTML = start + i + 1;
+        });
 
+    }).draw();
     // trigger the responsive data table to adjust its appearance when the tab is shown
     $('a[href="#task"]').on('shown.bs.tab', function (e) {
         tasks_table.responsive.recalc();
@@ -248,6 +256,7 @@ $(document).ready(function () {
         }
         return cmtel;
     }
+    
     $('#task-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
                 ,
@@ -301,9 +310,41 @@ $(document).ready(function () {
             data: function (d) {
                 d['project_id'] = $('.main-panel').data('project')
             }
-        }
-    });
+        },
+        columns: [
+            {},
+            {render: function (d, t, f, m) {
+                    return '<a href data-toggle="modal" data-target="#event-modal-form"> ' + d + '</a>';
+                }},
+            {},
+            {render: function (d, t, f, m) {
+                   return moment(d).format("D MMMM YYYY HH:mm")
+                }},
+            {},
+            {visible: false, searchable: false}, {visible: false, searchable: false}
 
+        ]
+    });
+    events_table.on('order.dt search.dt draw.dt', function () {
+        //biar kolom angka ga ikut ke sort
+        var start = events_table.page.info().start;
+        events_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+            cell.innerHTML = start + i + 1;
+        });
+
+    }).draw();
+    $('#event-modal-form').on('shown.bs.modal', function (event) {
+        var button = $(event.relatedTarget), // Button that triggered the modal
+
+                tr = button.parents('tr'),form = $('#event-modal-form'),
+                rowdata = events_table.row(tr).data();
+        form.find('.event-name').html(rowdata[1])
+        form.find('.event-description').html(rowdata[5])
+        form.find('.event-pic').html(rowdata[2])
+        form.find('.event-location').html(rowdata[4])
+        form.find('.event-start').html(moment(rowdata[3]).format("D-MMMM-YYYY HH:mm"))
+        form.find('.event-end').html(moment(rowdata[6]).format("D-MMMM-YYYY HH:mm"))
+    })
     // ======================== ACTION LISTENER =============================
     // add comment
     $('.comment-panel #btn-input').keyup(function () {

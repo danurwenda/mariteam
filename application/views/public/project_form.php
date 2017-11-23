@@ -113,6 +113,7 @@
                                     <table width="100%" class="table table-striped table-bordered table-hover" id="tasks-datatable" data-url="<?php echo site_url('publik/tasks_dt'); ?>">
                                         <thead>
                                             <tr>
+                                                <th>No</th>
                                                 <th>Task</th>
                                                 <th>PIC</th>
                                                 <th>Due date</th>
@@ -155,10 +156,14 @@
                                     <table width="100%" class="table table-striped table-bordered table-hover" id="events-datatable">
                                         <thead>
                                             <tr>
+                                                <th>No</th>
                                                 <th>Name</th>
                                                 <th>PIC</th>
                                                 <th>Date & Time</th>
                                                 <th>Location</th>
+                                                <th>Description</th>
+                                                <th>End</th>
+
                                             </tr>
                                         </thead>
                                     </table>
@@ -397,6 +402,41 @@
 
     <!-- Fine Uploader Thumbnails template w/ customization
     ====================================================================== -->
+
+
+    <div id="event-modal-form" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="blue bigger">Event Detail</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- label and text only, non-editable -->    
+                    <dl>
+                        <dt>Event Name</dt>
+                        <dd class="event-name"></dd>
+
+                        <dt>Description</dt>
+                        <dd class="event-description"></dd>
+
+                        <dt>PIC</dt>
+                        <dd class="event-pic"></dd>
+                        <dt>Location</dt>
+                        <dd class="event-location"></dd>
+
+
+                        <dt>Time</dt>
+                        <dd>
+                            <span class="event-start"></span> to <span class="event-end"></span>
+                        </dd>
+
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div id="task-modal-form" class="modal " tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -472,3 +512,4 @@
             </div>
         </div>
     </div>
+</div>

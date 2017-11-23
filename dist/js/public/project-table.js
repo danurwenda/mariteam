@@ -30,7 +30,6 @@ $(document).ready(function () {
         } else {
             if (percent > -1) {
                 var cls = '', tooltip = '';
-                console.log('f3? '+f[3])
                 if (f[3] === '2') {
                     //udah beres
                     cls = 'progress-bar-info';
@@ -88,8 +87,8 @@ $(document).ready(function () {
     var projects_dt = $('#projects-datatable').DataTable({
         responsive: true,
         processing: true,
-        stateSave: true,
         serverSide: true,
+        stateSave: true,
         stateSaveParams: function (settings, data) {
             data['groups'] = $('#groups').val();
         },

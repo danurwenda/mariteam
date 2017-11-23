@@ -150,12 +150,14 @@ class Projects_model extends CI_Model {
     }
 
     public function get_tasks_dt($project_id) {
-        $this->datatables
+        $this->load->library('Datatables3');
+        $this->datatables3->init()
+                ->select('task_id, task_name,person_name, end_date, status, weight,task_order');
+        $this->db
                 ->where('project_id', $project_id)
-                ->select('task_name,person_name, end_date, status, weight,task_order, task_id')
                 ->join('persons', 'persons.person_id=tasks.assigned_to', 'left')
                 ->from('tasks');
-        return $this->datatables->generate();
+        return $this->datatables3->generate();
     }
 
     /**
@@ -311,15 +313,15 @@ class Projects_model extends CI_Model {
                         ->get('topics')
                         ->result_array();
     }
-    
-    public function get_groups_elmt(){
+
+    public function get_groups_elmt() {
         $gs = $this->input->get('groups');
         if (is_array($gs)) {
             return $this->db
-                    ->where_in('group_id',$gs)
-                    ->get('groups')
-                    ->result_array();
-        }else{
+                            ->where_in('group_id', $gs)
+                            ->get('groups')
+                            ->result_array();
+        } else {
             return [];
         }
     }

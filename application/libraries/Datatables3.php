@@ -50,6 +50,7 @@ class Datatables3 {
      */
     public function init() {
         $this->ci->db->start_cache();
+        return $this;
     }
 
     //the final method to call
@@ -208,12 +209,11 @@ class Datatables3 {
                  * or desc to indicate ascending ordering or descending ordering,
                  * respectively.
                  */
-                $this->ci->db->order_by(
-                        $colIdxd ?
-                                $this->columns[$key['column']] :
-                                $columns[$key['column']]['data']
-                        , $key['dir']
-                );
+                $col = $colIdxd ?
+                        $this->columns[$key['column']] :
+                        $columns[$key['column']]['data'];
+                $dir = $key['dir'];
+                $this->ci->db->order_by($col, $dir);
             }
         }
     }
