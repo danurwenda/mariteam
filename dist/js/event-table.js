@@ -74,7 +74,7 @@ $(document).ready(function () {
             type: 'POST',
             //data: function (d) {}
         },
-        columns: [
+        columns: [{},
             // name link
             {
                 render: function (n, t, f, m) {
@@ -82,7 +82,7 @@ $(document).ready(function () {
                         return n;
                     } else {
                         //render link using id
-                        return '<a href="' + base_url + 'event/edit/' + f[4] + '">' + n + '</a>'
+                        return '<a href="' + base_url + 'event/edit/' + f[0] + '">' + n + '</a>'
                     }
                 }
             },
@@ -90,10 +90,20 @@ $(document).ready(function () {
             {},
             // start time
             {
-                
+                 render: function (d, t, f, m) {
+                    return moment(d).format("D MMMM YYYY HH:mm")
+                }
             },
             // location
-            {}
+            {},
+            {visible: false, searchable: false}, {visible: false, searchable: false}
         ]
-    });
+    }).on('order.dt search.dt draw.dt', function () {
+        //biar kolom angka ga ikut ke sort
+        var start = events_table.page.info().start;
+        events_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+            cell.innerHTML = start + i + 1;
+        });
+
+    }).draw();
 });

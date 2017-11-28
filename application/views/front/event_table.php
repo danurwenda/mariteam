@@ -22,10 +22,13 @@
             <table width="100%" class="table table-striped table-bordered table-hover" id="events-datatable">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Name</th>
                         <th>PIC</th>
                         <th>Date & Time</th>
                         <th>Location</th>
+                        <th>Description</th>
+                        <th>End</th>
                     </tr>
                 </thead>
             </table>
