@@ -115,7 +115,7 @@ $(document).ready(function () {
     }
     var tasks_table = $('#tasks-datatable').DataTable({
         order: [
-            [5, "asc"]
+            [0, "asc"]
         ],
         responsive: true,
         processing: true,
@@ -127,11 +127,11 @@ $(document).ready(function () {
                 d['project_id'] = $('.main-panel').data('project')
             }
         },
-        columns: [
+        columns: [{},
             //task name
             {
                 render: function (d, t, f, m) {
-                    return '<a href data-task="' + f[6] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
+                    return '<a href data-task="' + f[0] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
                 },
                 responsivePriority: 1
             },
@@ -145,7 +145,7 @@ $(document).ready(function () {
                     } else {
                         if (past) {
                             var cls = '';
-                            if (f[3] === '3') {
+                            if (f[4] === '3') {
                                 cls = 'alert-danger';
                             }
                             var dpast = moment(past, 'YYYY-MM-DD')
@@ -169,6 +169,14 @@ $(document).ready(function () {
             {visible: false, searchable: false}
         ]
     });
+    tasks_table.on('order.dt search.dt draw.dt', function () {
+        //biar kolom angka ga ikut ke sort
+        var start = tasks_table.page.info().start;
+        tasks_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+            cell.innerHTML = start + i + 1;
+        });
+
+    }).draw();
     // since we use responsive datatables INSIDE a tabbed panel,
     // we need to trigger the calculating of table's width after the table is
     // displayed
@@ -259,7 +267,7 @@ $(document).ready(function () {
         responsive: true,
         processing: true,
         serverSide: true,
-        stateSave:true,
+        stateSave: true,
         ajax: {
             url: base_url + 'event/events_dt',
             type: 'POST',
@@ -267,7 +275,7 @@ $(document).ready(function () {
                 d['project_id'] = $('.main-panel').data('project')
             }
         },
-        columns: [
+        columns: [{},
             // name link
             {
                 render: function (n, t, f, m) {
@@ -275,7 +283,7 @@ $(document).ready(function () {
                         return n;
                     } else {
                         //render link using id
-                        return '<a href="' + base_url + 'event/edit/' + f[4] + '">' + n + '</a>'
+                        return '<a href="' + base_url + 'event/edit/' + f[0] + '">' + n + '</a>'
                     }
                 }
             },
@@ -283,12 +291,23 @@ $(document).ready(function () {
             {},
             // start time
             {
-
+                render: function (d, t, f, m) {
+                    return moment(d).format("D MMMM YYYY HH:mm")
+                }
             },
             // location
-            {}
+            {},
+            {visible: false, searchable: false}, {visible: false, searchable: false}
         ]
     });
+    events_table.on('order.dt search.dt draw.dt', function () {
+        //biar kolom angka ga ikut ke sort
+        var start = events_table.page.info().start;
+        events_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+            cell.innerHTML = start + i + 1;
+        });
+
+    }).draw();
     // trigger the responsive data table to adjust its appearance when the tab is shown
     $('a[href="#task"]').on('shown.bs.tab', function (e) {
         tasks_table.responsive.recalc();
@@ -443,8 +462,8 @@ $(document).ready(function () {
         }
     });
     var project_validator = $('#project_form').validate({
-        rules:{
-            assigned_to:'required'
+        rules: {
+            assigned_to: 'required'
         }
     });
     var task_validator = $('#task-modal-form #task-form').validate();
