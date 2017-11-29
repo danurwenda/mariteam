@@ -63,10 +63,10 @@ $(document).ready(function () {
             }
         }
     };
-
-    $('#events-datatable').DataTable({
+    var events_table =
+            $('#events-datatable').DataTable({
         responsive: true,
-        stateSave:true,
+        stateSave: true,
         processing: true,
         serverSide: true,
         ajax: {
@@ -90,7 +90,7 @@ $(document).ready(function () {
             {},
             // start time
             {
-                 render: function (d, t, f, m) {
+                render: function (d, t, f, m) {
                     return moment(d).format("D MMMM YYYY HH:mm")
                 }
             },
@@ -98,7 +98,8 @@ $(document).ready(function () {
             {},
             {visible: false, searchable: false}, {visible: false, searchable: false}
         ]
-    }).on('order.dt search.dt draw.dt', function () {
+    });
+    events_table.on('order.dt search.dt draw.dt', function () {
         //biar kolom angka ga ikut ke sort
         var start = events_table.page.info().start;
         events_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
