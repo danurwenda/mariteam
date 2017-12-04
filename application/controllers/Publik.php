@@ -142,7 +142,7 @@ class Publik extends CI_Controller {
     }
 
     function get_task($task_id) {
-        $this->db->select('person_name,task_name,task_id,description,status,assigned_to,weight,end_date')
+        $this->db->select('person_name,task_name,task_id,description,status,assigned_to,weight,end_date,start_date')
                 ->join('persons', 'persons.person_id=tasks.assigned_to');
         echo json_encode($this->db->get_where('tasks', ['task_id' => $task_id])->row());
     }
