@@ -74,7 +74,7 @@ $(document).ready(function () {
                 return '<span class="label label-info">Done</span>';
                 break;
             case '3':
-                return '<span class="label label-danger">Failed</span>';
+                return '<span class="label label-danger">Overdue</span>';
                 break;
             case '4':
                 return '<span class="label label-warning">Suspended</span>';
