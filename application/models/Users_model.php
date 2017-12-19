@@ -132,7 +132,7 @@ class Users_model extends CI_Model {
             return false;
         }
         $person = $q->row();
-        $this->db->where('person_id', $person->person_id);
+        $this->db->where('person_id', $person->person_id)->where('status',1);
         $q2 = $this->db->get($this->table);
         //find user
         if ($q2->num_rows() == 0) {
