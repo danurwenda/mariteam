@@ -69,6 +69,21 @@ class Users_model extends CI_Model {
         return ($q->num_rows() > 0) ? $q->row() : false;
     }
 
+    public function update_pass($user_id, $email, $password) {
+        //update password
+        $this->db->where('user_id', $user_id);
+        $this->db->set('hash', password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]));
+        $this->db->update('users');
+        //update email
+        $user = $this->db->get_where('users',['user_id'=>$user_id]);
+        if($user->num_rows()>0){
+            $this->db->where('person_id',$user->row()->person_id);
+            $this->db->update('persons',[
+                'email'=>$email
+            ]);
+        }
+    }
+
     public function update(
     $person_id, $name, $instansi, $jabatan, $phone, $is_user, $email, $password, $status, $role, $groups
     ) {
@@ -81,7 +96,7 @@ class Users_model extends CI_Model {
             'phone' => $phone
         ]);
         $this->set_groups($person_id, $groups);
-        if (isset($is_user) ){
+        if (isset($is_user)) {
             // password may or may not be set
             if (!empty($password)) {
                 $this->db->set('hash', password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]));
@@ -132,7 +147,7 @@ class Users_model extends CI_Model {
             return false;
         }
         $person = $q->row();
-        $this->db->where('person_id', $person->person_id)->where('status',1);
+        $this->db->where('person_id', $person->person_id)->where('status', 1);
         $q2 = $this->db->get($this->table);
         //find user
         if ($q2->num_rows() == 0) {
@@ -170,7 +185,7 @@ class Users_model extends CI_Model {
         return $person_id;
     }
 
-    public function create_person($person_name, $institusi, $jabatan, $phone=null, $groups=[]) {
+    public function create_person($person_name, $institusi, $jabatan, $phone = null, $groups = []) {
         $person = $this->db->insert('persons', [
             'person_name' => $person_name,
             'instansi' => $institusi,
