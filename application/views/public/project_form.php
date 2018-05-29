@@ -46,9 +46,9 @@
         <div class="panel-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-                <li><a href="#basic" data-toggle="tab">Basic</a>
+                <li class="active"><a href="#basic" data-toggle="tab">Basic</a>
                 </li>
-                <li class="active"><a href="#task" data-toggle="tab">Tasks</a>
+                <li><a href="#task" data-toggle="tab">Tasks</a>
                 </li>
                 <li class=""><a href="#timeline" data-toggle="tab">Timeline</a>
                 </li>
@@ -56,16 +56,13 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade" id="basic">
+                <div class="tab-pane fade in active" id="basic">
                     <dl>
                         <dt>Project Name</dt>
                         <dd><?php echo $project->project_name; ?></dd>
 
                         <dt>Description</dt>
                         <dd><?php echo $project->description; ?></dd>
-
-                        <dt>Project Leader</dt>
-                        <dd><?php echo $project->person_name; ?></dd>
 
                         <dt>Submitted on</dt>
                         <dd><?php echo date_format(date_create($project->created_at), "d-F-Y H:i"); ?></dd>
@@ -101,7 +98,7 @@
                         </dd>
                     </dl>
                 </div>
-                <div class="tab-pane fade in active" id="task">
+                <div class="tab-pane fade" id="task">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="panel panel-default">

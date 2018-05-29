@@ -111,10 +111,9 @@ class Projects_model extends CI_Model {
         $this->datatables3
                 ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
                 ->distinct()
-                ->select('projects.project_id,project_name,p1.person_name, project_status,projects.end_date,projects.progress');
+                ->select('projects.project_id,project_name,project_status,projects.end_date,projects.progress');
         $this->db
                 ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                ->join('persons p1', 'p1.person_id=projects.assigned_to', 'left')
                 ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
                 ->from('projects');
         $json = $this->datatables3->generate();
@@ -280,7 +279,6 @@ class Projects_model extends CI_Model {
      */
     public function get_project($id) {
         $this->db
-                ->join('persons', 'persons.person_id=projects.assigned_to')
                 ->where($this->primary_key, $id)->limit(1);
         $q = $this->db->get($this->table);
         if ($q->num_rows() > 0) {

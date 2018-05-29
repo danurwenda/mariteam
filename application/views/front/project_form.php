@@ -104,10 +104,10 @@ if (
         <div class="panel-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-                <li <?php if (!isset($project)) { ?> class="active"<?php } ?>><a href="#basic" data-toggle="tab">Basic</a>
+                <li class="active"><a href="#basic" data-toggle="tab">Basic</a>
                 </li>
                 <?php if (isset($project)) { ?>
-                    <li class="active"><a href="#task" data-toggle="tab">Tasks</a>
+                    <li class=""><a href="#task" data-toggle="tab">Tasks</a>
                     </li>
                     <li><a href="#documents" data-toggle="tab">Documents</a>
                     </li>
@@ -116,7 +116,7 @@ if (
                 <?php } ?>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade <?php if (!isset($project)) { ?> in active<?php } ?>" id="basic">
+                <div class="tab-pane fade in active" id="basic">
                     <?php
                     if ($admin) {
                         echo form_open(isset($project) ? 'project/update' : 'project/create', ['id' => 'project_form'], isset($project) ? ['project_id' => $project->project_id] : []);
@@ -140,32 +140,7 @@ if (
                                 </div> 
                             </div>
                             <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label>Assign to</label>
-                                    <div class="input-group">
-                                        <?php
-                                        $options = [];
-                                        foreach ($users as $u) {
-                                            $options[$u->person_id] = $u->person_name;
-                                        }
-
-                                        $js = [
-                                            'id' => 'project_assign_to',
-                                            'class' => 'form-control select2'
-                                        ];
-                                        echo form_dropdown(
-                                                'assigned_to', $options, set_value('assigned_to', isset($project) ? $project->assigned_to : null
-                                                )
-                                                , $js);
-                                        ?>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default add-person-btn btn-sm" type="button" >
-                                                <span class="glyphicon glyphicon-plus-sign"></span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
+                               <div class="form-group">
                                     <label for="multi-append" class="control-label">Groups</label>
                                     <?php
                                     $group_opts = [];
@@ -242,8 +217,6 @@ if (
                             <dt>Description</dt>
                             <dd><?php echo $project->description; ?></dd>
 
-                            <dt>Project Leader</dt>
-                            <dd><?php echo $project->person_name; ?></dd>
 
                             <dt>Submitted on</dt>
                             <dd><?php echo date_format(date_create($project->created_at), "d-F-Y H:i"); ?></dd>
@@ -281,7 +254,7 @@ if (
                     <?php } ?>
                 </div>
                 <?php if (isset($project)) { ?>
-                    <div class="tab-pane fade in active" id="task">
+                    <div class="tab-pane fade" id="task">
                         <div class="row">
                             <div class="col-xs-12">
                                 <?php if ($admin || $owner) { ?>
@@ -806,7 +779,7 @@ if (
                                             'class' => 'form-control select2-in',
                                             'style' => 'width:100%'
                                         ];
-                                        echo form_dropdown('assigned_to', $options, isset($project) ? $project->assigned_to : null, $js);
+                                        echo form_dropdown('assigned_to', $options, null, $js);
                                         ?>
                                         <span class="input-group-btn">
                                             <button class="btn btn-default add-person-btn btn-sm" type="button">

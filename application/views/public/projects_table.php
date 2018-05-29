@@ -43,7 +43,6 @@
                     <tr>
                         <th>No</th>
                         <th>Name</th>
-                        <th>PIC</th>
                         <th>Status</th>
                         <th>Due date</th>
                         <th>Progress (%)</th>

@@ -121,10 +121,7 @@ $(document).ready(function () {
                     }
                 }
             },
-            // PIC
-            {
-                data: 'person_name'
-            },
+            
             // project status
             {
                 data: 'project_status',

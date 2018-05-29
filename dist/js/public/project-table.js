@@ -14,7 +14,7 @@ $(document).ready(function () {
             if (past)
             {
                 var cls = '';
-                if (f[3] === '3') {
+                if (f[2]=== '3') {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
@@ -30,31 +30,15 @@ $(document).ready(function () {
         } else {
             if (percent > -1) {
                 var cls = '', tooltip = '';
-                if (f[3] === '2') {
-                    //udah beres
-                    cls = 'progress-bar-info';
-                    tooltip = 'finished project';
-                } else if (f[3] === '4') {
-                    //suspended
-                    cls = 'progress-bar-warning';
-                    tooltip = 'suspended project';
-                } else if (f[3] === '3') {
-                    //masih aktif tapi udah telat
-                    cls = 'progress-bar-danger';
-                    tooltip = 'behind schedule';
-                } else if (f[3] === '1' && f[6]) {
-                    //masih aktif, project belum telat, tapi ada task yang telat
-                    tooltip = 'overdue task';
-                    cls = 'progress-bar-late';
-                } else {
+                
                     //active dan belum telat
                     tooltip = 'in progress';
                     cls = 'progress-bar-success'
-                }
+                
                 percent = percent * 100;
                 percent = percent.toFixed(2);
                 return `<div class="progress" data-toggle="tooltip" title="` + tooltip + `">
-                    <div class="progress-bar progress-bar-striped ` + cls + `" role="progressbar" aria-valuenow="` + percent + `" aria-valuemin="0" aria-valuemax="100" style="font-weight:bold;color:black;padding-left:5px;min-width: 0.2em;width: ` + percent + `%">
+                    <div class="progress-bar ` + cls + `" role="progressbar" aria-valuenow="` + percent + `" aria-valuemin="0" aria-valuemax="100" style="font-weight:bold;color:black;padding-left:5px;min-width: 0.2em;width: ` + percent + `%">
                         ` + percent + `%
                     </div>
                 </div>`;
@@ -139,8 +123,6 @@ $(document).ready(function () {
                     }
                 }
             },
-            // PIC
-            {},
             // project status
             {render: renderStatus},
             // due date

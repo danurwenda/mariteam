@@ -59,7 +59,7 @@ class Project extends Module_Controller {
         $can_delete = ($this->logged_user->person_id == $task_owner_person->person_id);
         if (!$can_delete) {
             $project = $this->projects_model->get_project($task->project_id);
-            $project_owner_person = $this->users_model->get_person($project->assigned_to);
+            $project_owner_person = $this->users_model->get_person($project->created_by);
             // can delete as the owner of the project
             $can_delete = ($this->logged_user->person_id == $project_owner_person->person_id);
         }
@@ -77,7 +77,7 @@ class Project extends Module_Controller {
     public function get_timeline() {
         $project_id = $this->input->get('project_id');
         $project = $this->projects_model->get_project($project_id);
-        $project_owner_person = $this->users_model->get_person($project->assigned_to);
+        $project_owner_person = $this->users_model->get_person($project->created_by);
         // can delete as the owner of the project
         $can_delete = ($this->logged_user->person_id == $project_owner_person->person_id);
 
@@ -252,7 +252,7 @@ class Project extends Module_Controller {
             // last resort
             if (!can_delete || $doc->source_table == 'projects') {
                 $project = $this->projects_model->get_project(empty($task) ? $doc->source_id : $task->project_id);
-                $project_owner = $this->users_model->get_person($project->assigned_to);
+                $project_owner = $this->users_model->get_person($project->created_by);
                 $can_delete = ($project_owner->user_id == $this->logged_user->user_id);
             }
         }
@@ -289,7 +289,7 @@ class Project extends Module_Controller {
         if ($this->input->is_ajax_request()) {
             $prid = $this->input->post('project_id');
             $project = $this->projects_model->get_project($prid);
-            $project_owner = $this->users_model->get_person($project->assigned_to);
+            $project_owner = $this->users_model->get_person($project->created_by);
             $docs = $this->projects_model->get_docs_dt($prid);
             $decoded = json_decode($docs);
             foreach ($decoded->data as &$doc) {
@@ -364,7 +364,7 @@ class Project extends Module_Controller {
         $data['groups'] = $this->db->get('groups')->result();
         $data['topics'] = $this->db->get('topics')->result();
         $data['admin'] = $this->logged_user->role_id == 1;
-        $data['owner'] = $this->logged_user->user_id == $project->assigned_to;
+        $data['owner'] = $this->logged_user->user_id == $project->created_by;
         $data['statuses'] = $this->db->get('project_statuses')->result();
         $data['active_menu'] = 1;
         $this->load->library('form_validation');
@@ -412,7 +412,7 @@ class Project extends Module_Controller {
         $project = $this->projects_model->get_project($project_id);
         if ($project) {
             $data['admin'] = $this->logged_user->role_id == 1;
-            $pic = $this->users_model->get_person($project->assigned_to);
+            $pic = $this->users_model->get_person($project->created_by);
             $user_pic = $this->users_model->get_user_by_person($pic->person_id);
             $data['owner'] = $user_pic && $this->logged_user->user_id == $user_pic->user_id;
             $data['pagetitle'] = 'Edit Project';

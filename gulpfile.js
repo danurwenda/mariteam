@@ -37,7 +37,7 @@ gulp.task('sass', function () {
 });
 
 // Minify compiled CSS
-gulp.task('minify-css', ['less'], function () {
+gulp.task('minify-css', ['sass','less'], function () {
     return gulp.src('dist/css/sb-admin-2.css')
             .pipe(cleanCSS({compatibility: 'ie8'}))
             .pipe(rename({suffix: '.min'}))
@@ -70,7 +70,7 @@ gulp.task('minify-js', ['js'], function () {
 });
 
 // Copy vendor libraries from /bower_components into /vendor
-gulp.task('copy', function () {
+gulp.task('copy', ['minify-css', 'minify-js'], function () {
     gulp.src(['bower_components/bootstrap/dist/**/*', '!**/npm.js', '!**/bootstrap-theme.*', '!**/*.map'])
             .pipe(gulp.dest('vendor/bootstrap'))
 
@@ -82,7 +82,7 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/bootbox.js/*.js'])
             .pipe(gulp.dest('vendor/bootbox'))
-    
+
     gulp.src(['bower_components/jquery-form/dist/*.js'])
             .pipe(gulp.dest('vendor/jquery-form'))
 
@@ -94,21 +94,21 @@ gulp.task('copy', function () {
 
     gulp.src(['bower_components/bootstrap-wysiwyg/js/*'])
             .pipe(gulp.dest('vendor/bootstrap-wysiwyg'))
-    
+
     gulp.src(['bower_components/noty/lib/*'])
             .pipe(gulp.dest('vendor/noty'))
 
     gulp.src(['bower_components/underscore/*.js'])
             .pipe(gulp.dest('vendor/underscore'))
 
-    gulp.src(['bower_components/jquery-ui/*.js' ,'bower_components/jquery-ui/*/*'])
+    gulp.src(['bower_components/jquery-ui/*.js', 'bower_components/jquery-ui/*/*'])
             .pipe(gulp.dest('vendor/jquery-ui'))
-    
-    gulp.src(['bower_components/fullcalendar/dist/*' ])
+
+    gulp.src(['bower_components/fullcalendar/dist/*'])
             .pipe(gulp.dest('vendor/fullcalendar'))
 
     gulp.src([
-        'bower_components/select2/dist/css/*', 
+        'bower_components/select2/dist/css/*',
         'bower_components/select2/dist/js/*'])
             .pipe(gulp.dest('vendor/select2'))
 

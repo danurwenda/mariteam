@@ -28,15 +28,7 @@
         });
     });
 
-    //jQuery to collapse the navbar on scroll
-    $(window).scroll(function () {
-        if ($(".navbar-default").offset().top > 40) {
-            $(".navbar-fixed-top").addClass("top-nav-collapse");
-        } else {
-            $(".navbar-fixed-top").removeClass("top-nav-collapse");
-        }
-    });
-
+    
     $('.navbar-collapse').on('show.bs.collapse', function () {
         $(".navbar-fixed-top").addClass("top-nav-collapse-shadow");
     })

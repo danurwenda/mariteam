@@ -261,8 +261,7 @@ $(document).ready(function () {
         var button = $(event.relatedTarget) // Button that triggered the modal
                 ,
                 task_id = button.data('task'),
-                modal = $(this),
-                form = modal.find('.modal-body').hasClass('modal-form');
+                modal = $(this);
         if (task_id) {
             //prepare form to be submitted for editing entry
             //populate form after ajax load
