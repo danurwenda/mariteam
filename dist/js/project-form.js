@@ -408,7 +408,7 @@ $(document).ready(function () {
                     // show status
                     modal.find('[name=task_status]').closest('.form-group').removeClass('hide')
                     modal.find('[name=task_status]').val([task.status])
-                    modal.find('#task-assign').val(task.assigned_to)
+                    modal.find('#task-assign').val(task.assigned_to).trigger('change.select2');
                     modal.find('#task-start-date').data("DateTimePicker").date(new Date(task.start_date));
                     modal.find('#task-end-date').data("DateTimePicker").date(new Date(task.end_date));
                     modal.find('#task-weight').val(task.weight).trigger('change')
