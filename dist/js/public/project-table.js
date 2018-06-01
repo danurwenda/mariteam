@@ -119,7 +119,7 @@ $(document).ready(function () {
                         return n;
                     } else {
                         //render link using id
-                        return '<a href="' + base_url + 'publik/project/' + f[0] + '">' + n + '</a>'
+                        return '<a href="' + parent_url + 'project-detail/' + f[0] + '">' + n + '</a>'
                     }
                 }
             },

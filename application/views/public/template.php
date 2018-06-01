@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <base target="_parent">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>MariTeam | Maritim Project Management Tools</title>
@@ -19,7 +20,7 @@
             Author: BootstrapMade.com
             Author URL: https://bootstrapmade.com
         ======================================================= -->
-        <script>var $$ = [], base_url = '<?php echo base_url(); ?>';</script>
+        <script>var $$ = [], base_url = '<?php echo base_url(); ?>'; parent_url = '<?php echo $this->config->item('parent_url'); ?>';</script>
     </head>
     <body>
 
