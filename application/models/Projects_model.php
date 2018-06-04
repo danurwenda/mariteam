@@ -340,6 +340,7 @@ class Projects_model extends CI_Model {
         }
         $ret = $this->db
                 ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
+                ->order_by('group_name','asc')
                 ->get('groups')
                 ->result_array();
         return $ret;
