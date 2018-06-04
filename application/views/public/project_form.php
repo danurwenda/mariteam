@@ -37,6 +37,11 @@
             , '<?php echo js_asset_url('jquery-gantt/ganttMaster.js') ?>'
 
             , '<?php echo base_url('dist/js/public/project-form.js') ?>');
+    // send data to parent frame, only when this frame is fully loaded
+    function load() {
+        window.parent.postMessage(document.body.offsetHeight, '*');
+    }
+    window.onload = load;
 </script>
 <div class="col-lg-12">
     <div class="panel panel-default main-panel" data-project="<?php echo isset($project) ? $project->project_id : null; ?>">
@@ -433,7 +438,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="task-modal-form" class="modal " tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
