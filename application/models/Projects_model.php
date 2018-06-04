@@ -340,18 +340,16 @@ class Projects_model extends CI_Model {
         }
         $ret = $this->db
                 ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
-                ->order_by('group_name','asc')
+                ->order_by('group_id', 'asc')
                 ->get('groups')
                 ->result_array();
         return $ret;
     }
 
-    public function update($id, $user, $name, $start_date, $due_date, $description, $topics, $status, $groups) {
+    public function update($id, $name, $start_date, $due_date, $description, $topics, $status, $groups) {
         $this->db->where('project_id', $id);
         //update username
-        if (isset($user)) {
-            $this->db->set('assigned_to', $user);
-        }
+
         $this->db->set('project_name', $name);
         $this->db->set('project_status', $status);
         $this->db->set('start_date', $start_date);

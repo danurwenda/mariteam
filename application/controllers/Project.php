@@ -370,9 +370,6 @@ class Project extends Module_Controller {
         $this->load->library('form_validation');
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('end_date', 'Due Date', 'required');
-        if ($data['admin']) {
-            $this->form_validation->set_rules('assigned_to', 'Assigned User', 'required');
-        }
         if ($this->form_validation->run() == true) {
             $topics = $this->input->post('topics');
             if ($topics === null) {
@@ -385,8 +382,6 @@ class Project extends Module_Controller {
             $data['updated'] = true;
             $this->projects_model->update(
                     $project_id,
-                    //assigned to
-                    $this->input->post('assigned_to'),
                     //name
                     $this->input->post('name'),
                     //dates (adjust the format to comply SQL datetime format)

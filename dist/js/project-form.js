@@ -461,9 +461,7 @@ $(document).ready(function () {
         }
     });
     var project_validator = $('#project_form').validate({
-        rules: {
-            assigned_to: 'required'
-        }
+        
     });
     var task_validator = $('#task-modal-form #task-form').validate();
     $('#task-modal-form .btn-subm').click(function (e) {
