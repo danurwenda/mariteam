@@ -342,15 +342,6 @@ class Projects_model extends CI_Model {
                 ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
                 ->get('groups')
                 ->result_array();
-        // add hardcoded "Menko" optgroup
-        if (isset($person_id)) {
-            $ret[] = [
-                "group_id" => "0",
-                "person_id" => $person_id,
-                "group_name" => "Menko",
-                "group_leader" => "3",
-                "is_public" => "1"];
-        }
         return $ret;
     }
 
