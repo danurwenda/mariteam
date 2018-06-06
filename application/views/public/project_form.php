@@ -44,6 +44,11 @@
     window.onload = load;
 </script>
 <div class="col-lg-12">
+    <button onclick="window.history.back();" class="btn btn-white btn-info btn-round">
+        <i class="ace-icon fa fa-long-arrow-left"></i>
+        Back
+    </button>
+    <div class="help-block"></div>
     <div class="panel panel-default main-panel" data-project="<?php echo isset($project) ? $project->project_id : null; ?>">
         <div class="panel-heading">
             <b><?php echo $project->project_name; ?></b>
