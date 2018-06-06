@@ -70,7 +70,8 @@ $(document).ready(function () {
 
     var projects_dt = $('#projects-datatable').DataTable({
         responsive: true,
-        processing: true,
+        dom: '<"top"i>rt<"bottom"p><"clear">',
+        //processing: true,
         serverSide: true,
         stateSave: true,
         stateSaveParams: function (settings, data) {
@@ -124,7 +125,7 @@ $(document).ready(function () {
                 }
             },
             // project status
-            {render: renderStatus},
+            //{render: renderStatus},
             // due date
             {render: renderPast},
             // progress

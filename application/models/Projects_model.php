@@ -111,7 +111,7 @@ class Projects_model extends CI_Model {
         $this->datatables3
                 ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
                 ->distinct()
-                ->select('projects.project_id,project_name,project_status,projects.end_date,projects.progress');
+                ->select('projects.project_id,project_name,projects.end_date,projects.progress');
         $this->db
                 ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
                 ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
@@ -119,12 +119,13 @@ class Projects_model extends CI_Model {
         $json = $this->datatables3->generate();
         $decoded = json_decode($json);
         $decoded->c = $case;
+        $decoded->q = $this->db->last_query();
         foreach ($decoded->data as &$project) {
             // add info about time table of this project
             // set delayed == true if this project has one or more overdue task
             // but the expected end time for this project is actually still in the future
             if ($this->datatables3->isColIdxd()) {
-                $project[] = ( $project[4] > date('Y-m-d')) && $this->is_delayed($project[0]);
+                $project[] = ( $project[3] > date('Y-m-d')) && $this->is_delayed($project[0]);
             } else {
                 $project->delay = ( $project->end_date > date('Y-m-d')) && $this->is_delayed($project->project_id);
             }

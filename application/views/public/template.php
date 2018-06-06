@@ -60,7 +60,7 @@
             <!--/ HEADER-->
             <!-- Page Content -->
             <section id="content" class="wow fadeIn delay-05s animated" style="visibility: visible; animation-name: fadeIn;">
-                <div class="container">
+                <div class=""><!-- don't set this div with .container class since it will be loaded inside an iframe-->
                     <div class="row">
                         <?php echo $_content; ?>
                     </div>

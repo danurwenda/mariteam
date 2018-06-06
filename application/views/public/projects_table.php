@@ -17,6 +17,7 @@
         </div>
         <!-- /.panel-heading -->
         <div class="panel-body">
+            <!-- table group filter
             <p> 
                 <button class="btn btn-submit" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                     Filters
@@ -30,20 +31,15 @@
                     </div>
                 </div>
 
-                <!--div class="widget-toolbox padding-8 clearfix">
-                    <button class="btn" type="reset">
-                        <i class="ace-icon fa fa-undo bigger-110"></i>
-                        Reset
-                    </button>
-                </div-->
+                
 
             </div>
+            -->
             <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
                 <thead>
                     <tr>
                         <th>No</th>
                         <th>Name</th>
-                        <th>Status</th>
                         <th>Due date</th>
                         <th>Progress (%)</th>
                     </tr>
