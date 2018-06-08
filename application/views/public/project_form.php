@@ -48,10 +48,10 @@
         <i class="ace-icon fa fa-long-arrow-left"></i>
         Back
     </button>
-    <button style="float:right;" class="btn btn-white btn-warning btn-round">
+    <a href="<?php echo $this->config->item('parent_url')+'inquiry';?>" style="float:right;" class="btn btn-white btn-warning btn-round">
         <i class="ace-icon fa fa-info-circle"></i>
         Inquiry for funding
-    </button>
+    </a>
     <div class="help-block"></div>
     <div class="panel panel-default main-panel" data-project="<?php echo isset($project) ? $project->project_id : null; ?>">
         <div class="panel-heading">
