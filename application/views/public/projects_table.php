@@ -11,44 +11,18 @@
             , '<?php echo base_url('dist/js/public/project-table.js') ?>');
 </script>
 <div class="col-lg-12">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            List of Project
-        </div>
-        <!-- /.panel-heading -->
-        <div class="panel-body">
-            <!-- table group filter
-            <p> 
-                <button class="btn btn-submit" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    Filters
-                </button>
-            </p>
-            <div class="collapse" id="collapseExample">
-                <div class="well">
-                    <div class="form-group">
-                        <label for="multi-append" class="control-label">Project Group</label>
-                        <select class="form-control" multiple="multiple" name="groups" id="groups"></select>
-                    </div>
-                </div>
 
-                
-
-            </div>
-            -->
-            <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Due date</th>
-                        <th>Progress (%)</th>
-                    </tr>
-                </thead>
-            </table>
-            <!-- /.table-responsive -->
-        </div>
-        <!-- /.panel-body -->
-    </div>
-    <!-- /.panel -->
+    <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Due date</th>
+                <th>Progress (%)</th>
+            </tr>
+        </thead>
+    </table>
+    <!-- /.table-responsive -->
 </div>
+
 <!-- /.col-lg-12 -->

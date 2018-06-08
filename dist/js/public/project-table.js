@@ -70,8 +70,8 @@ $(document).ready(function () {
 
     var projects_dt = $('#projects-datatable').DataTable({
         responsive: true,
-        dom: '<"top"i>rt<"bottom"p><"clear">',
-        //processing: true,
+        dom: '<"top">rt<"bottom"p><"clear">',
+        paging:false,
         serverSide: true,
         stateSave: true,
         stateSaveParams: function (settings, data) {
