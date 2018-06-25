@@ -140,7 +140,7 @@ class Projects_model extends CI_Model
                 $project[] = $this->get_project_groups($project[0]);
             } else {
                 $project->delay = ($project->end_date > date('Y-m-d')) && $this->is_delayed($project->project_id);
-                $project->groups = $this->get_project_groups($project[0]);
+                // $project->groups = $this->get_project_groups($project[0]);
             }
         }
         return json_encode($decoded);
