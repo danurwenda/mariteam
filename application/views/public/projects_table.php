@@ -11,14 +11,14 @@
             , '<?php echo base_url('dist/js/public/project-table.js') ?>');
 </script>
 <div class="col-lg-12">
-
+    <!-- table-responsive -->
     <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
         <thead>
             <tr>
                 <th>No</th>
                 <th>Name</th>
                 <th>Due date</th>
-                <th>Progress (%)</th>
+                <th class="min-tablet-p">Progress (%)</th>
             </tr>
         </thead>
     </table>

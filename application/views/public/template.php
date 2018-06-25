@@ -14,6 +14,7 @@
         <!-- Noty -->
         <?php echo css_asset('noty/noty.css'); ?>
         <link href="<?php echo base_url(); ?>/dist/css/public/style.css" rel="stylesheet">
+        <link href="<?php echo base_url(); ?>/dist/css/public/custom.css" rel="stylesheet">
         <!-- =======================================================
             Theme Name: Baker
             Theme URL: https://bootstrapmade.com/baker-free-onepage-bootstrap-theme/

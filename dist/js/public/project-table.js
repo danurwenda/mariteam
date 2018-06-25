@@ -1,20 +1,12 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 $(document).ready(function () {
 
     renderPast = function (past, t, f, m) {
         if (t === 'sort') {
             return past;
         } else {
-            if (past)
-            {
+            if (past) {
                 var cls = '';
-                if (f[2]=== '3') {
+                if (f[2] === '3') {
                     cls = 'alert-danger';
                 }
                 var dpast = moment(new Date(past))
@@ -30,11 +22,11 @@ $(document).ready(function () {
         } else {
             if (percent > -1) {
                 var cls = '', tooltip = '';
-                
-                    //active dan belum telat
-                    tooltip = 'in progress';
-                    cls = 'progress-bar-success'
-                
+
+                //active dan belum telat
+                tooltip = 'in progress';
+                cls = 'progress-bar-success'
+
                 percent = percent * 100;
                 percent = percent.toFixed(2);
                 return `<div class="progress" data-toggle="tooltip" title="` + tooltip + `">
@@ -68,10 +60,30 @@ $(document).ready(function () {
         }
     }
 
+    renderSdg = function (n, t, f, m) {
+        if (t === 'sort') {
+            return n;
+        } else {
+            var projectList = '';
+            f[5].forEach(e => {
+                var id = e.group_id;
+                projectList += '<li class="sdg-' + (id < 10 ? '0' + id : id) + '"></li>';
+            });
+            //render link using id
+            return '<p><a href="' + parent_url + 'project-detail/' + f[0] + '">' + n + '</a>'
+                +
+                //render icon2 sdg
+                (projectList === '' ? '' :
+                    `<ul class="sdglist">` + projectList + `</ul>`)
+        }
+    }
+
+
+
     var projects_dt = $('#projects-datatable').DataTable({
         responsive: true,
         dom: '<"top">rt<"bottom"p><"clear">',
-        paging:false,
+        paging: false,
         serverSide: true,
         stateSave: true,
         stateSaveParams: function (settings, data) {
@@ -115,30 +127,23 @@ $(document).ready(function () {
             {},
             // name link
             {
-                render: function (n, t, f, m) {
-                    if (t === 'sort') {
-                        return n;
-                    } else {
-                        //render link using id
-                        return '<a href="' + parent_url + 'project-detail/' + f[0] + '">' + n + '</a>'
-                    }
-                }
+                render: renderSdg
             },
             // project status
             //{render: renderStatus},
             // due date
-            {render: renderPast},
+            { render: renderPast },
             // progress
-            {render: renderProgress}
+            { render: renderProgress }
         ]
     });
     projects_dt.on('order.dt search.dt draw.dt', function () {
         //biar kolom angka ga ikut ke sort
         var start = projects_dt.page.info().start;
-        projects_dt.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+        projects_dt.column(0, { order: 'applied' }).nodes().each(function (cell, i) {
             cell.innerHTML = start + i + 1;
         });
-        
+
     }).draw();
     $('#groups').select2({
         theme: "bootstrap",

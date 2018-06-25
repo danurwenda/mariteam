@@ -1,0 +1,94 @@
+.sdglist {
+    position: relative;
+    margin-left:-40px;
+}
+
+.sdglist li {
+    float: left;
+    margin: 5px;
+    padding: 0;
+    list-style: none;
+}
+
+.sdglist li, .sdglist a {
+    width:80px;
+    height:80px;
+    display: block;
+    background-size: 100% auto;
+}
+
+.sdg-01 {
+    
+    background: url('../../img/sdgs/1.png');
+}
+.sdg-02 {
+    
+    background: url('../../img/sdgs/2.png');
+}
+.sdg-03 {
+    
+    background: url('../../img/sdgs/3.png');
+}
+.sdg-04 {
+    
+    background: url('../../img/sdgs/4.png');
+}
+.sdg-05 {
+    
+    background: url('../../img/sdgs/5.png');
+}
+.sdg-06 {
+    
+    background: url('../../img/sdgs/6.png');
+}
+.sdg-07 {
+    
+    background: url('../../img/sdgs/7.png');
+}
+.sdg-08 {
+    
+    background: url('../../img/sdgs/8.png');
+}
+.sdg-09 {
+    
+    background: url('../../img/sdgs/9.png');
+}
+.sdg-10 {
+    
+    background: url('../../img/sdgs/10.png');
+}
+.sdg-11 {
+    
+    background: url('../../img/sdgs/11.png');
+}
+.sdg-12 {
+    
+    background: url('../../img/sdgs/12.png');
+}
+.sdg-13 {
+    
+    background: url('../../img/sdgs/13.png');
+}
+.sdg-14 {
+    
+    background: url('../../img/sdgs/14.png');
+}
+.sdg-15 {
+    
+    background: url('../../img/sdgs/15.png');
+}
+.sdg-16 {
+    
+    background: url('../../img/sdgs/16.png');
+}
+.sdg-17 {
+    
+    background: url('../../img/sdgs/17.png');
+}
+
+@media (min-width: 20px) and (max-width: 480px) {
+    .sdglist li{
+        width:50px;
+        height:50px;
+    }
+}

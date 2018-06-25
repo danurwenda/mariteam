@@ -1,7 +1,7 @@
 <?php
 
-defined('BASEPATH') OR
-        exit('No direct script access allowed');
+defined('BASEPATH') or
+exit('No direct script access allowed');
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -12,40 +12,47 @@ defined('BASEPATH') OR
  *
  * @author Administrator
  */
-class Projects_model extends CI_Model {
+class Projects_model extends CI_Model
+{
 
     public $table = 'projects';
     public $primary_key = 'project_id';
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->library('Datatables');
     }
 
-    public function add_document($user, $project, $uuid, $filename, $size) {
+    public function add_document($user, $project, $uuid, $filename, $size)
+    {
         return $this->db->insert('documents', [
-                    'dir' => $uuid,
-                    'filename' => $filename,
-                    'source_id' => $project,
-                    'source_table' => 'projects',
-                    'created_by' => $user,
-                    'size' => $size
+            'dir' => $uuid,
+            'filename' => $filename,
+            'source_id' => $project,
+            'source_table' => 'projects',
+            'created_by' => $user,
+            'size' => $size,
         ]);
     }
 
-    public function get_document($doc_id) {
+    public function get_document($doc_id)
+    {
         $this->db->where('document_id', $doc_id);
         $q = $this->db->get('documents');
         if ($q->num_rows() > 0) {
             return $q->row();
-        } else
+        } else {
             return null;
+        }
+
     }
 
-    public function get_chart_data_by_dep($public_only = false) {
+    public function get_chart_data_by_dep($public_only = false)
+    {
         $this->db->select('group_name,count(project_group.project_id) as total')
-                ->join('groups', 'project_group.group_id=groups.group_id')
-                ->group_by('group_name');
+            ->join('groups', 'project_group.group_id=groups.group_id')
+            ->group_by('group_name');
         if ($public_only) {
             $this->db->where('is_public', 1);
         }
@@ -54,10 +61,11 @@ class Projects_model extends CI_Model {
         return $q->result();
     }
 
-    public function get_chart_data($public_only = false) {
+    public function get_chart_data($public_only = false)
+    {
         $this->db->select('name,count(projects.project_id) as total')
-                ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
-                ->group_by('name');
+            ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
+            ->group_by('name');
         if ($public_only) {
             $this->db->join('project_group', 'project_group.project_id=projects.project_id');
             $this->db->join('groups', 'project_group.group_id=groups.group_id');
@@ -68,15 +76,17 @@ class Projects_model extends CI_Model {
         return $q->result();
     }
 
-    private function is_delayed($project_id) {
+    private function is_delayed($project_id)
+    {
         $this->db->where('project_id', $project_id)
-                ->where('end_date <', date('Y-m-d'))
-                ->where('status != 2');
+            ->where('end_date <', date('Y-m-d'))
+            ->where('status != 2');
 
         return $this->db->get('tasks')->num_rows() > 0;
     }
 
-    public function get_dt2($public_only = false) {
+    public function get_dt2($public_only = false)
+    {
         $this->load->library('Datatables3');
         $this->datatables3->init();
         $case = 1;
@@ -109,54 +119,67 @@ class Projects_model extends CI_Model {
         }
         // additional field to search into : project description, task name, task description
         $this->datatables3
-                ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
-                ->distinct()
-                ->select('projects.project_id,project_name,projects.end_date,projects.progress');
+            ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
+            ->distinct()
+            ->select('projects.project_id,project_name,projects.end_date,projects.progress');
         $this->db
-                ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
-                ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
-                ->from('projects');
+            ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
+            ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
+            ->from('projects');
         $json = $this->datatables3->generate();
         $decoded = json_decode($json);
         $decoded->c = $case;
         $decoded->q = $this->db->last_query();
+
         foreach ($decoded->data as &$project) {
             // add info about time table of this project
             // set delayed == true if this project has one or more overdue task
             // but the expected end time for this project is actually still in the future
             if ($this->datatables3->isColIdxd()) {
-                $project[] = ( $project[3] > date('Y-m-d')) && $this->is_delayed($project[0]);
+                $project[] = ($project[3] > date('Y-m-d')) && $this->is_delayed($project[0]);
+                $project[] = $this->get_project_groups($project[0]);
             } else {
-                $project->delay = ( $project->end_date > date('Y-m-d')) && $this->is_delayed($project->project_id);
+                $project->delay = ($project->end_date > date('Y-m-d')) && $this->is_delayed($project->project_id);
+                $project->groups = $this->get_project_groups($project[0]);
             }
         }
         return json_encode($decoded);
+    }
+
+    private function get_project_groups($project_id)
+    {
+
+        $this->db->select('group_id')->where('project_id', $project_id);
+        return $this->db->get('project_group')->result();
     }
 
     /**
      * TODO
      * @param int $task_id
      */
-    public function delete_task($task_id) {
-        
+    public function delete_task($task_id)
+    {
+
     }
 
     /**
      * TODO
      * @param int $project_id
      */
-    public function delete_project($project_id) {
-        
+    public function delete_project($project_id)
+    {
+
     }
 
-    public function get_tasks_dt($project_id) {
+    public function get_tasks_dt($project_id)
+    {
         $this->load->library('Datatables3');
         $this->datatables3->init()
-                ->select('task_id, task_name,person_name, end_date, status, weight,task_order');
+            ->select('task_id, task_name,person_name, end_date, status, weight,task_order');
         $this->db
-                ->where('project_id', $project_id)
-                ->join('persons', 'persons.person_id=tasks.assigned_to', 'left')
-                ->from('tasks');
+            ->where('project_id', $project_id)
+            ->join('persons', 'persons.person_id=tasks.assigned_to', 'left')
+            ->from('tasks');
         return $this->datatables3->generate();
     }
 
@@ -164,20 +187,21 @@ class Projects_model extends CI_Model {
      * See https://roberto.open-lab.com/2012/08/24/jquery-gantt-editor/
      * @param type $project_id the project id
      */
-    public function get_tasks_timeline($project_id) {
+    public function get_tasks_timeline($project_id)
+    {
 
         $this->db
-                ->select('task_id id')
-                ->select('task_name name')
-                ->join('project_statuses', 'project_statuses.status_id=tasks.status')
-                ->select('project_statuses.name status')
-                ->select('UNIX_TIMESTAMP(start_date)  as start')
-                ->select('progress')
-                ->select('description, startIsMilestone, endIsMilestone, duration, depends, level')
-                ->order_by('task_order', 'asc');
+            ->select('task_id id')
+            ->select('task_name name')
+            ->join('project_statuses', 'project_statuses.status_id=tasks.status')
+            ->select('project_statuses.name status')
+            ->select('UNIX_TIMESTAMP(start_date)  as start')
+            ->select('progress')
+            ->select('description, startIsMilestone, endIsMilestone, duration, depends, level')
+            ->order_by('task_order', 'asc');
         $ori = $this->db->get_where('tasks', [
-                    'project_id' => $project_id
-                ])->result();
+            'project_id' => $project_id,
+        ])->result();
         // make associated array for easier traversing
         $tasks = [];
         foreach ($ori as $value) {
@@ -197,17 +221,18 @@ class Projects_model extends CI_Model {
         return $ret;
     }
 
-    private function project_as_task($project_id) {
+    private function project_as_task($project_id)
+    {
         $this->db
-                ->select('project_id id')
-                ->select('project_name name')
-                ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
-                ->select('project_statuses.name status')
-                ->select('UNIX_TIMESTAMP(start_date)  as start, UNIX_TIMESTAMP(end_date)  as end')
-                ->select('description,duration');
+            ->select('project_id id')
+            ->select('project_name name')
+            ->join('project_statuses', 'project_statuses.status_id=projects.project_status')
+            ->select('project_statuses.name status')
+            ->select('UNIX_TIMESTAMP(start_date)  as start, UNIX_TIMESTAMP(end_date)  as end')
+            ->select('description,duration');
         $p = $this->db->get_where('projects', [
-                    'project_id' => $project_id
-                ])->row();
+            'project_id' => $project_id,
+        ])->row();
         $p->level = 0;
         $p->progress = 0;
         $p->depends = null;
@@ -217,70 +242,75 @@ class Projects_model extends CI_Model {
         return [$p];
     }
 
-    public function get_task($task_id) {
+    public function get_task($task_id)
+    {
         return $this->db->get_where('tasks', ['task_id' => $task_id])->row();
     }
 
-    private function get_dependant_task($main_task_id) {
+    private function get_dependant_task($main_task_id)
+    {
         $this->db->order_by('start_date', 'asc');
         $lvl_1 = $this->db->get_where('tasks', [
-                    'dependency_task' => $main_task_id
-                ])->result();
+            'dependency_task' => $main_task_id,
+        ])->result();
     }
 
-    public function get_docs_dt($project_id) {
+    public function get_docs_dt($project_id)
+    {
         $this->datatables
-                ->where('source_id', $project_id)
-                ->where('source_table', 'projects')
-                ->select('filename,size,created_at,document_id,dir,created_by')
-                ->from('documents');
+            ->where('source_id', $project_id)
+            ->where('source_table', 'projects')
+            ->select('filename,size,created_at,document_id,dir,created_by')
+            ->from('documents');
         return $this->datatables->generate();
     }
 
-    public function get_login_info($u) {
+    public function get_login_info($u)
+    {
         $this->db->where('email', $u)->limit(1);
         $q = $this->db->get($this->table);
         return ($q->num_rows() > 0) ? $q->row() : false;
     }
 
     public function edit_task(
-    $task_id, $task_name, $desc, $start_date, $due_date, $assigned_to, $weight, $done) {
+        $task_id, $task_name, $desc, $start_date, $due_date, $assigned_to, $weight, $done) {
         $this->db->where('task_id', $task_id);
         return $this->db->update('tasks', [
-                    'task_name' => $task_name,
-                    'description' => $desc,
-                    'assigned_to' => $assigned_to,
-                    'start_date' => $start_date,
-                    'end_date' => $due_date,
-                    'weight' => $weight,
-                    'status' => $done
+            'task_name' => $task_name,
+            'description' => $desc,
+            'assigned_to' => $assigned_to,
+            'start_date' => $start_date,
+            'end_date' => $due_date,
+            'weight' => $weight,
+            'status' => $done,
         ]);
     }
 
     public function add_task(
-    $project_id, $task_name, $desc, $due_date, $end_date, $created_by, $assigned_to, $weight, $task_status = 4) {
+        $project_id, $task_name, $desc, $due_date, $end_date, $created_by, $assigned_to, $weight, $task_status = 4) {
         return $this->db->insert('tasks', [
-                    'task_name' => $task_name,
-                    'description' => $desc,
-                    'project_id' => $project_id,
-                    'created_by' => $created_by,
-                    'assigned_to' => $assigned_to,
-                    'start_date' => $due_date,
-                    'end_date' => $end_date,
-                    'weight' => $weight,
-                    'status' => $task_status
+            'task_name' => $task_name,
+            'description' => $desc,
+            'project_id' => $project_id,
+            'created_by' => $created_by,
+            'assigned_to' => $assigned_to,
+            'start_date' => $due_date,
+            'end_date' => $end_date,
+            'weight' => $weight,
+            'status' => $task_status,
         ]);
     }
 
     /**
-     * The information contained in the  project object returned by this 
+     * The information contained in the  project object returned by this
      * function should be sufficient to fulfill the whole form
      * @param type $id
      * @return type
      */
-    public function get_project($id) {
+    public function get_project($id)
+    {
         $this->db
-                ->where($this->primary_key, $id)->limit(1);
+            ->where($this->primary_key, $id)->limit(1);
         $q = $this->db->get($this->table);
         if ($q->num_rows() > 0) {
             $p = $q->row();
@@ -306,20 +336,22 @@ class Projects_model extends CI_Model {
      * For select2
      * @return type
      */
-    public function get_topics() {
+    public function get_topics()
+    {
         return $this->db
-                        ->where('UPPER(topic_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
-                        ->get('topics')
-                        ->result_array();
+            ->where('UPPER(topic_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
+            ->get('topics')
+            ->result_array();
     }
 
-    public function get_groups_elmt() {
+    public function get_groups_elmt()
+    {
         $gs = $this->input->get('groups');
         if (is_array($gs)) {
             return $this->db
-                            ->where_in('group_id', $gs)
-                            ->get('groups')
-                            ->result_array();
+                ->where_in('group_id', $gs)
+                ->get('groups')
+                ->result_array();
         } else {
             return [];
         }
@@ -329,25 +361,27 @@ class Projects_model extends CI_Model {
      * For select2
      * @return type
      */
-    public function get_groups($person_id = null, $role = null) {
+    public function get_groups($person_id = null, $role = null)
+    {
         if ($role != 1) {
             $this->db
-                    ->group_start()
-                    ->where('is_public', 1);
+                ->group_start()
+                ->where('is_public', 1);
             if ($person_id !== null) {
                 $this->db->or_where("exists(SELECT * from person_group where person_id = $person_id and group_id=groups.group_id)");
             }
             $this->db->group_end();
         }
         $ret = $this->db
-                ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
-                ->order_by('group_id', 'asc')
-                ->get('groups')
-                ->result_array();
+            ->where('UPPER(group_name) LIKE', '%' . strtoupper($this->input->get('term', true)) . '%')
+            ->order_by('group_id', 'asc')
+            ->get('groups')
+            ->result_array();
         return $ret;
     }
 
-    public function update($id, $name, $start_date, $due_date, $description, $topics, $status, $groups) {
+    public function update($id, $name, $start_date, $due_date, $description, $topics, $status, $groups)
+    {
         $this->db->where('project_id', $id);
         //update username
 
@@ -364,7 +398,8 @@ class Projects_model extends CI_Model {
         $this->set_groups($id, $groups);
     }
 
-    public function create($creator, $user, $name, $start_date, $due_date, $description, $topics, $groups) {
+    public function create($creator, $user, $name, $start_date, $due_date, $description, $topics, $groups)
+    {
         $this->db->insert($this->table, [
             'created_by' => $creator,
             'assigned_to' => $user,
@@ -373,14 +408,15 @@ class Projects_model extends CI_Model {
             'end_date' => $due_date,
             'description' => $description,
             'project_priority' => 1,
-            'project_status' => 1
+            'project_status' => 1,
         ]);
         $pid = $this->db->insert_id();
         $this->set_topics($pid, $topics);
         $this->set_groups($pid, $groups);
     }
 
-    public function set_groups($pid, $groups) {
+    public function set_groups($pid, $groups)
+    {
         //clear previous set of group
         $this->db->where('project_id', $pid);
         $this->db->delete('project_group');
@@ -388,12 +424,13 @@ class Projects_model extends CI_Model {
         foreach ($groups as $tid) {
             $this->db->insert('project_group', [
                 'group_id' => $tid,
-                'project_id' => $pid
+                'project_id' => $pid,
             ]);
         }
     }
 
-    public function set_topics($pid, $topics) {
+    public function set_topics($pid, $topics)
+    {
         //clear previous set of topic
         $this->db->where('project_id', $pid);
         $this->db->delete('project_topic');
@@ -401,7 +438,7 @@ class Projects_model extends CI_Model {
         foreach ($topics as $tid) {
             $this->db->insert('project_topic', [
                 'topic_id' => $tid,
-                'project_id' => $pid
+                'project_id' => $pid,
             ]);
         }
     }
