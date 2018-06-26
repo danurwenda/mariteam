@@ -60,7 +60,7 @@
         <div class="panel-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#basic" data-toggle="tab">Basic</a>
+                <li class="active"><a href="#basic" data-toggle="tab">Profile</a>
                 </li>
                 <li><a href="#task" data-toggle="tab">Tasks</a>
                 </li>
@@ -72,25 +72,26 @@
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="basic">
                     <dl>
-                        <dt>Project Name</dt>
+                        <dt>Project</dt>
                         <dd><?php echo $project->project_name; ?></dd>
-
-                        <dt>Description</dt>
+                        
+                        <dt>Project Owner</dt>
+                        <dd><?php echo $project->owner; ?></dd>
+                        
+                        <dt>Offtaker</dt>
+                        <dd><?php echo $project->offtaker; ?></dd>
+                        
+                        <dt>Project Description</dt>
                         <dd><?php echo $project->description; ?></dd>
+                        
+                        <dt>Estimated Project Cost (USD)</dt>
+                        <dd><?php echo $project->cost; ?></dd>
 
-                        <dt>Submitted on</dt>
-                        <dd><?php echo date_format(date_create($project->created_at), "d-F-Y H:i"); ?></dd>
+                        <dt>Indicative IRR</dt>
+                        <dd><?php echo $project->IRR; ?></dd>
 
-                        <dt>Start date</dt>
-                        <dd>
-                            <span id="project-start-date"><?php echo date_format(date_create($project->start_date), "d-F-Y"); ?></span>
-                        </dd>
-
-                        <dt>End date</dt>
-                        <dd>
-                            <span id="project-due-date"><?php echo date_format(date_create($project->end_date), "d-F-Y"); ?></span>
-                            <span id="project-due-date-remain"></span>
-                        </dd>
+                        <dt>Latest Status</dt>
+                        <dd><?php echo $project->latest_status; ?></dd>
 
                         <dt>Topics</dt>
                         <dd>
