@@ -113,7 +113,13 @@ class Publik extends CI_Controller {
      * @param int $project_id project id
      */
     public function project($project_id) {
-        $project = $this->projects_model->get_project($project_id);
+        if(is_int($project_id)){
+
+            $project = $this->projects_model->get_project($project_id);
+        }else{
+            $project = $this->projects_model->get_project_by_permalink($project_id);
+
+        }
         if ($project) {
             $data['page'] = 'project';
             $data['topics'] = $this->db->get('topics')->result();

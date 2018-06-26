@@ -65,12 +65,12 @@ $(document).ready(function () {
             return n;
         } else {
             var projectList = '';
-            f[5].forEach(e => {
+            f[6].forEach(e => {
                 var id = e.group_id;
                 projectList += '<li class="sdg-' + (id < 10 ? '0' + id : id) + '"></li>';
             });
             //render link using id
-            return '<p><a href="' + parent_url + 'project-detail/' + f[0] + '">' + n + '</a>'
+            return '<p><a href="' + parent_url + 'project-detail/' + f[4] + '">' + n + '</a>'
                 +
                 //render icon2 sdg
                 (projectList === '' ? '' :

@@ -121,7 +121,7 @@ class Projects_model extends CI_Model
         $this->datatables3
             ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
             ->distinct()
-            ->select('projects.project_id,project_name,projects.end_date,projects.progress');
+            ->select('projects.project_id,project_name,projects.end_date,projects.progress,projects.permalink');
         $this->db
             ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
             ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
@@ -140,7 +140,7 @@ class Projects_model extends CI_Model
                 $project[] = $this->get_project_groups($project[0]);
             } else {
                 $project->delay = ($project->end_date > date('Y-m-d')) && $this->is_delayed($project->project_id);
-                // $project->groups = $this->get_project_groups($project[0]);
+                $project->groups = $this->get_project_groups($project[0]);
             }
         }
         return json_encode($decoded);
@@ -311,6 +311,30 @@ class Projects_model extends CI_Model
     {
         $this->db
             ->where($this->primary_key, $id)->limit(1);
+        $q = $this->db->get($this->table);
+        if ($q->num_rows() > 0) {
+            $p = $q->row();
+            //add groups
+            $p->groups = [];
+            $groups = $this->db->get_where('project_group', ['project_id' => $p->project_id]);
+            foreach ($groups->result() as $pt) {
+                $p->groups[] = $pt->group_id;
+            }
+            //add topics
+            $p->topics = [];
+            $topics = $this->db->get_where('project_topic', ['project_id' => $p->project_id]);
+            foreach ($topics->result() as $pt) {
+                $p->topics[] = $pt->topic_id;
+            }
+            return $p;
+        } else {
+            return false;
+        }
+    }
+    public function get_project_by_permalink($id)
+    {
+        $this->db
+            ->where('permalink', $id)->limit(1);
         $q = $this->db->get($this->table);
         if ($q->num_rows() > 0) {
             $p = $q->row();
