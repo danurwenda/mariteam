@@ -70,7 +70,7 @@ $(document).ready(function () {
                 projectList += '<li class="sdg-' + (id < 10 ? '0' + id : id) + '"></li>';
             });
             //render link using id
-            return '<p><a href="' + parent_url + 'project-detail/' + f[4] + '">' + n + '</a>'
+            return '<p><a href="' + parent_url + 'project/' + f[4] + '">' + n + '</a>'
                 +
                 //render icon2 sdg
                 (projectList === '' ? '' :
