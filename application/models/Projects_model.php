@@ -175,10 +175,9 @@ class Projects_model extends CI_Model
     {
         $this->load->library('Datatables3');
         $this->datatables3->init()
-            ->select('task_id, task_name,person_name, end_date, status, weight,task_order');
+            ->select('task_id, task_name, end_date, status,task_order');
         $this->db
             ->where('project_id', $project_id)
-            ->join('persons', 'persons.person_id=tasks.assigned_to', 'left')
             ->from('tasks');
         return $this->datatables3->generate();
     }

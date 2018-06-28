@@ -44,26 +44,15 @@ $(document).ready(function () {
                 },
                 responsivePriority: 1
             },
-            //PIC
-            {},
+
             //due date
             {
                 render: function (past, t, f, m) {
                     if (t === 'sort') {
                         return past;
                     } else {
-                        if (past) {
-                            var cls = '';
-                            if (f[4] === '3') {
-                                cls = 'alert-danger';
-                            }
-                            var dpast = moment(past, 'YYYY-MM-DD')
-                            dpast.seconds(59);
-                            dpast.minutes(59);
-                            dpast.hours(23);
-                            return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY') + '">' + dpast.fromNow() + '</span>';
-                        }
-                        return 'Never';
+                        var dpast = moment(past, 'YYYY-MM-DD')
+                        return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY') + '">' + dpast.format('MMM YYYY') + '</span>';
                     }
                 }
             },
@@ -89,16 +78,15 @@ $(document).ready(function () {
                     }
                 }
             },
-            //weight
-            {},
+
             //order
-            {visible: false, searchable: false}
+            { visible: false, searchable: false }
         ]
     });
     tasks_table.on('order.dt search.dt draw.dt', function () {
         //biar kolom angka ga ikut ke sort
         var start = tasks_table.page.info().start;
-        tasks_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+        tasks_table.column(0, { order: 'applied' }).nodes().each(function (cell, i) {
             cell.innerHTML = start + i + 1;
         });
 
@@ -109,8 +97,8 @@ $(document).ready(function () {
     });
     $(document).on("click", ".deldoc", function (e) {
         var el = $(this),
-                uid = $(this).data('doc_id'),
-                source = $(this).data('source');
+            uid = $(this).data('doc_id'),
+            source = $(this).data('source');
         bootbox.confirm({
             message: "Are you sure you want to remove this document?",
             buttons: {
@@ -216,33 +204,33 @@ $(document).ready(function () {
         }
         //initial
         cmtel
-                .append(
-                        $('<span/>')
-                        .addClass('chat-img')
-                        .attr('data-letters', initial))
-                .append(
+            .append(
+                $('<span/>')
+                    .addClass('chat-img')
+                    .attr('data-letters', initial))
+            .append(
+                $('<div/>')
+                    .addClass('chat-body clearfix')
+                    .append(
                         $('<div/>')
-                        .addClass('chat-body clearfix')
-                        .append(
-                                $('<div/>')
-                                .addClass('chat-header')
+                            .addClass('chat-header')
 
-                                .append(
-                                        $('<small/>')
-                                        .addClass('text-muted')
-                                        .append(
-                                                $('<i class="fa fa-clock-o fa-fw"></i>')
-                                                )
-                                        .append(
-                                                $('<span/>')
-                                                .addClass('comment-time')
-                                                .html(moment(cmt.time).fromNow())
-                                                )
+                            .append(
+                                $('<small/>')
+                                    .addClass('text-muted')
+                                    .append(
+                                        $('<i class="fa fa-clock-o fa-fw"></i>')
+                                    )
+                                    .append(
+                                        $('<span/>')
+                                            .addClass('comment-time')
+                                            .html(moment(cmt.time).fromNow())
+                                    )
 
-                                        )
-                                )
-                        .append($('<p/>').html(cmt.content))
-                        )
+                            )
+                    )
+                    .append($('<p/>').html(cmt.content))
+            )
         var user = $('<strong/>').addClass('primary-font').html(cmt.user);
         if (cmt.self) {
             cmtel.addClass('right')
@@ -256,12 +244,12 @@ $(document).ready(function () {
         }
         return cmtel;
     }
-    
+
     $('#task-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
-                ,
-                task_id = button.data('task'),
-                modal = $(this);
+            ,
+            task_id = button.data('task'),
+            modal = $(this);
         if (task_id) {
             //prepare form to be submitted for editing entry
             //populate form after ajax load
@@ -277,8 +265,8 @@ $(document).ready(function () {
                 modal.find('#task-weight').html(task.weight)
 
                 modal.find('#task-status').html(
-                        renderStatus(task.status)
-                        )
+                    renderStatus(task.status)
+                )
                 modal.find('#task-assign').html(task.person_name)
 
 
@@ -312,22 +300,32 @@ $(document).ready(function () {
         },
         columns: [
             {},
-            {render: function (d, t, f, m) {
+            {
+                render: function (d, t, f, m) {
                     return '<a href data-toggle="modal" data-target="#event-modal-form"> ' + d + '</a>';
-                }},
+                }
+            },
             {},
-            {render: function (d, t, f, m) {
-                   return moment(d).format("D MMMM YYYY HH:mm")
-                }},
+            {
+                render: function (d, t, f, m) {
+                    return moment(d).format("D MMMM YYYY HH:mm")
+                }
+            },
             {},
-            {visible: false, searchable: false}, {visible: false, searchable: false}
+            { visible: false, searchable: false }, { visible: false, searchable: false }
 
         ]
     });
+    events_table.on('draw.dt', function () {
+        if (0 === events_table.rows()[0].length) {
+            // hide tab
+            $('#events-tab').hide()
+        }
+    })
     events_table.on('order.dt search.dt draw.dt', function () {
         //biar kolom angka ga ikut ke sort
         var start = events_table.page.info().start;
-        events_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+        events_table.column(0, { order: 'applied' }).nodes().each(function (cell, i) {
             cell.innerHTML = start + i + 1;
         });
 
@@ -335,8 +333,8 @@ $(document).ready(function () {
     $('#event-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget), // Button that triggered the modal
 
-                tr = button.parents('tr'),form = $('#event-modal-form'),
-                rowdata = events_table.row(tr).data();
+            tr = button.parents('tr'), form = $('#event-modal-form'),
+            rowdata = events_table.row(tr).data();
         form.find('.event-name').html(rowdata[1])
         form.find('.event-description').html(rowdata[5])
         form.find('.event-pic').html(rowdata[2])

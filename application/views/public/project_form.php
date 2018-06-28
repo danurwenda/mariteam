@@ -66,7 +66,7 @@
                 </li>
                 <li class=""><a href="#timeline" data-toggle="tab">Timeline</a>
                 </li>
-                <li><a href="#events" data-toggle="tab">Events</a>
+                <li id="events-tab"><a href="#events" data-toggle="tab">Events</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -124,10 +124,8 @@
                                             <tr>
                                                 <th>No</th>
                                                 <th>Task</th>
-                                                <th>PIC</th>
-                                                <th>Due date</th>
+                                                <th>Target</th>
                                                 <th>Status</th>
-                                                <th>Weight</th>
                                                 <th>Order</th>
                                             </tr>
                                         </thead>
