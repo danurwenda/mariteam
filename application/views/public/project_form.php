@@ -85,7 +85,7 @@
                         <dd><?php echo $project->description; ?></dd>
                         
                         <dt>Estimated Project Cost (USD)</dt>
-                        <dd><?php echo $project->cost; ?></dd>
+                        <dd><?php echo number_format($project->cost,2); ?></dd>
 
                         <dt>Indicative IRR</dt>
                         <dd><?php echo $project->IRR; ?></dd>
@@ -93,17 +93,14 @@
                         <dt>Latest Status</dt>
                         <dd><?php echo $project->latest_status; ?></dd>
 
-                        <dt>Topics</dt>
+                        <dt>SDG Goals</dt>
                         <dd>
-                            <ul>
+                            <ul class="sdglist">
                                 <?php
-                                $topic_opts = [];
-                                foreach ($topics as $u) {
-                                    $topic_opts[$u->topic_id] = $u->topic_name;
-                                }
-                                if (count($project->topics) > 0) {
-                                    foreach ($project->topics as $t) {
-                                        echo "<li>" . $topic_opts[$t] . "</li>";
+                                
+                                if (count($project->groups) > 0) {
+                                    foreach ($project->groups as $id) {
+                                        echo '<li class="sdg-' . ($id < 10 ? '0' . $id : $id) . '"></li>';
                                     }
                                 } else {
                                     echo "<li>-</li>";
