@@ -1,4 +1,8 @@
 <!-- Page-specific CSS -->
+<script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+<!-- Theme included stylesheets -->
+<link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <?php echo css_asset('eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css'); ?>
 <?php echo css_asset('select2/select2.min.css'); ?>
 <?php echo css_asset('select2/themes/select2-bootstrap.min.css'); ?>
@@ -50,8 +54,8 @@
 </script>
 <?php
 if (
-        $admin ||
-        (isset($project) && $owner)
+    $admin ||
+    (isset($project) && $owner)
 ) {
     ?>
     <form action="<?php echo $admin ? site_url('people/create_user_simple') : site_url('user/create_person'); ?>" class="row form-horizontal hide new-person-form" method="post" accept-charset="utf-8">
@@ -77,7 +81,7 @@ if (
                     <input required minlength="3" type="text" placeholder="Position" class="form-control" name="jabatan">
                 </div>
             </div>
-            <?php if ($admin) { ?>
+            <?php if ($admin) {?>
                 <div class="form-group">
                     <div class="col-sm-9 col-sm-offset-3">
                         <input type="checkbox" name="is_user"> Create user account for this person?
@@ -90,11 +94,11 @@ if (
                         <input type="email" placeholder="Email" class="form-control" name="email">
                     </div>
                 </div>
-            <?php } ?>
+            <?php }?>
         </div>
     </form>
 
-<?php } ?>
+<?php }?>
 
 <div class="col-lg-12">
     <div class="panel panel-default main-panel" data-project="<?php echo isset($project) ? $project->project_id : null; ?>">
@@ -106,70 +110,75 @@ if (
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#basic" data-toggle="tab">Basic</a>
                 </li>
-                <?php if (isset($project)) { ?>
+                <?php if (isset($project)) {?>
                     <li class=""><a href="#task" data-toggle="tab">Tasks</a>
                     </li>
                     <li><a href="#documents" data-toggle="tab">Documents</a>
                     </li>
                     <li class=""><a href="#timeline" data-toggle="tab">Timeline</a></li>
                     <li class=""><a href="#events" data-toggle="tab">Events</a></li>
-                <?php } ?>
+                <?php }?>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="basic">
                     <?php
-                    if ($admin) {
-                        echo form_open(isset($project) ? 'project/update' : 'project/create', ['id' => 'project_form'], isset($project) ? ['project_id' => $project->project_id] : []);
-                        ?>
+if ($admin) {
+    echo form_open(isset($project) ? 'project/update' : 'project/create', ['id' => 'project_form'], isset($project) ? ['project_id' => $project->project_id] : []);
+    ?>
                         <div class="row">
-                            <?php if (isset($updated) && $updated) { ?>
+                            <?php if (isset($updated) && $updated) {?>
                                 <div class="alert alert-success alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                     Project updated.
                                 </div>
                             <?php }
-                            ?>
-                            <div class="col-lg-6">    
+    ?>
+                            <div class="col-lg-6">
                                 <div class="form-group">
                                     <label>Name</label>
                                     <input required="" minlength="5" name="name" type="text" class="form-control" value="<?php echo set_value('name', isset($project) ? $project->project_name : ''); ?>">
                                 </div>
                                 <div class="form-group ">
                                     <label for="description">Description</label>
-                                    <textarea class="form-control " name="description" cols="50" rows="10" id="description"><?php echo set_value('description', isset($project) ? $project->description : ''); ?></textarea>
-                                </div> 
+                                    <div class="form-control " name="description" id="description"><?php echo set_value('description', isset($project) ? $project->description : ''); ?></div>
+                                </div>
                             </div>
+                            <script>
+  var quill = new Quill('#description', {
+    theme: 'snow'
+  });
+</script>
                             <div class="col-lg-6">
                                <div class="form-group">
                                     <label for="multi-append" class="control-label">Groups</label>
                                     <?php
-                                    $group_opts = [];
-                                    foreach ($groups as $u) {
-                                        $group_opts[$u->group_id] = $u->group_name;
-                                    }
+$group_opts = [];
+    foreach ($groups as $u) {
+        $group_opts[$u->group_id] = $u->group_name;
+    }
 
-                                    $js = [
-                                        'id' => 'groups',
-                                        'class' => 'form-control select2'
-                                    ];
-                                    echo form_multiselect('groups[]', $group_opts, set_value('groups[]', isset($project) ? $project->groups : null ), $js);
-                                    ?>
+    $js = [
+        'id' => 'groups',
+        'class' => 'form-control select2',
+    ];
+    echo form_multiselect('groups[]', $group_opts, set_value('groups[]', isset($project) ? $project->groups : null), $js);
+    ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="multi-append" class="control-label">Topics</label>
                                     <div class="input-group">
                                         <?php
-                                        $topic_opts = [];
-                                        foreach ($topics as $u) {
-                                            $topic_opts[$u->topic_id] = $u->topic_name;
-                                        }
+$topic_opts = [];
+    foreach ($topics as $u) {
+        $topic_opts[$u->topic_id] = $u->topic_name;
+    }
 
-                                        $js = [
-                                            'id' => 'topics',
-                                            'class' => 'form-control select2'
-                                        ];
-                                        echo form_multiselect('topics[]', $topic_opts, set_value('topics[]', isset($project) ? $project->topics : null ), $js);
-                                        ?>
+    $js = [
+        'id' => 'topics',
+        'class' => 'form-control select2',
+    ];
+    echo form_multiselect('topics[]', $topic_opts, set_value('topics[]', isset($project) ? $project->topics : null), $js);
+    ?>
                                         <span class="input-group-btn">
                                             <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#topic-modal-form">
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
@@ -185,31 +194,31 @@ if (
                                     <label for="project_date">Due Date</label>
                                     <input required class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
                                 </div>
-                                <?php if (isset($project)) { ?>
+                                <?php if (isset($project)) {?>
                                     <div class="form-group">
                                         <label>Status</label>
-                                        <?php foreach ($statuses as $role) { ?>
+                                        <?php foreach ($statuses as $role) {?>
                                             <div class="radio">
                                                 <label>
                                                     <input type="radio" name="status" value="<?php echo $role->status_id ?>" <?php echo set_radio('status', $role->status_id, isset($project) ? $project->project_status == $role->status_id : false); ?>><?php echo $role->name; ?>
                                                 </label>
                                             </div>
-                                        <?php } ?>
+                                        <?php }?>
                                     </div>
-                                <?php } ?>
+                                <?php }?>
                             </div>
                         </div>
-                        <?php if ($admin) { ?>
+                        <?php if ($admin) {?>
                             <button type="submit" class="btn btn-default">Submit</button>
-                            <?php if (isset($project)) { ?>
+                            <?php if (isset($project)) {?>
                                 <a class="btn btn-danger" data-project_name="<?php echo $project->project_name; ?>" data-project_id="<?php echo $project->project_id; ?>">Remove</a>
                                 <?php
-                            }
-                        }
-                        ?>
+}
+    }
+    ?>
                         </form>
-                    <?php } else { ?>
-                        <!-- label and text only, non-editable -->    
+                    <?php } else {?>
+                        <!-- label and text only, non-editable -->
                         <dl>
                             <dt>Project Name</dt>
                             <dd><?php echo $project->project_name; ?></dd>
@@ -236,32 +245,32 @@ if (
                             <dd>
                                 <ul>
                                     <?php
-                                    $topic_opts = [];
-                                    foreach ($topics as $u) {
-                                        $topic_opts[$u->topic_id] = $u->topic_name;
-                                    }
-                                    if (count($project->topics) > 0) {
-                                        foreach ($project->topics as $t) {
-                                            echo "<li>" . $topic_opts[$t] . "</li>";
-                                        }
-                                    } else {
-                                        echo "<li>-</li>";
-                                    }
-                                    ?>
+$topic_opts = [];
+    foreach ($topics as $u) {
+        $topic_opts[$u->topic_id] = $u->topic_name;
+    }
+    if (count($project->topics) > 0) {
+        foreach ($project->topics as $t) {
+            echo "<li>" . $topic_opts[$t] . "</li>";
+        }
+    } else {
+        echo "<li>-</li>";
+    }
+    ?>
                                 </ul>
                             </dd>
                         </dl>
-                    <?php } ?>
+                    <?php }?>
                 </div>
-                <?php if (isset($project)) { ?>
+                <?php if (isset($project)) {?>
                     <div class="tab-pane fade" id="task">
                         <div class="row">
                             <div class="col-xs-12">
-                                <?php if ($admin || $owner) { ?>
+                                <?php if ($admin || $owner) {?>
                                     <div class="pull-right">
                                         <span><a class="btn btn-primary btn-raised pull-right" data-toggle="modal" data-target="#task-modal-form"><i class="fa fa-tasks"></i> Create</a></span>
                                     </div>
-                                <?php } ?>
+                                <?php }?>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         Task List
@@ -369,7 +378,7 @@ if (
                             </div>
                         </div>
                     </div>
-                <?php } ?>
+                <?php }?>
             </div>
             <!-- /.panel-body -->
         </div>
@@ -413,7 +422,7 @@ if (
         </div>
     </div>
 </div>
-<?php if (isset($project)) { ?>
+<?php if (isset($project)) {?>
     <!-- jQuery Gantt Templates-->
     <div id="gantEditorTemplates" style="display:none;">
         <div class="__template__" type="GANTBUTTONS"><!--
@@ -431,7 +440,7 @@ if (
               <span class="ganttButtonSeparator"></span>
               <button onclick="$('#workSpace').trigger('expandAll.gantt');return false;" class="button textual icon " title="EXPAND_ALL"><span class="teamworkIcon">6</span></button>
               <button onclick="$('#workSpace').trigger('collapseAll.gantt'); return false;" class="button textual icon " title="COLLAPSE_ALL"><span class="teamworkIcon">5</span></button>
-        
+
             <span class="ganttButtonSeparator"></span>
               <button onclick="$('#workSpace').trigger('zoomMinus.gantt'); return false;" class="button textual icon " title="zoom out"><span class="teamworkIcon">)</span></button>
               <button onclick="$('#workSpace').trigger('zoomPlus.gantt');return false;" class="button textual icon " title="zoom in"><span class="teamworkIcon">(</span></button>
@@ -508,7 +517,7 @@ if (
               <div class="taskStatus" status="(#=obj.status#)"></div>
               <div class="taskProgress" style="width:(#=obj.progress>100?100:obj.progress#)%; background-color:(#=obj.progress>100?'red':'rgb(153,255,51);'#);"></div>
               <div class="milestone (#=obj.startIsMilestone?'active':''#)" ></div>
-        
+
               <div class="taskLabel"></div>
               <div class="milestone end (#=obj.endIsMilestone?'active':''#)" ></div>
             </div>
@@ -541,8 +550,8 @@ if (
                 </td>
                 <td colspan="3" valign="top"><label for="name" class="required">name</label><br><input type="text" name="name" id="name"class="formElements" autocomplete='off' maxlength=255 style='width:100%' value="" required="true" oldvalue="1"></td>
                   </tr>
-        
-        
+
+
               <tr class="dateRow">
                 <td nowrap="">
                   <div style="position:relative">
@@ -562,7 +571,7 @@ if (
                   <input type="text" name="duration" id="duration" size="4" class="formElements validated durationdays" title="Duration is in working days." autocomplete="off" maxlength="255" value="" oldvalue="1" entrytype="DURATIONDAYS">&nbsp;
                 </td>
               </tr>
-        
+
               <tr>
                 <td  colspan="2">
                   <label for="status" class=" ">status</label><br>
@@ -574,13 +583,13 @@ if (
                     <option value="STATUS_UNDEFINED" class="taskStatus" status="STATUS_UNDEFINED" >undefined</option>
                   </select>
                 </td>
-        
+
                 <td valign="top" nowrap>
                   <label>progress</label><br>
                   <input type="text" name="progress" id="progress" size="7" class="formElements validated percentile" autocomplete="off" maxlength="255" value="" oldvalue="1" entrytype="PERCENTILE">
                 </td>
               </tr>
-        
+
                   </tr>
                   <tr>
                     <td colspan="4">
@@ -589,7 +598,7 @@ if (
                     </td>
                   </tr>
                 </table>
-        
+
             <h2>Assignments</h2>
           <table  cellspacing="1" cellpadding="0" width="100%" id="assigsTable">
             <tr>
@@ -599,11 +608,11 @@ if (
               <th style="width:30px;" id="addAssig"><span class="teamworkIcon" style="cursor: pointer">+</span></th>
             </tr>
           </table>
-        
+
           <div style="text-align: right; padding-top: 20px">
             <span id="saveButton" class="button first" onClick="$(this).trigger('saveFullEditor.gantt');">Save</span>
           </div>
-        
+
           </div>
             --></div>
 
@@ -622,7 +631,7 @@ if (
 
         <div class="__template__" type="RESOURCE_EDITOR"><!--
           <div class="resourceEditor" style="padding: 5px;">
-        
+
             <h2>Project team</h2>
             <table  cellspacing="1" cellpadding="0" width="100%" id="resourcesTable">
               <tr>
@@ -630,7 +639,7 @@ if (
                 <th style="width:30px;" id="addResource"><span class="teamworkIcon" style="cursor: pointer">+</span></th>
               </tr>
             </table>
-        
+
             <div style="text-align: right; padding-top: 20px"><button id="resSaveButton" class="button big">Save</button></div>
           </div>
             --></div>
@@ -746,7 +755,7 @@ if (
                     <h4 class="blue bigger">Task</h4>
                 </div>
 
-                <?php if ($owner || $admin) { ?>
+                <?php if ($owner || $admin) {?>
                     <div class="modal-body modal-form">
                         <?php echo form_open(site_url('project/edit_task'), ['id' => 'task-form', 'class' => 'row form-horizontal'], ['task_id' => null, 'project_id' => isset($project) ? $project->project_id : null]); ?>
                         <div class="col-xs-12">
@@ -769,18 +778,18 @@ if (
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <?php
-                                        $options = [];
-                                        foreach ($users as $u) {
-                                            $options[$u->person_id] = $u->person_name;
-                                        }
+$options = [];
+    foreach ($users as $u) {
+        $options[$u->person_id] = $u->person_name;
+    }
 
-                                        $js = [
-                                            'id' => 'task-assign',
-                                            'class' => 'form-control select2-in',
-                                            'style' => 'width:100%'
-                                        ];
-                                        echo form_dropdown('assigned_to', $options, null, $js);
-                                        ?>
+    $js = [
+        'id' => 'task-assign',
+        'class' => 'form-control select2-in',
+        'style' => 'width:100%',
+    ];
+    echo form_dropdown('assigned_to', $options, null, $js);
+    ?>
                                         <span class="input-group-btn">
                                             <button class="btn btn-default add-person-btn btn-sm" type="button">
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
@@ -806,7 +815,7 @@ if (
 
                                 <div class="col-sm-9">
                                     <div class="knob-container inline">
-                                        <input id="task-weight" name="weight" type="text" class="input-small knob" value="3" data-min="1" 
+                                        <input id="task-weight" name="weight" type="text" class="input-small knob" value="3" data-min="1"
                                                data-max="10" data-step="1" data-width="80" data-height="80" data-thickness=".2" />
                                     </div>
                                 </div>
@@ -814,13 +823,13 @@ if (
                             <div class="form-group">
                                 <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Status </label>
                                 <div class="col-sm-9">
-                                    <?php foreach ($statuses as $role) { ?>
+                                    <?php foreach ($statuses as $role) {?>
                                         <div class="radio">
                                             <label>
                                                 <input type="radio" name="task_status" value="<?php echo $role->status_id ?>" ><?php echo $role->name; ?>
                                             </label>
                                         </div>
-                                    <?php } ?>
+                                    <?php }?>
 
                                 </div>
                             </div>
@@ -890,8 +899,8 @@ if (
                         </button>
                     </div>
                 <?php } else {
-                    ?>
-                    <!-- label and text only, non-editable -->    
+    ?>
+                    <!-- label and text only, non-editable -->
                     <div class="modal-body">
                         <div class='row'>
                             <dl class='col-sm-6'>
@@ -919,7 +928,7 @@ if (
                                 <dd id="task-weight"></dd>
 
 
-                            </dl>                            
+                            </dl>
                         </div>
                         <div class='row'>
                             <dl class='col-sm-12'>
@@ -974,7 +983,7 @@ if (
                             <!-- /.panel-footer -->
                         </div>
                     </div>
-                <?php } ?>
+                <?php }?>
             </div>
         </div>
     </div>

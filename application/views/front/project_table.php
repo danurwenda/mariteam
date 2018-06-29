@@ -55,8 +55,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Status</th>
-                        <th>Due date</th>
+                        <th>Latest Status</th>
+                        <th>Target</th>
                         <th>Progress (%)</th>
                     </tr>
                 </thead>

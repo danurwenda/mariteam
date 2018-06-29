@@ -5,12 +5,8 @@ $(document).ready(function () {
             return past;
         } else {
             if (past) {
-                var cls = '';
-                if (f[2] === '3') {
-                    cls = 'alert-danger';
-                }
                 var dpast = moment(new Date(past))
-                return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
+                return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.format('MMM YYYY') + '</span>';
             }
             return 'Never';
         }
@@ -65,12 +61,12 @@ $(document).ready(function () {
             return n;
         } else {
             var projectList = '';
-            f[6].forEach(e => {
+            f[7].forEach(e => {
                 var id = e.group_id;
                 projectList += '<li class="sdg-' + (id < 10 ? '0' + id : id) + '"></li>';
             });
             //render link using id
-            return '<p><a href="' + parent_url + 'project/' + f[4] + '">' + n + '</a>'
+            return '<p><a href="' + parent_url + 'project/' + f[5] + '">' + n + '</a>'
                 +
                 //render icon2 sdg
                 (projectList === '' ? '' :
@@ -124,13 +120,15 @@ $(document).ready(function () {
             }
         },
         columns: [
+            // based on array returned, in this order :
+            // id, name, latest_status, target, progress, permalink,  delay, groups
             {},
             // name link
             {
                 render: renderSdg
             },
             // project status
-            //{render: renderStatus},
+            {},
             // due date
             { render: renderPast },
             // progress

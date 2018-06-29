@@ -14,12 +14,8 @@ $(document).ready(function () {
         } else {
             if (past)
             {
-                var cls = '';
-                if (f['project_status'] === "3") {
-                    cls = 'alert-danger';
-                }
                 var dpast = moment(new Date(past))
-                return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
+                return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.format('MMM YYYY') + '</span>';
             }
             return 'Never';
         }
@@ -106,6 +102,9 @@ $(document).ready(function () {
             type: 'POST',
             data: function (d) {
                 d['groups[]'] = $('#groups').val()
+            },
+            complete:function(){
+                console.trace()
             }
         },
         columns: [
@@ -124,26 +123,8 @@ $(document).ready(function () {
             
             // project status
             {
-                data: 'project_status',
-                responsivePriority: 2,
-                render: function (d) {
-                    switch (d) {
-                        case '1':
-                            return '<span class="label label-success">Active</span>'
-                            break;
-                        case '2':
-                            return '<span class="label label-info">Done</span>'
-                            break;
-                        case '3':
-                            return '<span class="label label-danger">Overdue</span>'
-                            break;
-                        case '4':
-                            return '<span class="label label-warning">Suspended</span>'
-                            break;
-                        default:
-                            return 'Undefined'
-                    }
-                }
+                data: 'latest_status',
+                responsivePriority: 2                
             },
             // due date
             {

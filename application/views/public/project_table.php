@@ -17,7 +17,8 @@
             <tr>
                 <th>No</th>
                 <th>Name</th>
-                <th>Due date</th>
+                <th>Latest status</th>
+                <th>Target</th>
                 <th class="min-tablet-p">Progress (%)</th>
             </tr>
         </thead>

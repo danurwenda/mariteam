@@ -121,7 +121,7 @@ class Projects_model extends CI_Model
         $this->datatables3
             ->add_search_column(['projects.description', 'tasks.description', 'task_name', 'p2.person_name'])
             ->distinct()
-            ->select('projects.project_id,project_name,projects.end_date,projects.progress,projects.permalink');
+            ->select('projects.project_id,project_name,projects.latest_status,projects.end_date,projects.progress,projects.permalink');
         $this->db
             ->join('tasks', 'tasks.project_id=projects.project_id', 'left')
             ->join('persons p2', 'p2.person_id=tasks.assigned_to', 'left')
@@ -140,7 +140,7 @@ class Projects_model extends CI_Model
                 $project[] = $this->get_project_groups($project[0]);
             } else {
                 $project->delay = ($project->end_date > date('Y-m-d')) && $this->is_delayed($project->project_id);
-                $project->groups = $this->get_project_groups($project[0]);
+                $project->groups = $this->get_project_groups($project->project_id);
             }
         }
         return json_encode($decoded);
