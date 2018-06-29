@@ -175,7 +175,7 @@ class Projects_model extends CI_Model
     {
         $this->load->library('Datatables3');
         $this->datatables3->init()
-            ->select('task_id, task_name, end_date, status,task_order');
+            ->select('task_id, task_name, end_date, status,weight,task_order');
         $this->db
             ->where('project_id', $project_id)
             ->from('tasks');

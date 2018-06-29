@@ -127,7 +127,9 @@ $(document).ready(function () {
                 d['project_id'] = $('.main-panel').data('project')
             }
         },
-        columns: [{},
+        columns: [
+            // 6 columns : id, name, target, status, order, weight
+            {},
             //task name
             {
                 render: function (d, t, f, m) {
@@ -135,8 +137,7 @@ $(document).ready(function () {
                 },
                 responsivePriority: 1
             },
-            //PIC
-            {},
+            
             //due date
             {
                 render: function (past, t, f, m) {
@@ -144,15 +145,8 @@ $(document).ready(function () {
                         return past;
                     } else {
                         if (past) {
-                            var cls = '';
-                            if (f[4] === '3') {
-                                cls = 'alert-danger';
-                            }
                             var dpast = moment(past, 'YYYY-MM-DD')
-                            dpast.seconds(59);
-                            dpast.minutes(59);
-                            dpast.hours(23);
-                            return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY') + '">' + dpast.fromNow() + '</span>';
+                            return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY') + '">' + dpast.format('MMM YYYY') + '</span>';
                         }
                         return 'Never';
                     }
@@ -163,7 +157,6 @@ $(document).ready(function () {
                 responsivePriority: 2,
                 render: renderStatus
             },
-            //weight
             {},
             //order
             {visible: false, searchable: false}

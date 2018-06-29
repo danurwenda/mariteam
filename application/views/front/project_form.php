@@ -144,10 +144,10 @@ if ($admin) {
                                 </div>
                             </div>
                             <script>
-  var quill = new Quill('#description', {
-    theme: 'snow'
-  });
-</script>
+                                var quill = new Quill('#description', {
+                                    theme: 'snow'
+                                });
+                            </script>
                             <div class="col-lg-6">
                                <div class="form-group">
                                     <label for="multi-append" class="control-label">Groups</label>
@@ -282,10 +282,10 @@ $topic_opts = [];
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Task</th>
-                                                    <th>PIC</th>
-                                                    <th>Due date</th>
+                                                    <th>Target</th>
                                                     <th>Status</th>
                                                     <th>Weight</th>
+                                                    <th>Order</th>
                                                 </tr>
                                             </thead>
                                         </table>
