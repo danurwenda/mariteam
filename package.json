@@ -1,5 +1,5 @@
 {
-  "name": "promanci",
+  "name": "sdgproject",
   "version": "1.0.0",
   "keywords": [
     "util",
@@ -10,7 +10,10 @@
   ],
   "author": "danur",
   "contributors": [],
-  "dependencies": {},
+  "dependencies": {
+    "fine-uploader": "^5.16.2",
+    "quill": "^1.3.6"
+  },
   "devDependencies": {
     "browser-sync": "^2.18.12",
     "gulp": "^3.9.1",
