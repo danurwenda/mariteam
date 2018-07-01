@@ -1,11 +1,14 @@
 $(document).ready(function () {
     //=================== FORMATTING
+    var quill = new Quill('#description', {
+        theme: 'snow'
+    });
     $('input#task-start-date').datetimepicker({
-        format: "DD-MMMM-YYYY",
+        format: "MMM-YYYY",
         //minDate: new Date($('#task-start-date').data('min'))
     });
     $('input#task-end-date').datetimepicker({
-        format: "DD-MMMM-YYYY", useCurrent: false
+        format: "MM-YYYY", useCurrent: false
                 //maxDate: new Date($('#task-end-date').data('max'))
     });
     //link those datetimepickers
@@ -19,7 +22,7 @@ $(document).ready(function () {
         format: "DD-MMMM-YYYY"
     });
     $('#project_end_date').datetimepicker({
-        format: "DD-MMMM-YYYY",
+        format: "MMM-YYYY",
         useCurrent: false
     });
     //link those datetimepickers

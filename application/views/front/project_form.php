@@ -1,8 +1,4 @@
-<!-- Page-specific CSS -->
-<script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
-
-<!-- Theme included stylesheets -->
-<link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<?php echo css_asset('quill/quill.snow.css'); ?>
 <?php echo css_asset('eonasdan-bootstrap-datetimepicker/bootstrap-datetimepicker.min.css'); ?>
 <?php echo css_asset('select2/select2.min.css'); ?>
 <?php echo css_asset('select2/themes/select2-bootstrap.min.css'); ?>
@@ -27,6 +23,7 @@
             , '<?php echo js_asset_url('bootbox/bootbox.js') ?>'
             , '<?php echo js_asset_url('fine-uploader/jquery.fine-uploader.min.js') ?>'
             , '<?php echo js_asset_url('bootstrap-wysiwyg/bootstrap-wysiwyg.min.js') ?>'
+            , '<?php echo js_asset_url('quill/quill.min.js') ?>'
             // jquery-gantt
             , '<?php echo js_asset_url('jquery-ui/jquery-ui.min.js') ?>'
             , '<?php echo js_asset_url('jquery-gantt/libs/jquery/jquery.livequery.1.1.1.min.js') ?>'
@@ -144,9 +141,7 @@ if ($admin) {
                                 </div>
                             </div>
                             <script>
-                                var quill = new Quill('#description', {
-                                    theme: 'snow'
-                                });
+                                
                             </script>
                             <div class="col-lg-6">
                                <div class="form-group">
@@ -164,34 +159,9 @@ $group_opts = [];
     echo form_multiselect('groups[]', $group_opts, set_value('groups[]', isset($project) ? $project->groups : null), $js);
     ?>
                                 </div>
-                                <div class="form-group">
-                                    <label for="multi-append" class="control-label">Topics</label>
-                                    <div class="input-group">
-                                        <?php
-$topic_opts = [];
-    foreach ($topics as $u) {
-        $topic_opts[$u->topic_id] = $u->topic_name;
-    }
-
-    $js = [
-        'id' => 'topics',
-        'class' => 'form-control select2',
-    ];
-    echo form_multiselect('topics[]', $topic_opts, set_value('topics[]', isset($project) ? $project->topics : null), $js);
-    ?>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#topic-modal-form">
-                                                <span class="glyphicon glyphicon-plus-sign"></span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
+                                
                                 <div class="form-group ">
-                                    <label for="project_date">Start Date</label>
-                                    <input required class="form-control datetimepicker" name="start_date" type="text" id="project_start_date" value="<?php echo set_value('start_date', isset($project) ? date_format(date_create($project->start_date), "d-F-Y") : ''); ?>">
-                                </div>
-                                <div class="form-group ">
-                                    <label for="project_date">Due Date</label>
+                                    <label for="project_date">Target</label>
                                     <input required class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
                                 </div>
                                 <?php if (isset($project)) {?>
@@ -226,16 +196,7 @@ $topic_opts = [];
                             <dt>Description</dt>
                             <dd><?php echo $project->description; ?></dd>
 
-
-                            <dt>Submitted on</dt>
-                            <dd><?php echo date_format(date_create($project->created_at), "d-F-Y H:i"); ?></dd>
-
-                            <dt>Start date</dt>
-                            <dd>
-                                <span id="project-start-date"><?php echo date_format(date_create($project->start_date), "d-F-Y"); ?></span>
-                            </dd>
-
-                            <dt>End date</dt>
+                            <dt>Target</dt>
                             <dd>
                                 <span id="project-due-date"><?php echo date_format(date_create($project->end_date), "d-F-Y"); ?></span>
                                 <span id="project-due-date-remain"></span>
