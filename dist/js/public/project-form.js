@@ -26,7 +26,10 @@ $(document).ready(function () {
             [0, "asc"]
         ],
         responsive: true,
+        dom: '<"top">rt<"bottom"p><"clear">',
+        paging:false,
         processing: true,
+        ordering:false,
         serverSide: true,
         ajax: {
             url: $('#tasks-datatable').data('url'),

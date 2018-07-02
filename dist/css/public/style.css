@@ -758,7 +758,10 @@ cta
 
 /* DATATABLES - RESPONSIVE */
 .dtr-data{
-    
+    display: block;
+}
+table.dataTable thead > tr > th:first-of-type{
+    padding-right: 0px;
 }
 /***********************************
 ************************************

@@ -86,12 +86,6 @@ if (count($project->groups) > 0) {
                 <div class="tab-pane fade" id="task">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Task List
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
                                     <table width="100%" class="table table-striped table-bordered table-hover" id="tasks-datatable" data-url="<?php echo site_url('publik/tasks_dt'); ?>">
                                         <thead>
                                             <tr>
@@ -103,11 +97,6 @@ if (count($project->groups) > 0) {
                                             </tr>
                                         </thead>
                                     </table>
-                                    <!-- /.table-responsive -->
-                                </div>
-                                <!-- /.panel-body -->
-                            </div>
-                            <!-- /.panel -->
                         </div>
 
                     </div>
