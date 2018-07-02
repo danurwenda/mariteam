@@ -8,7 +8,7 @@
             , '<?php echo js_asset_url('datatables/js/dataTables.bootstrap.min.js') ?>'
             , '<?php echo js_asset_url('datatables-responsive/dataTables.responsive.js') ?>'
             , '<?php echo js_asset_url('moment/moment.min.js') ?>'
-            
+
             , '<?php echo base_url('dist/js/public/project-form.js') ?>');
     // send data to parent frame, only when this frame is fully loaded
     function load() {
@@ -36,6 +36,8 @@
                 <li class="active"><a href="#basic" data-toggle="tab">Profile</a>
                 </li>
                 <li><a href="#task" data-toggle="tab">Tasks</a>
+                </li>
+                <li id="docs-tab"><a href="#documents" data-toggle="tab">Documents</a>
                 </li>
                 <li id="events-tab"><a href="#events" data-toggle="tab">Events</a>
                 </li>
@@ -110,6 +112,32 @@ if (count($project->groups) > 0) {
 
                     </div>
                 </div>
+                <div class="tab-pane fade" id="documents">
+                        <div class='row'>
+                            <div class='col-xs-12'>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Document List
+                                    </div>
+                                    <!-- /.panel-heading -->
+                                    <div class="panel-body">
+                                        <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('project/docs_dt'); ?>">
+                                            <thead>
+                                                <tr>
+                                                    <th>File name</th>
+                                                    <th>Size</th>
+                                                    <th>Uploaded</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <!-- /.table-responsive -->
+                                    </div>
+                                    <!-- /.panel-body -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 <div class="tab-pane fade" id="events">
                     <div class='row'>
                         <div class='col-lg-12'>
@@ -147,7 +175,7 @@ if (count($project->groups) > 0) {
         <!-- /.panel -->
     </div>
     <!-- /.col-lg-12 -->
-    
+
     <!-- Fine Uploader Thumbnails template w/ customization
     ====================================================================== -->
 

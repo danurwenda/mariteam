@@ -14,9 +14,7 @@ body {
     letter-spacing: 0.5px;
     overflow-x: hidden;
 }
-ol, ul {
-    list-style: none;
-}
+
 dt{
     margin-top: 20px;
 }

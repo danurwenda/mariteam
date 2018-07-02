@@ -1,13 +1,15 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 /* to Change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
-class Project extends Module_Controller {
+class Project extends Module_Controller
+{
 
-    function __construct() {
+    public function __construct()
+    {
         parent::__construct(1);
         $this->load->model('projects_model');
         $this->load->model('documents_model');
@@ -16,7 +18,8 @@ class Project extends Module_Controller {
 
     /**
      */
-    function index() {
+    public function index()
+    {
         $data['pagetitle'] = 'Project';
         $data['active_menu'] = 1;
         $data['topics'] = $this->db->get('topics')->result();
@@ -24,23 +27,26 @@ class Project extends Module_Controller {
         $this->template->display('project_table', $data);
     }
 
-    function get_stats() {
+    public function get_stats()
+    {
         echo json_encode($this->projects_model->get_chart_data());
     }
 
-    function get_task($task_id) {
+    public function get_task($task_id)
+    {
         $this->db->select('person_name,task_name,task_id,description,status,assigned_to,weight,end_date,start_date')
-                ->join('persons', 'persons.person_id=tasks.assigned_to');
+            ->join('persons', 'persons.person_id=tasks.assigned_to');
         echo json_encode($this->db->get_where('tasks', ['task_id' => $task_id])->row());
     }
 
-    function add_task_comment() {
+    public function add_task_comment()
+    {
         $task_id = $this->input->post('task_id');
         $content = $this->input->post('content');
         $this->db->insert('task_comments', [
             'user_id' => $this->logged_user->user_id,
             'content' => $content,
-            'task_id' => $task_id
+            'task_id' => $task_id,
         ]);
         $last_id = $this->db->insert_id();
         $cmt = $this->db->get_where('task_comments', ['task_comment_id' => $last_id])->row();
@@ -48,11 +54,12 @@ class Project extends Module_Controller {
             'self' => true,
             'content' => $content,
             'time' => $cmt->time,
-            'user' => $this->logged_user->person_name
+            'user' => $this->logged_user->person_name,
         ]);
     }
 
-    function get_task_docs($task_id) {
+    public function get_task_docs($task_id)
+    {
         $task = $this->projects_model->get_task($task_id);
         $task_owner_person = $this->users_model->get_person($task->assigned_to);
         // can delete as the owner of the task
@@ -67,14 +74,15 @@ class Project extends Module_Controller {
         foreach ($docs as $d) {
             $d->self = $can_delete ||
 // or he created this document
-                    ($d->created_by === $this->logged_user->user_id) ||
+            ($d->created_by === $this->logged_user->user_id) ||
 // or an admin
-                    ($this->logged_user->role_id == 1);
+            ($this->logged_user->role_id == 1);
         }
         echo json_encode($docs);
     }
 
-    public function get_timeline() {
+    public function get_timeline()
+    {
         $project_id = $this->input->get('project_id');
         $project = $this->projects_model->get_project($project_id);
         $project_owner_person = $this->users_model->get_person($project->created_by);
@@ -86,12 +94,13 @@ class Project extends Module_Controller {
         $timeline['canWrite'] = ($this->logged_user->role_id == 1) || $can_delete;
         $ret = [
             'ok' => true,
-            'project' => $timeline
+            'project' => $timeline,
         ];
         echo json_encode($ret);
     }
 
-    public function save_timeline() {
+    public function save_timeline()
+    {
         //preparing data
         $statmap = [];
         foreach ($this->db->get('project_statuses')->result() as $stat) {
@@ -124,7 +133,7 @@ class Project extends Module_Controller {
                     'depends' => $task->depends,
                     'status' => $statmap[$task->status],
                     'startIsMilestone' => $task->startIsMilestone,
-                    'endIsMilestone' => $task->endIsMilestone
+                    'endIsMilestone' => $task->endIsMilestone,
                 ];
                 $this->db->where('task_id', $task->id);
                 $this->db->update('tasks', $update);
@@ -133,29 +142,30 @@ class Project extends Module_Controller {
         // reload
         $ret = [
             'ok' => true,
-            'project' => $this->projects_model->get_tasks_timeline($project_id, true)
+            'project' => $this->projects_model->get_tasks_timeline($project_id, true),
         ];
         echo json_encode($ret);
     }
 
-    function get_task_comment($task_id) {
-        //bedakan antara komen yang dibuat oleh current user dengan 
+    public function get_task_comment($task_id)
+    {
+        //bedakan antara komen yang dibuat oleh current user dengan
         //yang dibuat oleh orang lain
         //array of object dengan element :
         //initial, user, time, self, content
         $comments = [];
 
         $this->db
-                ->select('users.user_id, content, time, person_name')
-                ->join('users', 'users.user_id=task_comments.user_id')
-                ->join('persons', 'persons.person_id=users.person_id');
+            ->select('users.user_id, content, time, person_name')
+            ->join('users', 'users.user_id=task_comments.user_id')
+            ->join('persons', 'persons.person_id=users.person_id');
         $q = $this->db->get_where('task_comments', ['task_id' => $task_id]);
         foreach ($q->result() as $comment) {
             $comments[] = [
                 'user' => $comment->person_name,
                 'self' => ($this->logged_user->user_id === $comment->user_id),
                 'content' => $comment->content,
-                'time' => $comment->time
+                'time' => $comment->time,
             ];
         }
         echo json_encode($comments);
@@ -164,7 +174,8 @@ class Project extends Module_Controller {
     /**
      * TODO : check permission
      */
-    function edit_task() {
+    public function edit_task()
+    {
         if ($this->input->is_ajax_request()) {
             $project_id = $this->input->post('project_id');
             $task_name = $this->input->post('task_name');
@@ -177,11 +188,11 @@ class Project extends Module_Controller {
             $task_id = $this->input->post('task_id');
             if (empty($task_id)) {
                 $change = $this->projects_model->add_task(
-                        $project_id, $task_name, $desc, $date, $end_date, $this->logged_user->user_id, $user, $weight, 1
+                    $project_id, $task_name, $desc, $date, $end_date, $this->logged_user->user_id, $user, $weight, 1
                 );
                 echo json_encode([
                     'success' => $change,
-                    'task_id' => $this->db->insert_id()
+                    'task_id' => $this->db->insert_id(),
                 ]);
             } else {
                 //edit
@@ -198,7 +209,8 @@ class Project extends Module_Controller {
     /**
      * TODO : check permission
      */
-    function delete() {
+    public function delete()
+    {
         if ($this->logged_user->role_id == 1) {
             $project_id = $this->input->post('project_id');
             // find all associated tasks
@@ -221,7 +233,8 @@ class Project extends Module_Controller {
     /**
      * TODO : check permission
      */
-    function delete_task() {
+    public function delete_task()
+    {
         $task_id = $this->input->post('task_id');
         //delete all associated documents
         $docs = $this->documents_model->get_documents('tasks', $task_id);
@@ -231,12 +244,13 @@ class Project extends Module_Controller {
         echo json_encode(['success' => $this->db->delete('tasks', ['task_id' => $task_id])]);
     }
 
-    function delete_doc() {
+    public function delete_doc()
+    {
         $document_id = $this->input->post('doc_id');
         //find doc
         $doc = $this->documents_model->get_document($document_id);
         $can_delete = // the owner
-                $doc && $this->logged_user->user_id === $doc->created_by;
+        $doc && $this->logged_user->user_id === $doc->created_by;
         if (!$can_delete) {
 // or an admin
             $can_delete = ($this->logged_user->role_id == 1);
@@ -263,13 +277,14 @@ class Project extends Module_Controller {
         }
     }
 
-    function projects_dt() {
+    public function projects_dt()
+    {
         if ($this->input->is_ajax_request()) {
             if ($this->logged_user->role_id == 1) {
                 echo $this->projects_model->get_dt2();
             } else {
                 $q = $this->db->get_where('person_group', [
-                    'person_id' => $this->logged_user->person_id
+                    'person_id' => $this->logged_user->person_id,
                 ]);
                 if ($q->num_rows() == 0) {
                     //logged user does not belong to any group
@@ -285,7 +300,8 @@ class Project extends Module_Controller {
         }
     }
 
-    function docs_dt() {
+    public function docs_dt()
+    {
         if ($this->input->is_ajax_request()) {
             $prid = $this->input->post('project_id');
             $project = $this->projects_model->get_project($prid);
@@ -296,23 +312,25 @@ class Project extends Module_Controller {
                 // add info about permission to delete
                 // user may delete a file only if he is
                 $doc[] = // the owner of this document
-                        ($doc[5] === $this->logged_user->user_id) ||
+                ($doc[5] === $this->logged_user->user_id) ||
 //project owner
-                        ($project_owner->person_id == $this->logged_user->person_id) ||
+                ($project_owner->person_id == $this->logged_user->person_id) ||
 // or an admin
-                        ($this->logged_user->role_id == 1);
+                ($this->logged_user->role_id == 1);
             }
             echo json_encode($decoded);
         }
     }
 
-    function tasks_dt() {
+    public function tasks_dt()
+    {
         if ($this->input->is_ajax_request()) {
             echo $this->projects_model->get_tasks_dt($this->input->post('project_id'));
         }
     }
 
-    function create() {
+    public function create()
+    {
         $topics = $this->input->post('topics');
         if ($topics === null) {
             $topics = [];
@@ -322,25 +340,26 @@ class Project extends Module_Controller {
             $groups = [];
         }
         $this->projects_model->create(
-                //logged user
-                $this->logged_user->user_id,
-                //assigned to
-                $this->input->post('assigned_to'),
-                //name
-                $this->input->post('name'),
-                //dates (adjust the format to comply SQL datetime format)
-                date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
-                //description
-                $this->input->post('description'),
-                //topic
-                $topics,
-                //groups
-                $groups
+            //logged user
+            $this->logged_user->user_id,
+            //assigned to
+            $this->input->post('assigned_to'),
+            //name
+            $this->input->post('name'),
+            //dates (adjust the format to comply SQL datetime format)
+            date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
+            //description
+            $this->input->post('description'),
+            //topic
+            $topics,
+            //groups
+            $groups
         );
         redirect('project');
     }
 
-    function create_form() {
+    public function create_form()
+    {
         if ($this->logged_user->role_id != 1) {
             //forbidden
             redirect('project');
@@ -355,7 +374,8 @@ class Project extends Module_Controller {
         $this->template->display('project_form', $data);
     }
 
-    function update() {
+    public function update()
+    {
         $data['pagetitle'] = 'Edit Project';
         $project_id = $this->input->post('project_id');
         $project = $this->projects_model->get_project($project_id);
@@ -380,20 +400,23 @@ class Project extends Module_Controller {
                 $groups = [];
             }
             $data['updated'] = true;
+            $target_start = date_create($this->input->post('end_date'));
+            $target_end = (new DateTime($this->input->post('end_date')))->modify('last day of');
             $this->projects_model->update(
-                    $project_id,
-                    //name
-                    $this->input->post('name'),
-                    //dates (adjust the format to comply SQL datetime format)
-                    date_format(date_create($this->input->post('start_date')), "Y-m-d"), date_format(date_create($this->input->post('end_date')), "Y-m-d"),
-                    //description
-                    $this->input->post('description'),
-                    //topic
-                    $topics,
-                    //status
-                    $this->input->post('status'),
-                    //groups
-                    $groups
+                $project_id, //         $id,
+                $this->input->post('name'), // $name,
+                $this->input->post('description'), // $description,
+                $this->input->post('owner'), // $owner,
+                $this->input->post('offtaker'), // $offtaker,
+                $this->input->post('cost'), // $cost,
+                $this->input->post('irr'), // $irr,
+                //dates (adjust the format to comply SQL datetime format)
+                date_format($target_start, "Y-m-d"), // $start_date = $end_date, since we use MMM-YYYY format input
+                date_format($target_end, "Y-m-d"), // $due_date,
+                $this->input->post('latest_status'), // $latest_status,
+                $topics,
+                $this->input->post('status')||1, // $status,
+                $groups
             );
             //redirect to edit
             redirect('project/edit/' . $project_id);
@@ -402,7 +425,8 @@ class Project extends Module_Controller {
         }
     }
 
-    function edit($project_id) {
+    public function edit($project_id)
+    {
         $data['active_menu'] = 1;
         $project = $this->projects_model->get_project($project_id);
         if ($project) {
@@ -423,7 +447,8 @@ class Project extends Module_Controller {
         }
     }
 
-    function create_topic() {
+    public function create_topic()
+    {
         $inserted = $this->db->insert('topics', ['topic_name' => $this->input->post('topic_name')]);
         if ($this->input->is_ajax_request()) {
             echo json_encode(['success' => $inserted]);
@@ -433,33 +458,34 @@ class Project extends Module_Controller {
         }
     }
 
-    function get_topics() {
+    public function get_topics()
+    {
         echo json_encode($this->projects_model->get_topics());
     }
 
-    function get_groups() {
+    public function get_groups()
+    {
         echo json_encode($this->projects_model->get_groups(
-                        $this->logged_user->person_id, $this->logged_user->role_id
+            $this->logged_user->person_id, $this->logged_user->role_id
         ));
     }
 
-    function uploads($source, $source_id = null) {
+    public function uploads($source, $source_id = null)
+    {
         $this->load->library('UploadHandler');
         $uploader = new UploadHandler();
 
 // Specify the list of valid extensions, ex. array("jpeg", "xml", "bmp")
         $uploader->allowedExtensions = array(); // all files types allowed by default
-// Specify max file size in bytes.
+        // Specify max file size in bytes.
         $uploader->sizeLimit = null;
 
 // Specify the input name set in the javascript.
         $uploader->inputName = "qqfile"; // matches Fine Uploader's default inputName value by default
-// If you want to use the chunking/resume feature, specify the folder to temporarily save parts.
+        // If you want to use the chunking/resume feature, specify the folder to temporarily save parts.
         $uploader->chunksFolder = "chunks";
 
         $method = $this->get_request_method();
-
-
 
         if ($method == "POST") {
             header("Content-Type: text/plain");
@@ -478,8 +504,8 @@ class Project extends Module_Controller {
                 $result["uploadName"] = $uploader->getUploadName();
             }
             if ($result['success'] &&
-                    //insert to db
-                    ($result['inserted'] = $this->documents_model->add_document(
+                //insert to db
+                ($result['inserted'] = $this->documents_model->add_document(
                     //current user
                     $this->logged_user->user_id, $source,
                     //project
@@ -490,7 +516,7 @@ class Project extends Module_Controller {
                     $result['uploadName'],
                     //size
                     $uploader->getUploadSize()
-                    ))) {
+                ))) {
                 $result['self'] = true;
                 $result['document_id'] = $this->db->insert_id();
             }
@@ -507,11 +533,12 @@ class Project extends Module_Controller {
     }
 
 // This will retrieve the "intended" request method.  Normally, this is the
-// actual method of the request.  Sometimes, though, the intended request method
-// must be hidden in the parameters of the request.  For example, when attempting to
-// delete a file using a POST request. In that case, "DELETE" will be sent along with
-// the request in a "_method" parameter.
-    function get_request_method() {
+    // actual method of the request.  Sometimes, though, the intended request method
+    // must be hidden in the parameters of the request.  For example, when attempting to
+    // delete a file using a POST request. In that case, "DELETE" will be sent along with
+    // the request in a "_method" parameter.
+    public function get_request_method()
+    {
         global $HTTP_RAW_POST_DATA;
 
         if (isset($HTTP_RAW_POST_DATA)) {

@@ -9,6 +9,12 @@
 <?php echo css_asset('jquery-gantt/libs/jquery/dateField/jquery.dateField.css'); ?>
 <?php echo css_asset('jquery-gantt/gantt.css'); ?>
 <?php echo css_asset('jquery-gantt/ganttPrint.css', null, ['media' => 'print']); ?>
+<!-- override style for <em> tag specified in platform.css -->
+    <style>
+        .row em{
+            font-style:italic;
+        }
+        </style>
 <script>
     var ge;
     $$.push(
@@ -135,14 +141,20 @@ if ($admin) {
                                     <label>Name</label>
                                     <input required="" minlength="5" name="name" type="text" class="form-control" value="<?php echo set_value('name', isset($project) ? $project->project_name : ''); ?>">
                                 </div>
+                                <div class="form-group">
+                                    <label>Owner</label>
+                                    <input required="" minlength="5" name="owner" type="text" class="form-control" value="<?php echo set_value('owner', isset($project) ? $project->owner : ''); ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label>Offtaker</label>
+                                    <input required="" minlength="5" name="offtaker" type="text" class="form-control" value="<?php echo set_value('offtaker', isset($project) ? $project->offtaker : ''); ?>">
+                                </div>
                                 <div class="form-group ">
                                     <label for="description">Description</label>
-                                    <div class="form-control " name="description" id="description"><?php echo set_value('description', isset($project) ? $project->description : ''); ?></div>
+                                    <div id="description"><?php echo isset($project) ? $project->description : ''; ?></div>
                                 </div>
                             </div>
-                            <script>
-                                
-                            </script>
+
                             <div class="col-lg-6">
                                <div class="form-group">
                                     <label for="multi-append" class="control-label">Groups</label>
@@ -159,23 +171,24 @@ $group_opts = [];
     echo form_multiselect('groups[]', $group_opts, set_value('groups[]', isset($project) ? $project->groups : null), $js);
     ?>
                                 </div>
-                                
+
                                 <div class="form-group ">
                                     <label for="project_date">Target</label>
                                     <input required class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
                                 </div>
-                                <?php if (isset($project)) {?>
                                     <div class="form-group">
-                                        <label>Status</label>
-                                        <?php foreach ($statuses as $role) {?>
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="status" value="<?php echo $role->status_id ?>" <?php echo set_radio('status', $role->status_id, isset($project) ? $project->project_status == $role->status_id : false); ?>><?php echo $role->name; ?>
-                                                </label>
+                                    <label>Cost (USD)</label>
+                                    <input required="" minlength="5" name="cost" type="text" class="form-control" value="<?php echo set_value('cost', isset($project) ? $project->cost : ''); ?>">
                                             </div>
-                                        <?php }?>
+                                <div class="form-group">
+                                    <label>IRR</label>
+                                    <input required="" minlength="5" name="irr" type="text" class="form-control" value="<?php echo set_value('irr', isset($project) ? $project->IRR : ''); ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label>Latest Status</label>
+                                    <input required="" minlength="5" name="latest_status" type="text" class="form-control" value="<?php echo set_value('latest_status', isset($project) ? $project->latest_status : ''); ?>">
                                     </div>
-                                <?php }?>
+
                             </div>
                         </div>
                         <?php if ($admin) {?>
@@ -200,25 +213,6 @@ $group_opts = [];
                             <dd>
                                 <span id="project-due-date"><?php echo date_format(date_create($project->end_date), "d-F-Y"); ?></span>
                                 <span id="project-due-date-remain"></span>
-                            </dd>
-
-                            <dt>Topics</dt>
-                            <dd>
-                                <ul>
-                                    <?php
-$topic_opts = [];
-    foreach ($topics as $u) {
-        $topic_opts[$u->topic_id] = $u->topic_name;
-    }
-    if (count($project->topics) > 0) {
-        foreach ($project->topics as $t) {
-            echo "<li>" . $topic_opts[$t] . "</li>";
-        }
-    } else {
-        echo "<li>-</li>";
-    }
-    ?>
-                                </ul>
                             </dd>
                         </dl>
                     <?php }?>

@@ -403,12 +403,30 @@ class Projects_model extends CI_Model
         return $ret;
     }
 
-    public function update($id, $name, $start_date, $due_date, $description, $topics, $status, $groups)
-    {
+    public function update(
+        $id,
+        $name,
+        $description,
+        $owner,
+        $offtaker,
+        $cost,
+        $irr,
+        $start_date,
+        $due_date,
+        $latest_status,
+        $topics,
+        $status,
+        $groups
+    ) {
         $this->db->where('project_id', $id);
         //update username
 
         $this->db->set('project_name', $name);
+        $this->db->set('owner', $owner);
+        $this->db->set('offtaker', $offtaker);
+        $this->db->set('cost', $cost);
+        $this->db->set('IRR', $irr);
+        $this->db->set('latest_status', $latest_status);
         $this->db->set('project_status', $status);
         $this->db->set('start_date', $start_date);
         $this->db->set('end_date', $due_date);

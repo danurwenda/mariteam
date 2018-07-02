@@ -169,6 +169,12 @@ $(document).ready(function () {
             }
         ]
     });
+    docs_table.on('draw.dt', function () {
+        if (0 === docs_table.rows()[0].length) {
+            // hide tab
+            $('#docs-tab').hide()
+        }
+    })
     $('a[href="#documents"]').on('shown.bs.tab', function (e) {
         docs_table.responsive.recalc();
     });
