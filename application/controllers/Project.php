@@ -437,6 +437,7 @@ class Project extends Module_Controller
             $data['users'] = $this->db->get('persons')->result();
             $data['topics'] = $this->db->get('topics')->result();
             $data['statuses'] = $this->db->get('project_statuses')->result();
+            $this->load->helper('text');
             $this->template->display('project_form', $data);
         } else {
             //project not found
