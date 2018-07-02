@@ -340,18 +340,18 @@ class Project extends Module_Controller
             $groups = [];
         }
         $this->projects_model->create(
-            $this->logged_user->user_id,          // $creator,
-            $this->input->post('name'),// $name,
-            $this->input->post('owner'),// $owner,
-            $this->input->post('offtaker'),// $offtaker,
-            $this->input->post('description'),// $description,
-            date_format(date_create($this->input->post('end_date')), "Y-m-d 00:00:00"),// $due_date,
-            date_format(date_create($this->input->post('end_date')), "Y-m-t 23:59:59"),// $due_date,
-            $this->input->post('cost'),// $cost,
-            $this->input->post('irr'),// $irr,
-            $this->input->post('latest_status'),// $latest_status,
-             $topics,
-             $groups);
+            $this->logged_user->user_id, // $creator,
+            $this->input->post('name'), // $name,
+            $this->input->post('owner'), // $owner,
+            $this->input->post('offtaker'), // $offtaker,
+            $this->input->post('description'), // $description,
+            date_format(date_create($this->input->post('end_date')), "Y-m-d 00:00:00"), // $due_date,
+            date_format(date_create($this->input->post('end_date')), "Y-m-t 23:59:59"), // $due_date,
+            $this->input->post('cost'), // $cost,
+            $this->input->post('irr'), // $irr,
+            $this->input->post('latest_status'), // $latest_status,
+            $topics,
+            $groups);
         redirect('project');
     }
 
@@ -437,11 +437,20 @@ class Project extends Module_Controller
             $data['users'] = $this->db->get('persons')->result();
             $data['topics'] = $this->db->get('topics')->result();
             $data['statuses'] = $this->db->get('project_statuses')->result();
-            $this->load->helper('text');
             $this->template->display('project_form', $data);
         } else {
             //project not found
             redirect('project');
+        }
+    }
+
+    public function change_permalink(){
+        if ($this->input->is_ajax_request()) {
+            $this->db->where('project_id',$this->input->post('project_id'));
+            $changed = $this->db->update('projects',['permalink'=>$this->input->post('permalink')]);
+            echo json_encode([
+                'success'=>$changed
+            ]);
         }
     }
 

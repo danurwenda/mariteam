@@ -59,3 +59,11 @@
     background: #ff0;
     color: #000;
 }
+
+/* imitating wordpress' permalink editor */
+#editable-post-name-full{
+    display:none;
+}
+#edit-slug-buttons button{
+    outline: none;
+}

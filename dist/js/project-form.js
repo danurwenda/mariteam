@@ -9,6 +9,65 @@ $(document).ready(function () {
     var quill = new Quill('#description', {
         theme: 'snow'
     });
+    function ell(text, max) {
+        let ellipsis = '…';
+        var t = text.substr(0, max || 20);
+        if (text.length > 20) t += ellipsis;
+        return t;
+    }
+    if ($('#edit-slug-box').length > 0)
+        $('#editable-post-name').html(
+            ell($('#editable-post-name-full').html())
+        )
+    $('#edit-slug-box').show()
+    var edit_slug;
+    $('#edit-slug-buttons .edit-slug').click(function (e) {
+        let composePermalink = function (link) {
+            // remove text input and replace with supplied link
+            $('#editable-post-name').html($('#editable-post-name-full').html());
+            let href = $('#sample-permalink').text();
+            $('#editable-post-name').html(ell(link));
+            var a = $('<a/>')
+                .html($('#sample-permalink').html())
+                .attr('href', href);
+            $('#sample-permalink').html(a);
+            // put back edit_slug
+            $('#edit-slug-buttons').empty().append(edit_slug);
+            edit_slug = null;
+        }
+        this.blur();
+        // remove the <a> tag and make it plaintext
+        $('#sample-permalink').html($('#sample-permalink a').html())
+        // replace #editable-post-name innerHtml with a text input with value = #editable-post-name-full innerHtml
+        var permalinkInput = $('<input/>').addClass('input-sm').val($('#editable-post-name-full').html());
+        $('#editable-post-name').html(permalinkInput)
+        // add OK button, add Cancel button
+        var okButton = $(this).clone().removeClass('edit-slug').html('OK').addClass('ok').click(function (e) {
+            this.blur()
+            let permalinkNew = permalinkInput.val();
+            // we change permalink via ajax
+            $.ajax({
+                data: {
+                    "permalink": permalinkNew,
+                    "project_id": $('.main-panel').data('project')
+                },
+                url: base_url + 'project/change_permalink',
+                type: 'POST',
+                success: function (result) {
+                    // update #editable-post-name-full
+                    $('#editable-post-name-full').html(permalinkNew)
+                    // revert to initial configuration of link and Edit button
+                    composePermalink(permalinkNew)
+                }
+            });
+        });
+        var cancelButton = $(this).clone().removeClass('edit-slug').html('Cancel').addClass('cancel').click(function (e) {
+            composePermalink($('#editable-post-name-full').html())
+        });
+        $('#edit-slug-buttons').append(okButton).append(cancelButton);
+        // detach for later use (after OK/Cancel button click)
+        edit_slug = $(this).detach();
+    })
     $('input#task-start-date').datetimepicker({
         format: "MMM-YYYY",
         //minDate: new Date($('#task-start-date').data('min'))
@@ -454,10 +513,10 @@ $(document).ready(function () {
     var project_validator = $('#project_form').validate({
         rules: {
             field: {
-              required: true,
-              number: true
+                required: true,
+                number: true
             }
-          },
+        },
         submitHandler: function (form) {
             //add description as hidden
             $('<input />').attr('type', 'hidden')
@@ -467,6 +526,7 @@ $(document).ready(function () {
             form.submit()
         }
     });
+
     var task_validator = $('#task-modal-form #task-form').validate();
     $('#task-modal-form .btn-subm').click(function (e) {
         var form = $('#task-modal-form #task-form')

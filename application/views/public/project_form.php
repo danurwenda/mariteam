@@ -70,7 +70,6 @@
                         <dd>
                             <ul class="sdglist">
                                 <?php
-
 if (count($project->groups) > 0) {
     foreach ($project->groups as $id) {
         echo '<li class="sdg-' . ($id < 10 ? '0' . $id : $id) . '"></li>';
@@ -86,46 +85,46 @@ if (count($project->groups) > 0) {
                 <div class="tab-pane fade" id="task">
                     <div class="row">
                         <div class="col-lg-12">
-                                    <table width="100%" class="table table-striped table-bordered table-hover" id="tasks-datatable" data-url="<?php echo site_url('publik/tasks_dt'); ?>">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Task</th>
-                                                <th>Target</th>
-                                                <th>Status</th>
-                                                <th>Order</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                            <table width="100%" class="table table-striped table-bordered table-hover" id="tasks-datatable" data-url="<?php echo site_url('publik/tasks_dt'); ?>">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Task</th>
+                                        <th>Target</th>
+                                        <th>Status</th>
+                                        <th>Order</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
 
                     </div>
                 </div>
                 <div class="tab-pane fade" id="documents">
-                        <div class='row'>
-                            <div class='col-xs-12'>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        Document List
-                                    </div>
-                                    <!-- /.panel-heading -->
-                                    <div class="panel-body">
-                                        <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('publik/docs_dt'); ?>">
-                                            <thead>
-                                                <tr>
-                                                    <th>File name</th>
-                                                    <th>Size</th>
-                                                    <th>Uploaded</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                        <!-- /.table-responsive -->
-                                    </div>
-                                    <!-- /.panel-body -->
+                    <div class='row'>
+                        <div class='col-xs-12'>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Document List
                                 </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('publik/docs_dt'); ?>">
+                                        <thead>
+                                            <tr>
+                                                <th>File name</th>
+                                                <th>Size</th>
+                                                <th>Uploaded</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <!-- /.table-responsive -->
+                                </div>
+                                <!-- /.panel-body -->
                             </div>
                         </div>
                     </div>
+                </div>
 
                 <div class="tab-pane fade" id="events">
                     <div class='row'>

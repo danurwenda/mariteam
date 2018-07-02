@@ -459,10 +459,12 @@ class Projects_model extends CI_Model
         $latest_status,
         $topics,
         $groups) {
+        $this->load->helper('text');
         $this->db->insert($this->table, [
             'created_by' => $creator,
             'owner' => $owner,
             'project_name' => $name,
+            'permalink' => urlencode(character_limiter($name, 20, '')),
             'offtaker' => $offtaker,
             'start_date' => $start_date,
             'end_date' => $due_date,

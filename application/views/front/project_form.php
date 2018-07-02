@@ -10,11 +10,11 @@
 <?php echo css_asset('jquery-gantt/gantt.css'); ?>
 <?php echo css_asset('jquery-gantt/ganttPrint.css', null, ['media' => 'print']); ?>
 <!-- override style for <em> tag specified in platform.css -->
-    <style>
-        .row em{
-            font-style:italic;
-        }
-        </style>
+<style>
+    .row em{
+        font-style:italic;
+    }
+</style>
 <script>
     var ge;
     $$.push(
@@ -111,7 +111,7 @@ if (
         <div class="panel-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#basic" data-toggle="tab">Basic</a>
+                <li class="active"><a href="#basic" data-toggle="tab">Profile</a>
                 </li>
                 <?php if (isset($project)) {?>
                     <li class=""><a href="#task" data-toggle="tab">Tasks</a>
@@ -140,6 +140,20 @@ if ($admin) {
                                 <div class="form-group">
                                     <label>Name</label>
                                     <input required="" minlength="5" name="name" type="text" class="form-control" value="<?php echo set_value('name', isset($project) ? $project->project_name : ''); ?>">
+                                   <?php if(isset($project)){?>
+                                    <div id="edit-slug-box" class="hide-if-no-js" style="display:none">
+                                        <strong>Permalink:</strong>
+                                        <span id="sample-permalink">
+                                            <a href="<?php echo $this->config->item('parent_url') . 'project/' . $project->permalink; ?>/">
+                                                <?php echo $this->config->item('parent_url') . 'project/'; ?><span id="editable-post-name"></span>/
+                                            </a>
+                                        </span>
+                                        ‎<span id="edit-slug-buttons">
+                                            <button type="button" class="edit-slug btn btn-white btn-round btn-minier btn-bold" aria-label="Edit permalink">Edit</button>
+                                        </span>
+                                        <span id="editable-post-name-full"><?php echo $project->permalink; ?></span>
+                                    </div>
+                                   <?php }?>
                                 </div>
                                 <div class="form-group">
                                     <label>Owner</label>
@@ -156,7 +170,7 @@ if ($admin) {
                             </div>
 
                             <div class="col-lg-6">
-                               <div class="form-group">
+                                <div class="form-group">
                                     <label for="multi-append" class="control-label">Groups</label>
                                     <?php
 $group_opts = [];
@@ -176,10 +190,10 @@ $group_opts = [];
                                     <label for="project_date">Target</label>
                                     <input  class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
                                 </div>
-                                    <div class="form-group">
+                                <div class="form-group">
                                     <label>Cost (USD)</label>
                                     <input name="cost" type="number" class="form-control" value="<?php echo set_value('cost', isset($project) ? $project->cost : ''); ?>">
-                                            </div>
+                                </div>
                                 <div class="form-group">
                                     <label>IRR</label>
                                     <input name="irr" type="text" class="form-control" value="<?php echo set_value('irr', isset($project) ? $project->IRR : ''); ?>">
@@ -187,7 +201,7 @@ $group_opts = [];
                                 <div class="form-group">
                                     <label>Latest Status</label>
                                     <input  minlength="5" name="latest_status" type="text" class="form-control" value="<?php echo set_value('latest_status', isset($project) ? $project->latest_status : ''); ?>">
-                                    </div>
+                                </div>
 
                             </div>
                         </div>
