@@ -428,7 +428,7 @@ class Project extends Module_Controller
         $project = $this->projects_model->get_project($project_id);
         if ($project) {
             $data['admin'] = $this->logged_user->role_id == 1;
-            $pic = $this->users_model->get_person($project->created_by);
+            $pic = $this->users_model->get_user($project->created_by);
             $user_pic = $this->users_model->get_user_by_person($pic->person_id);
             $data['owner'] = $user_pic && $this->logged_user->user_id == $user_pic->user_id;
             $data['pagetitle'] = 'Edit Project';

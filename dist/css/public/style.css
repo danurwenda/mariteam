@@ -100,9 +100,7 @@ HEADER
     background-color: rgba(0, 0, 0, 0.5);
     min-height: 100px;
 }
-#main-header
-{
-}
+
 .navbar-default {
     background-color: transparent;
     border:0px;
@@ -756,6 +754,11 @@ cta
 }
 .select2-container {
     width: 100% !important;
+}
+
+/* DATATABLES - RESPONSIVE */
+.dtr-data{
+    
 }
 /***********************************
 ************************************
