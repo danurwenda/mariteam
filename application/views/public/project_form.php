@@ -21,7 +21,7 @@
         <i class="ace-icon fa fa-long-arrow-left"></i>
         Back
     </button>
-    <a href="<?php echo $this->config->item('parent_url') . 'inquiry/' . rawurlencode($project->project_name); ?>" style="float:right;" class="btn btn-white btn-warning btn-round">
+    <a href="<?php echo $this->config->item('parent_url') . 'inquiry/?projectName=' . rawurlencode($project->project_name); ?>" style="float:right;" class="btn btn-white btn-warning btn-round">
         <i class="ace-icon fa fa-info-circle"></i>
         Inquiry for funding
     </a>
