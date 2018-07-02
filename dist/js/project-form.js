@@ -68,21 +68,12 @@ $(document).ready(function () {
         // detach for later use (after OK/Cancel button click)
         edit_slug = $(this).detach();
     })
-    $('input#task-start-date').datetimepicker({
-        format: "MMM-YYYY",
-        //minDate: new Date($('#task-start-date').data('min'))
-    });
+    
     $('input#task-end-date').datetimepicker({
-        format: "MM-YYYY", useCurrent: false
+        format: "MMM-YYYY", useCurrent: false
         //maxDate: new Date($('#task-end-date').data('max'))
     });
-    //link those datetimepickers
-    $("input#task-start-date").on("dp.change", function (e) {
-        $('input#task-end-date').data("DateTimePicker").minDate(e.date);
-    });
-    $("input#task-end-date").on("dp.change", function (e) {
-        $('input#task-start-date').data("DateTimePicker").maxDate(e.date);
-    });
+    
     $('#project_end_date').datetimepicker({
         format: "MMM-YYYY"
     });

@@ -767,16 +767,11 @@ $options = [];
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="form-group ">
-                                <label class="col-sm-3 control-label no-padding-right" for="task_date"> Start date </label>
+                                <label class="col-sm-3 control-label no-padding-right" for="task_date"> Target </label>
                                 <div class="col-sm-9">
-                                    <input required class="form-control datetimepicker" data-min="<?php echo isset($project) ? date_format(date_create($project->start_date), "d-F-Y 00:00:00") : ''; ?>" name="start_date" type="text" id="task-start-date" >
-                                </div>
-                            </div>
-                            <div class="form-group ">
-                                <label class="col-sm-3 control-label no-padding-right" for="task_date"> Due date </label>
-                                <div class="col-sm-9">
-                                    <input required class="form-control datetimepicker" data-max="<?php echo isset($project) ? date_format(date_create($project->end_date), "d-F-Y 23:59:59") : ''; ?>" name="end_date" type="text" id="task-end-date" >
+                                    <input required class="form-control datetimepicker" data-max="<?php echo isset($project) ? date_format(date_create($project->end_date), "d-F-Y 23:59:59") : ''; ?>" name="end_date" autocomplete="off" type="text" id="task-end-date" >
                                 </div>
                             </div>
                             <div class="form-group">

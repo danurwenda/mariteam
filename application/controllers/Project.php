@@ -181,7 +181,7 @@ class Project extends Module_Controller
             $task_name = $this->input->post('task_name');
             $desc = $this->input->post('desc');
             $user = $this->input->post('assigned_to');
-            $date = date_format(date_create($this->input->post('start_date')), "Y-m-d");
+            $date = date_format(date_create($this->input->post('end_date')), "Y-m-t");
             $end_date = date_format(date_create($this->input->post('end_date')), "Y-m-d");
             $weight = $this->input->post('weight');
             $status = $this->input->post('task_status');
