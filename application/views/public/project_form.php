@@ -58,7 +58,7 @@
                         <dd><?php echo $project->description; ?></dd>
 
                         <dt>Estimated Project Cost (USD)</dt>
-                        <dd><?php echo number_format($project->cost, 2); ?></dd>
+                        <dd><?php echo number_format($project->cost, 0); ?></dd>
 
                         <dt>Indicative IRR</dt>
                         <dd><?php echo $project->IRR; ?></dd>
