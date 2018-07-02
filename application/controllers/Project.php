@@ -340,21 +340,18 @@ class Project extends Module_Controller
             $groups = [];
         }
         $this->projects_model->create(
-            //logged user
-            $this->logged_user->user_id,
-            //assigned to
-            $this->input->post('assigned_to'),
-            //name
-            $this->input->post('name'),
-            //dates (adjust the format to comply SQL datetime format)
-            date_format(date_create($this->input->post('start_date')), "Y-m-d 00:00:00"), date_format(date_create($this->input->post('end_date')), "Y-m-d 23:59:59"),
-            //description
-            $this->input->post('description'),
-            //topic
-            $topics,
-            //groups
-            $groups
-        );
+            $this->logged_user->user_id,          // $creator,
+            $this->input->post('name'),// $name,
+            $this->input->post('owner'),// $owner,
+            $this->input->post('offtaker'),// $offtaker,
+            $this->input->post('description'),// $description,
+            date_format(date_create($this->input->post('end_date')), "Y-m-d 00:00:00"),// $due_date,
+            date_format(date_create($this->input->post('end_date')), "Y-m-t 23:59:59"),// $due_date,
+            $this->input->post('cost'),// $cost,
+            $this->input->post('irr'),// $irr,
+            $this->input->post('latest_status'),// $latest_status,
+             $topics,
+             $groups);
         redirect('project');
     }
 
@@ -415,7 +412,7 @@ class Project extends Module_Controller
                 date_format($target_end, "Y-m-d"), // $due_date,
                 $this->input->post('latest_status'), // $latest_status,
                 $topics,
-                $this->input->post('status')||1, // $status,
+                $this->input->post('status') || 1, // $status,
                 $groups
             );
             //redirect to edit

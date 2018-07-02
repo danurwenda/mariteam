@@ -98,7 +98,10 @@ class Projects_model extends CI_Model
             // TODO : check user access to group
             $this->db->join('project_group', 'project_group.project_id=projects.project_id');
             foreach ($groups as $g) {
-                if(!empty($g))$this->db->or_where('group_id', $g);
+                if (!empty($g)) {
+                    $this->db->or_where('group_id', $g);
+                }
+
             }
         } else if (is_array($public_only)) {
             // return those projects in public groups and those in accessible groups
@@ -439,15 +442,30 @@ class Projects_model extends CI_Model
         $this->set_groups($id, $groups);
     }
 
-    public function create($creator, $user, $name, $start_date, $due_date, $description, $topics, $groups)
-    {
+    public function create(
+        $creator,
+        $name,
+        $owner,
+        $offtaker,
+        $description,
+        $start_date,
+        $due_date,
+        $cost,
+        $irr,
+        $latest_status,
+        $topics,
+        $groups) {
         $this->db->insert($this->table, [
             'created_by' => $creator,
-            'assigned_to' => $user,
+            'owner' => $owner,
             'project_name' => $name,
+            'offtaker' => $offtaker,
             'start_date' => $start_date,
             'end_date' => $due_date,
             'description' => $description,
+            'cost' => $cost,
+            'IRR' => $irr,
+            'latest_status' => $latest_status,
             'project_priority' => 1,
             'project_status' => 1,
         ]);

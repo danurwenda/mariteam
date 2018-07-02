@@ -143,11 +143,11 @@ if ($admin) {
                                 </div>
                                 <div class="form-group">
                                     <label>Owner</label>
-                                    <input required="" minlength="5" name="owner" type="text" class="form-control" value="<?php echo set_value('owner', isset($project) ? $project->owner : ''); ?>">
+                                    <input  minlength="5" name="owner" type="text" class="form-control" value="<?php echo set_value('owner', isset($project) ? $project->owner : ''); ?>">
                                 </div>
                                 <div class="form-group">
                                     <label>Offtaker</label>
-                                    <input required="" minlength="5" name="offtaker" type="text" class="form-control" value="<?php echo set_value('offtaker', isset($project) ? $project->offtaker : ''); ?>">
+                                    <input  minlength="5" name="offtaker" type="text" class="form-control" value="<?php echo set_value('offtaker', isset($project) ? $project->offtaker : ''); ?>">
                                 </div>
                                 <div class="form-group ">
                                     <label for="description">Description</label>
@@ -174,19 +174,19 @@ $group_opts = [];
 
                                 <div class="form-group ">
                                     <label for="project_date">Target</label>
-                                    <input required class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
+                                    <input  class="form-control datetimepicker" name="end_date" type="text" id="project_end_date" value="<?php echo set_value('end_date', isset($project) ? date_format(date_create($project->end_date), "d-F-Y") : ''); ?>">
                                 </div>
                                     <div class="form-group">
                                     <label>Cost (USD)</label>
-                                    <input required="" minlength="5" name="cost" type="text" class="form-control" value="<?php echo set_value('cost', isset($project) ? $project->cost : ''); ?>">
+                                    <input name="cost" type="number" class="form-control" value="<?php echo set_value('cost', isset($project) ? $project->cost : ''); ?>">
                                             </div>
                                 <div class="form-group">
                                     <label>IRR</label>
-                                    <input required="" minlength="5" name="irr" type="text" class="form-control" value="<?php echo set_value('irr', isset($project) ? $project->IRR : ''); ?>">
+                                    <input name="irr" type="text" class="form-control" value="<?php echo set_value('irr', isset($project) ? $project->IRR : ''); ?>">
                                 </div>
                                 <div class="form-group">
                                     <label>Latest Status</label>
-                                    <input required="" minlength="5" name="latest_status" type="text" class="form-control" value="<?php echo set_value('latest_status', isset($project) ? $project->latest_status : ''); ?>">
+                                    <input  minlength="5" name="latest_status" type="text" class="form-control" value="<?php echo set_value('latest_status', isset($project) ? $project->latest_status : ''); ?>">
                                     </div>
 
                             </div>

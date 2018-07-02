@@ -24,19 +24,8 @@ $(document).ready(function () {
     $("input#task-end-date").on("dp.change", function (e) {
         $('input#task-start-date').data("DateTimePicker").maxDate(e.date);
     });
-    $('#project_start_date').datetimepicker({
-        format: "DD-MMMM-YYYY"
-    });
     $('#project_end_date').datetimepicker({
-        format: "MMM-YYYY",
-        useCurrent: false
-    });
-    //link those datetimepickers
-    $("#project_start_date").on("dp.change", function (e) {
-        $('#project_end_date').data("DateTimePicker").minDate(e.date);
-    });
-    $("#project_end_date").on("dp.change", function (e) {
-        $('#project_start_date').data("DateTimePicker").maxDate(e.date);
+        format: "MMM-YYYY"
     });
     $('#project_assign_to').select2({
         theme: "bootstrap"
@@ -463,6 +452,12 @@ $(document).ready(function () {
         }
     });
     var project_validator = $('#project_form').validate({
+        rules: {
+            field: {
+              required: true,
+              number: true
+            }
+          },
         submitHandler: function (form) {
             //add description as hidden
             $('<input />').attr('type', 'hidden')
