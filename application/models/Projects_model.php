@@ -98,7 +98,7 @@ class Projects_model extends CI_Model
             // TODO : check user access to group
             $this->db->join('project_group', 'project_group.project_id=projects.project_id');
             foreach ($groups as $g) {
-                $this->db->or_where('group_id', $g);
+                if(!empty($g))$this->db->or_where('group_id', $g);
             }
         } else if (is_array($public_only)) {
             // return those projects in public groups and those in accessible groups
