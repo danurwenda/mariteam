@@ -121,7 +121,7 @@ if (count($project->groups) > 0) {
                                     </div>
                                     <!-- /.panel-heading -->
                                     <div class="panel-body">
-                                        <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('project/docs_dt'); ?>">
+                                        <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('publik/docs_dt'); ?>">
                                             <thead>
                                                 <tr>
                                                     <th>File name</th>
