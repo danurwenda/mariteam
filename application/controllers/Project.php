@@ -305,7 +305,7 @@ class Project extends Module_Controller
         if ($this->input->is_ajax_request()) {
             $prid = $this->input->post('project_id');
             $project = $this->projects_model->get_project($prid);
-            $project_owner = $this->users_model->get_person($project->created_by);
+            $project_owner = $this->users_model->get_user($project->created_by);
             $docs = $this->projects_model->get_docs_dt($prid);
             $decoded = json_decode($docs);
             foreach ($decoded->data as &$doc) {
