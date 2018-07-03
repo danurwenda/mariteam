@@ -108,7 +108,7 @@ if (count($project->groups) > 0) {
                                     <tr>
                                         <th>File name</th>
                                         <th>Size</th>
-                                        <th>Uploaded</th>
+                                        <th>Last Update</th>
                                     </tr>
                                 </thead>
                             </table>

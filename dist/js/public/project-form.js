@@ -27,9 +27,9 @@ $(document).ready(function () {
         ],
         responsive: true,
         dom: '<"top">rt<"bottom"p><"clear">',
-        paging:false,
+        paging: false,
         processing: true,
-        ordering:false,
+        ordering: false,
         serverSide: true,
         ajax: {
             url: $('#tasks-datatable').data('url'),
@@ -139,9 +139,9 @@ $(document).ready(function () {
     var docs_table = $('#docs-datatable').DataTable({
         responsive: true,
         dom: '<"top">rt<"bottom"p><"clear">',
-        paging:false,
+        paging: false,
         processing: true,
-        ordering:false,
+        ordering: false,
         serverSide: true,
         ajax: {
             url: $('#docs-datatable').data('url'),
@@ -158,7 +158,12 @@ $(document).ready(function () {
                 }
             },
             //size
-            {},
+            {
+                render: function (size) {
+                    var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+                    return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+                }
+            },
             //due date
             {
                 render: function (past, t, f, m) {
@@ -167,7 +172,7 @@ $(document).ready(function () {
                     } else {
                         if (past) {
                             var dpast = moment(new Date(past))
-                            return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.fromNow() + '</span>';
+                            return '<span data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY, hh:mm') + '">' + dpast.format('DD MMMM YYYY') + '</span>';
                         }
                         return 'Never';
                     }
