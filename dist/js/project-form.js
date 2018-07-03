@@ -450,7 +450,6 @@ $(document).ready(function () {
                     modal.find('[name=task_status]').closest('.form-group').removeClass('hide')
                     modal.find('[name=task_status]').val([task.status])
                     modal.find('#task-assign').val(task.assigned_to).trigger('change.select2');
-                    modal.find('#task-start-date').data("DateTimePicker").date(new Date(task.start_date));
                     modal.find('#task-end-date').data("DateTimePicker").date(new Date(task.end_date));
                     modal.find('#task-weight').val(task.weight).trigger('change')
                     //show "Remove" button
@@ -458,7 +457,6 @@ $(document).ready(function () {
                 } else {
                     //read only
                     modal.find('#task-name').html(task.task_name)
-                    modal.find('#task-start-date').html(moment(task.start_date).format('D MMM YYYY'))
                     var due = moment(task.end_date);
                     modal.find('#task-end-date').html(due.format('D MMM YYYY'))
                     modal.find('#task-desc').html(task.description)
