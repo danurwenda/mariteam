@@ -103,25 +103,15 @@ if (count($project->groups) > 0) {
                 <div class="tab-pane fade" id="documents">
                     <div class='row'>
                         <div class='col-xs-12'>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Document List
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('publik/docs_dt'); ?>">
-                                        <thead>
-                                            <tr>
-                                                <th>File name</th>
-                                                <th>Size</th>
-                                                <th>Uploaded</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    <!-- /.table-responsive -->
-                                </div>
-                                <!-- /.panel-body -->
-                            </div>
+                            <table width="100%" class="table table-striped table-bordered table-hover" id="docs-datatable" data-url="<?php echo site_url('publik/docs_dt'); ?>">
+                                <thead>
+                                    <tr>
+                                        <th>File name</th>
+                                        <th>Size</th>
+                                        <th>Uploaded</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>

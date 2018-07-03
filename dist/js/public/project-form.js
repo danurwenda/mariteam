@@ -138,7 +138,10 @@ $(document).ready(function () {
     });
     var docs_table = $('#docs-datatable').DataTable({
         responsive: true,
+        dom: '<"top">rt<"bottom"p><"clear">',
+        paging:false,
         processing: true,
+        ordering:false,
         serverSide: true,
         ajax: {
             url: $('#docs-datatable').data('url'),

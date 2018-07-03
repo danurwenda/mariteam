@@ -9,11 +9,6 @@
             , '<?php echo js_asset_url('datatables-responsive/dataTables.responsive.js') ?>'
             , '<?php echo js_asset_url('select2/select2.min.js') ?>'
             , '<?php echo base_url('dist/js/public/project-table.js') ?>');
-// send data to parent frame, only when this frame is fully loaded
-    function load() {
-        window.parent.postMessage(document.body.offsetHeight, '*');
-    }
-    window.onload = load;
 </script>
 <div class="col-lg-12">
     <!-- table-responsive -->
