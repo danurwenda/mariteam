@@ -130,9 +130,9 @@ $(document).ready(function () {
             // project status
             {},
             // due date
-            { render: renderPast },
+            //{ render: renderPast },
             // progress
-            { render: renderProgress }
+            //{ render: renderProgress }
         ]
     });
     projects_dt.on('order.dt search.dt draw.dt', function () {

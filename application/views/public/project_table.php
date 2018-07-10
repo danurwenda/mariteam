@@ -18,8 +18,6 @@
                 <th>No</th>
                 <th>Name</th>
                 <th class="min-tablet-p">Latest status</th>
-                <th class="min-tablet-p">Target</th>
-                <th class="min-tablet-p">Progress (%)</th>
             </tr>
         </thead>
     </table>
