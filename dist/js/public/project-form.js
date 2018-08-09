@@ -287,7 +287,7 @@ $(document).ready(function () {
 
             // hide upload
             $('task-upload-row').removeClass('hide');
-            reloadTaskDocs(task_id);
+            //reloadTaskDocs(task_id);
 
             // hide chat
             $('task-chat-panel').removeClass('hide');

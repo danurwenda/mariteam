@@ -479,21 +479,6 @@
                             <dd id="task-desc"></dd>
                         </dl>
                     </div>
-                    <div class='row'>
-                        <div class='col-sm-12'>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Uploaded Document
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    <ul id="task-docs">
-
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="comment-panel panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-comments fa-fw"></i> Comments
