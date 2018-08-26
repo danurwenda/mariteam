@@ -46,9 +46,21 @@
                                 <div class="collapse navbar-collapse" id="myNavbar">
                                     <ul class="nav navbar-nav navbar-right">
                                         <li class="<?php echo $page == 'home' ? 'active' : ''; ?>"><a href="<?php echo site_url(); ?>">Home</a></li>
-                                        <li class="<?php echo $page == 'projects' ? 'active' : ''; ?>"><a href="<?php echo site_url('publik/projects'); ?>">Projects</a></li>
-                                        <!--<li class="<?php echo $page == 'events' ? 'active' : ''; ?>"><a href="<?php echo site_url('publik/events'); ?>">Events</a></li>-->
-                                        <li><a href="<?php echo site_url('dashboard'); ?>">Login</a></li>
+                                        <li class="<?php echo $page == 'projects' ? 'active' : ''; ?>"><a href="<?php echo site_url('logged/projects'); ?>">Projects</a></li>
+                                        <?php
+                                        if (isset($_loggeduser)) {
+                                            if ($_loggeduser->role_id != 3) {
+                                                // if role == 3, only shows project from their division
+                                                ?>         
+                                                <li><a href="<?php echo site_url('dashboard'); ?>">Dashboard</a></li>
+                                            <?php } else { ?>
+                                                <li><a href="<?php echo site_url('auth/logout'); ?>">Logout</a></li>
+                                                <?php
+                                            }
+                                        } else {
+                                            ?>
+                                            <li><a href="<?php echo site_url('dashboard'); ?>">Login</a></li>
+                                        <?php } ?>
                                     </ul>
                                 </div>
                             </div>
@@ -70,7 +82,7 @@
             <footer id="footer">
                 <div class="container">
                     <div class="row text-center">
-                        <p>&copy; 2017 Baker Theme & Dimas Danurwenda. All Rights Reserved.</p>
+                        <p>&copy; 2018 Baker Theme & Dimas Danurwenda. All Rights Reserved.</p>
                         <div class="credits">
                             <!-- 
                                 All the links in the footer should remain intact. 

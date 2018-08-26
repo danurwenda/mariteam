@@ -110,7 +110,7 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div class="panel-body">
-                                    <table width="100%" class="table table-striped table-bordered table-hover" id="tasks-datatable" data-url="<?php echo site_url('publik/tasks_dt'); ?>">
+                                    <table width="100%" class="table table-striped table-bordered table-hover" id="tasks-datatable" data-url="<?php echo site_url('logged/tasks_dt'); ?>">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -436,7 +436,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="task-modal-form" class="modal " tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">

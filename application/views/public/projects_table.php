@@ -17,27 +17,32 @@
         </div>
         <!-- /.panel-heading -->
         <div class="panel-body">
-            <p> 
-                <button class="btn btn-submit" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    Filters
-                </button>
-            </p>
-            <div class="collapse" id="collapseExample">
-                <div class="well">
-                    <div class="form-group">
-                        <label for="multi-append" class="control-label">Project Group</label>
-                        <select class="form-control" multiple="multiple" name="groups" id="groups"></select>
-                    </div>
-                </div>
-
-                <!--div class="widget-toolbox padding-8 clearfix">
-                    <button class="btn" type="reset">
-                        <i class="ace-icon fa fa-undo bigger-110"></i>
-                        Reset
+            <?php
+            if (isset($_loggeduser) && $_loggeduser->role_id != 3) {
+                // if role == 3, only shows project from their division
+                ?>
+                <p> 
+                    <button class="btn btn-submit" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        Filters
                     </button>
-                </div-->
+                </p>
+                <div class="collapse" id="collapseExample">
+                    <div class="well">
+                        <div class="form-group">
+                            <label for="multi-append" class="control-label">Project Group</label>
+                            <select class="form-control" multiple="multiple" name="groups" id="groups"></select>
+                        </div>
+                    </div>
 
-            </div>
+                    <!--div class="widget-toolbox padding-8 clearfix">
+                        <button class="btn" type="reset">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            Reset
+                        </button>
+                    </div-->
+
+                </div>
+<?php } ?>
             <table width="100%" class="table table-striped table-bordered table-hover" id="projects-datatable">
                 <thead>
                     <tr>

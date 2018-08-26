@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Auth extends CI_Controller {
 
     function __construct() {
-        parent::__construct();		
+        parent::__construct();
         $this->load->library('access');
     }
 
@@ -23,7 +23,7 @@ class Auth extends CI_Controller {
         if ($this->form_validation->run() == false) {
             $this->load->view('login');
         } else {
-              redirect('dashboard');
+            redirect('project');
         }
     }
 

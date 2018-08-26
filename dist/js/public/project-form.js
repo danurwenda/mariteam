@@ -194,7 +194,7 @@ $(document).ready(function () {
     }
 
     function reloadTaskDocs(task_id) {
-        $.getJSON(base_url + 'publik/get_task_docs/' + task_id, function (docs) {
+        $.getJSON(base_url + 'logged/get_task_docs/' + task_id, function (docs) {
             //clear list
             $('#task-docs').empty();
             docs.forEach(function (doc, i) {
@@ -256,7 +256,7 @@ $(document).ready(function () {
         }
         return cmtel;
     }
-    
+
     $('#task-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
                 ,
@@ -266,7 +266,7 @@ $(document).ready(function () {
         if (task_id) {
             //prepare form to be submitted for editing entry
             //populate form after ajax load
-            $.getJSON(base_url + 'publik/get_task/' + task_id, function (task) {
+            $.getJSON(base_url + 'logged/get_task/' + task_id, function (task) {
 
                 //read only
                 modal.find('#task-name').html(task.task_name)
@@ -291,7 +291,7 @@ $(document).ready(function () {
 
             // hide chat
             $('task-chat-panel').removeClass('hide');
-            $.getJSON(base_url + 'publik/get_task_comment/' + task_id, function (cmts) {
+            $.getJSON(base_url + 'logged/get_task_comment/' + task_id, function (cmts) {
                 //clear list
                 $('.comment-panel ul.chat').empty();
                 cmts.forEach(function (cmt, i) {
@@ -305,7 +305,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: base_url + 'publik/events_dt',
+            url: base_url + 'logged/events_dt',
             type: 'POST',
             data: function (d) {
                 d['project_id'] = $('.main-panel').data('project')
@@ -318,7 +318,7 @@ $(document).ready(function () {
                 }},
             {},
             {render: function (d, t, f, m) {
-                   return moment(d).format("D MMMM YYYY HH:mm")
+                    return moment(d).format("D MMMM YYYY HH:mm")
                 }},
             {},
             {visible: false, searchable: false}, {visible: false, searchable: false}
@@ -336,7 +336,7 @@ $(document).ready(function () {
     $('#event-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget), // Button that triggered the modal
 
-                tr = button.parents('tr'),form = $('#event-modal-form'),
+                tr = button.parents('tr'), form = $('#event-modal-form'),
                 rowdata = events_table.row(tr).data();
         form.find('.event-name').html(rowdata[1])
         form.find('.event-description').html(rowdata[5])
@@ -480,7 +480,7 @@ $(document).ready(function () {
     });
 
     function loadFromServer(callback) {
-        $.getJSON(base_url + "publik/get_timeline", {
+        $.getJSON(base_url + "logged/get_timeline", {
             project_id: $('.main-panel').data('project')
         }, function (response) {
             //console.debug(response);

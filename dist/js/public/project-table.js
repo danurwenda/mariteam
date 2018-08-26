@@ -120,7 +120,7 @@ $(document).ready(function () {
             });
         },
         ajax: {
-            url: base_url + 'publik/projects_dt',
+            url: base_url + 'logged/projects_dt',
             type: 'POST',
             data: function (d) {
                 d['groups[]'] = $('#groups').val()
@@ -135,7 +135,7 @@ $(document).ready(function () {
                         return n;
                     } else {
                         //render link using id
-                        return '<a href="' + base_url + 'publik/project/' + f[0] + '">' + n + '</a>'
+                        return '<a href="' + base_url + 'logged/project/' + f[0] + '">' + n + '</a>'
                     }
                 }
             },
@@ -155,7 +155,7 @@ $(document).ready(function () {
         projects_dt.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
             cell.innerHTML = start + i + 1;
         });
-        
+
     }).draw();
     $('#groups').select2({
         theme: "bootstrap",
