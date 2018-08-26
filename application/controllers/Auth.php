@@ -34,7 +34,7 @@ class Auth extends CI_Controller {
 
     function check_login() {
         $username = $this->input->post('email', true);
-        $password = $this->input->post('password', true);
+        $password = $this->input->post('password', false); // never clean password field!
 
         $login = $this->access->login($username, $password);
         if ($login) {

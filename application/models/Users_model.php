@@ -75,11 +75,11 @@ class Users_model extends CI_Model {
         $this->db->set('hash', password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]));
         $this->db->update('users');
         //update email
-        $user = $this->db->get_where('users',['user_id'=>$user_id]);
-        if($user->num_rows()>0){
-            $this->db->where('person_id',$user->row()->person_id);
-            $this->db->update('persons',[
-                'email'=>$email
+        $user = $this->db->get_where('users', ['user_id' => $user_id]);
+        if ($user->num_rows() > 0) {
+            $this->db->where('person_id', $user->row()->person_id);
+            $this->db->update('persons', [
+                'email' => $email
             ]);
         }
     }

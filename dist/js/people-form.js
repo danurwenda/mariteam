@@ -48,7 +48,7 @@ $(document).ready(function () {
                 result = JSON.parse(result);
                 if (result.success) {
                     // Redirect to table view
-                    window.location.href = base_url + "/people"
+                    window.location.href = base_url + "people"
                     new Noty({
                         timeout: 1000,
                         layout: 'center',

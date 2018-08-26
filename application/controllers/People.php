@@ -105,7 +105,8 @@ class People extends Module_Controller {
 
     function update() {
         $user = $this->input->post('user');
-        $password = $this->input->post('password');
+        $password = $this->input->post('password', false); // never clean password field!
+
         $groups = $this->input->post('groups');
         if ($groups === null) {
             $groups = [];
