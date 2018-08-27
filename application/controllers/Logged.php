@@ -77,8 +77,10 @@ class Logged extends Member_Controller {
      */
     public function project($project_id) {
         $project = $this->projects_model->get_project($project_id);
-        if ($project) {
-            $data['page'] = 'project';
+        // check access control
+        if ($project && $this->can_access($project_id)) {
+            $data['page'] = 'projects';
+            $data['_loggeduser'] = $this->logged_user;
             $data['topics'] = $this->db->get('topics')->result();
             $data['project'] = $project;
             $this->public_template->display('public/project_form', $data);
@@ -86,6 +88,11 @@ class Logged extends Member_Controller {
             // send to project table
             redirect('logged/projects');
         }
+    }
+
+    private function can_access($pid) {
+        $this->db->join('person_group', 'person_group.group_id=project_group.group_id');
+        return $this->db->get_where('project_group', ['project_id' => $pid, 'person_id' => $this->logged_user->person_id])->num_rows() > 0;
     }
 
     public function tasks_dt() {
