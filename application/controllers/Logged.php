@@ -91,8 +91,7 @@ class Logged extends Member_Controller {
     }
 
     private function can_access($pid) {
-        $this->db->join('person_group', 'person_group.group_id=project_group.group_id');
-        return $this->db->get_where('project_group', ['project_id' => $pid, 'person_id' => $this->logged_user->person_id])->num_rows() > 0;
+        return $this->logged_user->role_id != 3 || $this->db->join('person_group', 'person_group.group_id=project_group.group_id')->get_where('project_group', ['project_id' => $pid, 'person_id' => $this->logged_user->person_id])->num_rows() > 0;
     }
 
     public function tasks_dt() {
