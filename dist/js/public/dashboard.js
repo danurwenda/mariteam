@@ -91,7 +91,7 @@ $(document).ready(function () {
                 form.find('.projects').show();
                 form.find('.event-projects').empty()
                 for (var prid in projects) {
-                    form.find('.event-projects').append(`<li><a href="` + base_url + `publik/project/${prid}">${projects[prid]}</a></li>`);
+                    form.find('.event-projects').append(`<li><a href="` + base_url + `logged/project/${prid}">${projects[prid]}</a></li>`);
                 }
             }
             //popup event detail
