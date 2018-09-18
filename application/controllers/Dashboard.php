@@ -35,14 +35,11 @@ class Dashboard extends Member_Controller {
         foreach ($projects as $p) {
             if (strlen($p->description) == 0) {
                 $text = 'No description';
-            } else {
-                $text = excerpt($p->description, $sSearch);
-                if (strlen($text) == 0) {
-                    $text = word_limiter($p->description);
-                }
+            } else if (strlen($text = excerpt($p->description, $sSearch)) == 0) {
+                $text = word_limiter($p->description);
             }
             $p->text = $text;
-            $p->title = highlight_phrase($p->project_name, $sSearch,"<span class=\"highlighted\">","</span>");
+            $p->title = highlight_phrase($p->project_name, $sSearch, "<span class=\"highlighted\">", "</span>");
             $p->link = site_url('project/edit/' . $p->project_id);
         }
         $data['results'] = $projects;
@@ -52,14 +49,12 @@ class Dashboard extends Member_Controller {
         foreach ($tasks as $p) {
             if (strlen($p->description) == 0) {
                 $text = 'No description';
-            } else {
-                $text = excerpt($p->description, $sSearch);
-                if (strlen($text) == 0) {
-                    $text = word_limiter($p->description).'halu';
-                }
+            } else
+            if (strlen($text = excerpt($p->description, $sSearch)) == 0) {
+                $text = word_limiter($p->description);
             }
             $p->text = $text;
-            $p->title = highlight_phrase($p->task_name, $sSearch,"<span class=\"highlighted\">","</span>");
+            $p->title = highlight_phrase($p->task_name, $sSearch, "<span class=\"highlighted\">", "</span>");
             $p->link = site_url('project/edit/' . $p->project_id);
         }
         $data['results'] = array_merge($data['results'], $tasks);

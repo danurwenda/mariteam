@@ -39,6 +39,23 @@ class Publik extends CI_Controller {
     public function index() {
         $data['page'] = 'home';
         $data['_loggeduser'] = $this->access->is_login() ? $this->users_model->get_user($this->session->user_id) : null;
+        $projects_by_status = $this->projects_model->get_chart_data(true);
+        foreach ($projects_by_status as $value) {
+            $value->name = substr($value->name, 7);
+            $value->y = 0 + $value->total;
+            unset($value->total);
+        }
+        $data['project_status'] = $projects_by_status;
+        
+        $projects_by_deps = $this->projects_model->get_chart_data_by_dep(true);
+        foreach ($projects_by_deps as $dep) {
+            $dep->name = $dep->group_name;
+            $dep->data = [0+$dep->total];
+            unset($dep->total);
+            unset($dep->group_name);
+        }
+        $data['project_deps'] = $projects_by_deps;
+        
         $this->public_template->display('public/dashboard', $data);
     }
 
