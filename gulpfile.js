@@ -155,6 +155,9 @@ gulp.task('copy', ['minify-css', 'minify-js'], function () {
 
     gulp.src(['bower_components/raphael/raphael.js', 'bower_components/raphael/raphael.min.js'])
             .pipe(gulp.dest('vendor/raphael'))
+    
+    gulp.src(['node_modules/highcharts/highcharts.js', 'node_modules/highcharts/highcharts-3d.js'])
+            .pipe(gulp.dest('vendor/highcharts'))
 
 })
 
