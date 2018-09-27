@@ -6,7 +6,7 @@ $(document).ready(function () {
     });
     $('input#task-end-date').datetimepicker({
         format: "DD-MMMM-YYYY", useCurrent: false
-                //maxDate: new Date($('#task-end-date').data('max'))
+        //maxDate: new Date($('#task-end-date').data('max'))
     });
     //link those datetimepickers
     $("input#task-start-date").on("dp.change", function (e) {
@@ -41,7 +41,7 @@ $(document).ready(function () {
             data: function (params) {
                 return {
                     term: params.term,
-                    create:true
+                    create: true
                 };
             },
             processResults: function (data, params) {
@@ -129,51 +129,51 @@ $(document).ready(function () {
             }
         },
         columns: [{},
-            //task name
-            {
-                render: function (d, t, f, m) {
-                    return '<a href data-task="' + f[0] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
-                },
-                responsivePriority: 1
+        //task name
+        {
+            render: function (d, t, f, m) {
+                return '<a href data-task="' + f[0] + '" data-toggle="modal" data-target="#task-modal-form"> ' + d + '</a>';
             },
-            //PIC
-            {},
-            //due date
-            {
-                render: function (past, t, f, m) {
-                    if (t === 'sort') {
-                        return past;
-                    } else {
-                        if (past) {
-                            var cls = '';
-                            if (f[4] === '3') {
-                                cls = 'alert-danger';
-                            }
-                            var dpast = moment(past, 'YYYY-MM-DD')
-                            dpast.seconds(59);
-                            dpast.minutes(59);
-                            dpast.hours(23);
-                            return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY') + '">' + dpast.fromNow() + '</span>';
+            responsivePriority: 1
+        },
+        //PIC
+        {},
+        //due date
+        {
+            render: function (past, t, f, m) {
+                if (t === 'sort') {
+                    return past;
+                } else {
+                    if (past) {
+                        var cls = '';
+                        if (f[4] === '3') {
+                            cls = 'alert-danger';
                         }
-                        return 'Never';
+                        var dpast = moment(past, 'YYYY-MM-DD')
+                        dpast.seconds(59);
+                        dpast.minutes(59);
+                        dpast.hours(23);
+                        return '<span class="' + cls + '" data-toggle="tooltip" title="' + dpast.format('DD MMM YYYY') + '">' + dpast.fromNow() + '</span>';
                     }
+                    return 'Never';
                 }
-            },
-            //status
-            {
-                responsivePriority: 2,
-                render: renderStatus
-            },
-            //weight
-            {},
-            //order
-            {visible: false, searchable: false}
+            }
+        },
+        //status
+        {
+            responsivePriority: 2,
+            render: renderStatus
+        },
+        //weight
+        {},
+        //order
+        { visible: false, searchable: false }
         ]
     });
     tasks_table.on('order.dt search.dt draw.dt', function () {
         //biar kolom angka ga ikut ke sort
         var start = tasks_table.page.info().start;
-        tasks_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+        tasks_table.column(0, { order: 'applied' }).nodes().each(function (cell, i) {
             cell.innerHTML = start + i + 1;
         });
 
@@ -183,8 +183,8 @@ $(document).ready(function () {
     // displayed
     $(document).on("click", ".deldoc", function (e) {
         var el = $(this),
-                uid = $(this).data('doc_id'),
-                source = $(this).data('source');
+            uid = $(this).data('doc_id'),
+            source = $(this).data('source');
         bootbox.confirm({
             message: "Are you sure you want to remove this document?",
             buttons: {
@@ -277,34 +277,34 @@ $(document).ready(function () {
             }
         },
         columns: [{},
-            // name link
-            {
-                render: function (n, t, f, m) {
-                    if (t === 'sort') {
-                        return n;
-                    } else {
-                        //render link using id
-                        return '<a href="' + base_url + 'event/edit/' + f[0] + '">' + n + '</a>'
-                    }
+        // name link
+        {
+            render: function (n, t, f, m) {
+                if (t === 'sort') {
+                    return n;
+                } else {
+                    //render link using id
+                    return '<a href="' + base_url + 'event/edit/' + f[0] + '">' + n + '</a>'
                 }
-            },
-            // PIC
-            {},
-            // start time
-            {
-                render: function (d, t, f, m) {
-                    return moment(d).format("D MMMM YYYY HH:mm")
-                }
-            },
-            // location
-            {},
-            {visible: false, searchable: false}, {visible: false, searchable: false}
+            }
+        },
+        // PIC
+        {},
+        // start time
+        {
+            render: function (d, t, f, m) {
+                return moment(d).format("D MMMM YYYY HH:mm")
+            }
+        },
+        // location
+        {},
+        { visible: false, searchable: false }, { visible: false, searchable: false }
         ]
     });
     events_table.on('order.dt search.dt draw.dt', function () {
         //biar kolom angka ga ikut ke sort
         var start = events_table.page.info().start;
-        events_table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+        events_table.column(0, { order: 'applied' }).nodes().each(function (cell, i) {
             cell.innerHTML = start + i + 1;
         });
 
@@ -323,12 +323,12 @@ $(document).ready(function () {
     // TOPIC
     $('#topic-modal-form .btn-primary').click(function (e) {
         var form = $('#topic-modal-form form')
-                //serialize the form, except those in hidden template
-                ,
-                h = form.find(":input:not(.template :input)").serialize()
-                // process the form
-                ,
-                action = form.attr('action');
+            //serialize the form, except those in hidden template
+            ,
+            h = form.find(":input:not(.template :input)").serialize()
+            // process the form
+            ,
+            action = form.attr('action');
         $.ajax({
             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
             url: action, // the url where we want to POST
@@ -336,13 +336,13 @@ $(document).ready(function () {
             dataType: 'json', // what type of data do we expect back from the server
             encode: true
         })
-                // using the done promise callback
-                .done(function (data) {
-                    //reset and close modal
-                    form[0].reset();
-                    //reset expandable
-                    $('#topic-modal-form').modal('hide');
-                });
+            // using the done promise callback
+            .done(function (data) {
+                //reset and close modal
+                form[0].reset();
+                //reset expandable
+                $('#topic-modal-form').modal('hide');
+            });
     });
     // TASK
     function createDocEl(doc) {
@@ -394,10 +394,10 @@ $(document).ready(function () {
     }
     $('#task-modal-form').on('shown.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
-                ,
-                task_id = button.data('task'),
-                modal = $(this),
-                form = modal.find('.modal-body').hasClass('modal-form');
+            ,
+            task_id = button.data('task'),
+            modal = $(this),
+            form = modal.find('.modal-body').hasClass('modal-form');
         if (task_id) {
             //prepare form to be submitted for editing entry
             //populate form after ajax load
@@ -470,10 +470,10 @@ $(document).ready(function () {
     var task_validator = $('#task-modal-form #task-form').validate();
     $('#task-modal-form .btn-subm').click(function (e) {
         var form = $('#task-modal-form #task-form')
-                //serialize the form, except those in hidden template
-                ,
-                action = form.attr('action'),
-                h = form.find(":input:not(.template :input)").serialize();
+            //serialize the form, except those in hidden template
+            ,
+            action = form.attr('action'),
+            h = form.find(":input:not(.template :input)").serialize();
         // validate form
         if (task_validator.form()) {
             // process the form
@@ -484,21 +484,21 @@ $(document).ready(function () {
                 dataType: 'json', // what type of data do we expect back from the server
                 encode: true
             })
-                    // using the done promise callback
-                    .done(function (data) {
-                        //refresh task table
-                        tasks_table.ajax.reload()
-                        //refresh timeline if it's already loaded
-                        if (ge)
-                            loadFromServer()
-                        //submit outstanding files (if any)
-                        if ($('#fine-uploader-manual-trigger-task').fineUploader('getUploads').length > 0) {
-                            $('#fine-uploader-manual-trigger-task').fineUploader('setEndpoint', base_url + 'project/uploads/tasks/' + data.task_id)
-                            $('#fine-uploader-manual-trigger-task').fineUploader('uploadStoredFiles')
-                        }
-                        //close modal
-                        $('#task-modal-form').modal('hide');
-                    });
+                // using the done promise callback
+                .done(function (data) {
+                    //refresh task table
+                    tasks_table.ajax.reload()
+                    //refresh timeline if it's already loaded
+                    if (ge)
+                        needReload = true
+                    //submit outstanding files (if any)
+                    if ($('#fine-uploader-manual-trigger-task').fineUploader('getUploads').length > 0) {
+                        $('#fine-uploader-manual-trigger-task').fineUploader('setEndpoint', base_url + 'project/uploads/tasks/' + data.task_id)
+                        $('#fine-uploader-manual-trigger-task').fineUploader('uploadStoredFiles')
+                    }
+                    //close modal
+                    $('#task-modal-form').modal('hide');
+                });
         }
     });
     // ======================== ACTION LISTENER =============================
@@ -509,25 +509,25 @@ $(document).ready(function () {
     })
     $('.add-person-btn').click(function (e) {
         var btn = $(this),
-                select = btn.parent().parent().find('select'),
-                person_form = $('.new-person-form').clone(true).removeClass('hide'),
-                is_user = person_form.find("[name=is_user]"),
-                person_validator = person_form.validate({
-                    rules: {
+            select = btn.parent().parent().find('select'),
+            person_form = $('.new-person-form').clone(true).removeClass('hide'),
+            is_user = person_form.find("[name=is_user]"),
+            person_validator = person_form.validate({
+                rules: {
+                    email: {
+                        required: {
+                            depends: function (element) {
+                                return is_user.is(":checked");
+                            }
+                        },
                         email: {
-                            required: {
-                                depends: function (element) {
-                                    return is_user.is(":checked");
-                                }
-                            },
-                            email: {
-                                depends: function (element) {
-                                    return is_user.is(":checked");
-                                }
+                            depends: function (element) {
+                                return is_user.is(":checked");
                             }
                         }
                     }
-                });
+                }
+            });
         var dialog = bootbox.dialog({
             title: 'Add new Person',
             message: person_form,
@@ -550,18 +550,18 @@ $(document).ready(function () {
                                 dataType: 'json', // what type of data do we expect back from the server
                                 encode: true
                             })
-                                    // using the done promise callback
-                                    .done(function (data) {
-                                        if (data.success) {
-                                            //insert the new person and make it selected
-                                            var option = new Option(data.person_name, data.success);
-                                            option.selected = true;
-                                            select.append(option);
-                                            select.trigger("change");
-                                        }
-                                        //close modal
-                                        dialog.modal('hide');
-                                    });
+                                // using the done promise callback
+                                .done(function (data) {
+                                    if (data.success) {
+                                        //insert the new person and make it selected
+                                        var option = new Option(data.person_name, data.success);
+                                        option.selected = true;
+                                        select.append(option);
+                                        select.trigger("change");
+                                    }
+                                    //close modal
+                                    dialog.modal('hide');
+                                });
                         }
                         return false;
                     }
@@ -660,6 +660,9 @@ $(document).ready(function () {
                         success: function (result) {
                             //refresh table
                             tasks_table.ajax.reload()
+                            //refresh timeline
+                            if (ge)
+                                needReload = true
                             //close modal
                             $('#task-modal-form').modal('hide');
                         }
@@ -741,9 +744,13 @@ $(document).ready(function () {
         });
     }
     // lazy init GE on the first time tab shown
+    var needReload = false;
     $('a[href="#timeline"]').on('shown.bs.tab', function (e) {
         if (!ge)
             initGE();
+        else if (needReload)
+            loadFromServer()
+
     });
 
     function loadFromServer(callback) {
@@ -761,6 +768,7 @@ $(document).ready(function () {
                 if (typeof (callback) == "function") {
                     callback(response);
                 }
+                needReload = false;
             }
         });
     }
